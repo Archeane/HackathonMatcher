@@ -1,0 +1,26 @@
+extends ../layout
+
+block content
+  .pb-2.mt-2.mb-4.border-bottom
+    h3 Sign up
+  form(action='/signup2', method='POST' id='msform')
+    input(type='hidden', name='_csrf', value=_csrf)
+    ul#progressbar
+      li.active Demographic Info
+      li Personal Details
+      li Social Profiles
+    fieldset
+      h2.fs-title Demographic Information
+      .form-group
+        input.form-control(type='text',name='school', placeholder="Select the school you currently attend")
+      .form-group
+        input.form-control(type='text', name='major', placeholder='Select your major')
+      .form-group
+        input.form-control(type='text', name='graduationYear', placeholder='Graduation Year')
+      .form-group
+        input.form-control(type='text', name='educationLevel', placeholder="Education Level")
+      .form-group
+        button.btn.btn-success(type='submit')
+        | Next
+
+

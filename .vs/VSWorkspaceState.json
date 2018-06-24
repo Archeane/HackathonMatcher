@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\public\\css",
+    "\\public\\js",
+    "\\views",
+    "\\views\\partials",
+    "\\wtf",
+    "\\wtf\\css",
+    "\\wtf\\css\\lib",
+    "\\wtf\\js",
+    "\\wtf\\js\\lib"
+  ],
+  "SelectedNode": "\\wtf\\css\\partials.css",
+  "PreviewInSolutionExplorer": false
+}
