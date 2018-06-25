@@ -71,7 +71,7 @@ exports.getSignup = (req, res) => {
     return res.redirect('/');
   }
   res.render('account/signup', {
-    title: 'Create Account'
+    title: 'Create Account', 'css':['signup.css'], 'js':['signup.js']
   });
 };
 
@@ -109,7 +109,7 @@ exports.postSignup = (req, res, next) => {
 
       /TODO: confirm email/
       res.render('account/signup', {
-        title: 'Sign up'
+        title: 'Sign up', 'css':['signup.css']
       });
 
       /*
@@ -127,7 +127,12 @@ exports.postSignup = (req, res, next) => {
 };
 
 exports.postSignup2 = (req,res,next)=>{
-
+  console.log('post signup2');
+  req.assert('school', 'Please enter the school you enter').notEmpty();
+  req.assert('major', 'Please enter your major').notEmpty();
+  req.assert('graduationYear', 'Please Enter your graduation year').notEmpty();
+  req.assert('educationLevel', 'Please Enter your Education Level').notEmpty();
+  
 }
 
 /**

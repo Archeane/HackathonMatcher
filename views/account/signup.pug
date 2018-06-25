@@ -1,26 +1,43 @@
 extends ../layout
 
 block content
-  .pb-2.mt-2.mb-4.border-bottom
-    h3 Sign up
-  form(action='/signup2', method='POST' id='msform')
-    input(type='hidden', name='_csrf', value=_csrf)
-    ul#progressbar
-      li.active Demographic Info
-      li Personal Details
-      li Social Profiles
-    fieldset
-      h2.fs-title Demographic Information
-      .form-group
-        input.form-control(type='text',name='school', placeholder="Select the school you currently attend")
-      .form-group
-        input.form-control(type='text', name='major', placeholder='Select your major')
-      .form-group
-        input.form-control(type='text', name='graduationYear', placeholder='Graduation Year')
-      .form-group
-        input.form-control(type='text', name='educationLevel', placeholder="Education Level")
-      .form-group
-        button.btn.btn-success(type='submit')
-        | Next
-
+  <form id="msform" action="/signup2" method="POST">
+    <!-- progressbar -->
+    <ul id="progressbar">
+      <li class="active">Account Setup</li>
+      <li>Social Profiles</li>
+      <li>Personal Details</li>
+    </ul>
+    <!-- fieldsets -->
+    
+    <fieldset>
+      <h2 class="fs-title">Demographics Information</h2>
+      <h3 class="fs-subtitle">Just some quick info...</h3>
+      <input type="text" name="school" placeholder="School You Attend" />
+      <input type="text" name="major" placeholder="Major" />
+      <input type="text" name="graduationYear" placeholder="Graduation Year" />
+      <input type="text" name="educationLevel" placeholder="Education Level" />
+      <input type="button" name="next" class="next action-button" value="Next" />
+    </fieldset>
+    <fieldset>
+      <h2 class="fs-title">Personal Details</h2>
+      <h3 class="fs-subtitle">Let us know you better.</h3>
+      <input type="text" name="interests" placeholder="What are you interested in working on?" />
+      <input type="text" name="languages" placeholder="What languages are you familiar with?" />
+      <input type="text" name="technologies" placeholder="What technologies have you used?" />
+      <input type="text" name="fields" placeholder="What fields are you interested in?" />
+      <input type="button" name="previous" class="previous action-button" value="Previous" />
+      <input type="button" name="next" class="next action-button" value="Next" />
+    </fieldset>
+    <fieldset>
+      <h2 class="fs-title">Social Profile</h2>
+      <h3 class="fs-subtitle">Help others know you better</h3>
+      <input type="text" name="facebook" placeholder="First Name" />
+      <input type="text" name="linkedin" placeholder="Last Name" />
+      <input type="text" name="phone" placeholder="Phone" />
+      <textarea name="address" placeholder="Address"></textarea>
+      <input type="button" name="previous" class="previous action-button" value="Previous" />
+      <input type="submit" name="submit" class="submit action-button" value="Submit" />
+    </fieldset>
+  </form>
 
