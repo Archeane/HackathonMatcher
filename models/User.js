@@ -7,6 +7,9 @@ const userSchema = new mongoose.Schema({
   gender: String,
   email: { type: String, unique: true },
   password: String,
+
+  emailSecretToken:String,
+  emailActive:Boolean,
   passwordResetToken: String,
   passwordResetExpires: Date,
 

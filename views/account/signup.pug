@@ -13,16 +13,18 @@ block content
     <fieldset>
       <h2 class="fs-title">Demographics Information</h2>
       <h3 class="fs-subtitle">Just some quick info...</h3>
-      <input type="text" name="school" placeholder="School You Attend" />
-      <input type="text" name="major" placeholder="Major" />
-      <input type="text" name="graduationYear" placeholder="Graduation Year" />
-      <input type="text" name="educationLevel" placeholder="Education Level" />
+      <div class="bg-danger" id="reg-error"></div>
+      <input type="text" id="reg-school" name="school" placeholder="School You Attend" />
+      <input type="text" id="reg-major" name="major" placeholder="Major" />
+      <input type="text" id="reg-graduationYear" name="graduationYear" placeholder="Graduation Year" />
+      <input type="text" id="reg-educationLevel" name="educationLevel" placeholder="Education Level" />
       <input type="button" name="next" class="next action-button" value="Next" />
     </fieldset>
     <fieldset>
       <h2 class="fs-title">Personal Details</h2>
       <h3 class="fs-subtitle">Let us know you better.</h3>
-      <input type="text" name="interests" placeholder="What are you interested in working on?" />
+      <input type="text" value="" data-role="tagsinput" id="tags" class="form-control">
+      <input type="text" name="interests" value="" data-role="tagsinput" placeholder="What are you interested in working on?" />
       <input type="text" name="languages" placeholder="What languages are you familiar with?" />
       <input type="text" name="technologies" placeholder="What technologies have you used?" />
       <input type="text" name="fields" placeholder="What fields are you interested in?" />

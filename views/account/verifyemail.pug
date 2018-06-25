@@ -1,0 +1,5 @@
+h2 Verify Your Email
+form(method="POST" action='/verify')
+	input(type='hidden', name='_csrf', value=_csrf)
+	.form-group.row
+		input.form-control(type="text", name="secretToken", placeholder="Secret Token",required)

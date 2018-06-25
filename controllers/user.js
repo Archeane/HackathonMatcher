@@ -3,6 +3,26 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const passport = require('passport');
 const User = require('../models/User');
+const randomstring = require('randomstring');
+//const mailer = require('../misc/mailer');
+//mailer.sendMail('jennyxu1029@gmail.com','jennyxu8448@gmail.com','Please work','please work');
+
+mailer.transport.sendMail({from: 'jennyxu1029@gmail.com',
+  to: 'jennyxu8448@gmail.com', // An array if you have multiple recipients.
+  subject: 'Hey you, awesome!',
+  text: 'Mailgun rocks, pow pow!',
+}, function (err, info) {
+  console.log('HI');
+  if (err) {
+    console.log('Error: ' + err);
+  }
+  else {
+    console.log('Response: ' + info);
+  }
+});
+
+
+//mailer.sendEmail('jennyxu1029@gmail.com', 'jennyxu8448@gmail.com', "Please verify your email", "yay");
 
 const randomBytesAsync = promisify(crypto.randomBytes);
 
@@ -92,10 +112,13 @@ exports.postSignup = (req, res, next) => {
     return res.redirect('/');
   }
 
+  const secretToken = randomstring.generate();
   const user = new User({
     name: req.body.firstname+req.body.lastname,
     email: req.body.email,
-    password: req.body.password
+    password: req.body.password,
+    emailSecretToken :secretToken,
+    emailActive : false,
   });
 
   User.findOne({ email: req.body.email }, (err, existingUser) => {
@@ -107,12 +130,20 @@ exports.postSignup = (req, res, next) => {
     user.save((err) => {
       if (err) { return next(err); }
 
-      /TODO: confirm email/
+      /TODO: send email/
+      const html = "Hi there,<br />Thank you for registering!<br /><br />Please verify your email by typing the following token:<br />Token: ${secretToken} < br/> On the following page: <a href='http://localhost:3000/verify'> link</a>";
+      //send the email
+      const test = "email is sent from program";
+      console.log('user.email:',user.email);
+      mailer.sendEmail('jennyxu1029@gmail.com', user.email, "Please verify your email", test);
+      console.log('email sent!');
+
+      /*
       res.render('account/signup', {
         title: 'Sign up', 'css':['signup.css']
       });
-
-      /*
+      */
+      
       req.logIn(user, (err) => {
         if (err) {
           return next(err);
@@ -121,10 +152,39 @@ exports.postSignup = (req, res, next) => {
 
         res.redirect('/');
       });
-      */
+      
     });
   });
 };
+
+exports.getVerifyEmail = (req,res,next)=>{
+  res.render('account/verifyemail');
+}
+
+exports.postVerifyEmail = async (req,res,next)=>{
+  try{
+    const{secretToken} = req.body;
+    console.log(secretToken);
+
+    //find the account that matches the secret token
+    const user = await User.findOne({'emailSecretToken': secretToken});
+    console.log(user);
+    if(!user){
+      console.log('no user is found');
+      req.flash('error. no user found for that secret token');
+      res.redirect('/verify');
+      return;
+    }
+    user.emailActive = true;
+    user.emailSecretToken = '';
+    await user.save();
+
+    req.flash('Verification succeeded. You may login now.');
+    res.redirect('/login');
+  }catch(error){
+    next(error);
+  }
+}
 
 exports.postSignup2 = (req,res,next)=>{
   console.log('post signup2');

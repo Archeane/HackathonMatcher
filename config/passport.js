@@ -32,6 +32,11 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, don
     if (!user) {
       return done(null, false, { msg: `Email ${email} not found.` });
     }
+    //check if email is activated
+    if(!user.emailActive){
+      return done(null, false, {msg:'You need to verify email first.'});
+    }
+
     user.comparePassword(password, (err, isMatch) => {
       if (err) { return done(err); }
       if (isMatch) {
