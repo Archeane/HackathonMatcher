@@ -4,29 +4,30 @@ var current_fs, next_fs, previous_fs; //fieldsets
 var left, opacity, scale; //fieldset properties which we will animate
 var animating; //flag to prevent quick multi-click glitches
 $('#reg-error').hide();
-/*
-var institutionnames = new Bloodhound({
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-  prefetch: {
-    url: 'assets/us_institutions.json',
-    filter: function(list) {
-      return $.map(list, function(institutions) {
-        return { name: institutions }; });
-    }
-  }
-});
-institutionnames.initialize();
 
-$('input').tagsinput({
+var cities = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: '../assets/cities.json'
+});
+cities.initialize();
+
+var elt = $('input');
+elt.tagsinput({
+  itemValue: 'value',
+  itemText: 'text',
   typeaheadjs: {
-    name: 'institutionnames',
-    displayKey: 'name',
-    valueKey: 'name',
-    source: institutionnames.ttAdapter()
+    name: 'cities',
+    displayKey: 'text',
+    source: cities.ttAdapter()
   }
 });
-*/
+elt.tagsinput('add', { "value": 1 , "text": "Amsterdam"   , "continent": "Europe"    });
+elt.tagsinput('add', { "value": 4 , "text": "Washington"  , "continent": "America"   });
+elt.tagsinput('add', { "value": 7 , "text": "Sydney"      , "continent": "Australia" });
+elt.tagsinput('add', { "value": 10, "text": "Beijing"     , "continent": "Asia"      });
+elt.tagsinput('add', { "value": 13, "text": "Cairo"       , "continent": "Africa"    });
+
 
 $(".next").click(function(){
 	//validate fields are set

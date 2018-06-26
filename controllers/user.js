@@ -6,7 +6,7 @@ const User = require('../models/User');
 const randomstring = require('randomstring');
 //const mailer = require('../misc/mailer');
 //mailer.sendMail('jennyxu1029@gmail.com','jennyxu8448@gmail.com','Please work','please work');
-
+/*
 mailer.transport.sendMail({from: 'jennyxu1029@gmail.com',
   to: 'jennyxu8448@gmail.com', // An array if you have multiple recipients.
   subject: 'Hey you, awesome!',
@@ -20,7 +20,7 @@ mailer.transport.sendMail({from: 'jennyxu1029@gmail.com',
     console.log('Response: ' + info);
   }
 });
-
+*/
 
 //mailer.sendEmail('jennyxu1029@gmail.com', 'jennyxu8448@gmail.com', "Please verify your email", "yay");
 
@@ -131,12 +131,10 @@ exports.postSignup = (req, res, next) => {
       if (err) { return next(err); }
 
       /TODO: send email/
+      /*
       const html = "Hi there,<br />Thank you for registering!<br /><br />Please verify your email by typing the following token:<br />Token: ${secretToken} < br/> On the following page: <a href='http://localhost:3000/verify'> link</a>";
-      //send the email
-      const test = "email is sent from program";
-      console.log('user.email:',user.email);
       mailer.sendEmail('jennyxu1029@gmail.com', user.email, "Please verify your email", test);
-      console.log('email sent!');
+      */
 
       /*
       res.render('account/signup', {
