@@ -23,9 +23,20 @@ const userSchema = new mongoose.Schema({
   tokens: Array,
 
   profile: {
+    school:String,
+    major: String,
+    graduationYear: String,
+    educationLevel:String,
     location: String,
     website: String,
     picture: String
+  },
+
+  preferences:{
+    interests: Array,
+    languages: Array,
+    fields: Array,
+    technologies: Array
   }
 }, { timestamps: true });
 

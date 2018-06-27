@@ -1,7 +1,8 @@
 extends ../layout
 
 block content
-  <form id="msform" action="/signup2" method="POST">
+  <form id="msform" action='/signup2' method="POST">
+    input(type='hidden', name='_csrf', value=_csrf)
     <!-- progressbar -->
     <ul id="progressbar">
       <li class="active">Account Setup</li>
@@ -11,14 +12,16 @@ block content
     <!-- fieldsets -->
     
     <fieldset>
-      <h2 class="fs-title">Demographics Information</h2>
-      <h3 class="fs-subtitle">Just some quick info...</h3>
-      <input type="text" />
+      <h2 class="fs-title">Demographic Information</h2>
+      <h3 class="fs-subtitle">Just some quick info <span value='#{name}' name='username'>#{name}</span>...</h3>
+      <!--<input type="text" class="tagsinput"/>-->
       <div class="bg-danger" id="reg-error"></div>
+      <input type="hidden" name='email' value='#{email}' />
       <input type="text" id="reg-school" name="school" placeholder="School You Attend" />
       <input type="text" id="reg-major" name="major" placeholder="Major" />
       <input type="text" id="reg-graduationYear" name="graduationYear" placeholder="Graduation Year" />
       <input type="text" id="reg-educationLevel" name="educationLevel" placeholder="Education Level" />
+      <input type="submit" name="submit" class="submit action-button" value="Submit" />
       <input type="button" name="next" class="next action-button" value="Next" />
     </fieldset>
     <fieldset>

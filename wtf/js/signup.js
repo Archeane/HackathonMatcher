@@ -5,29 +5,29 @@ var left, opacity, scale; //fieldset properties which we will animate
 var animating; //flag to prevent quick multi-click glitches
 $('#reg-error').hide();
 
+/TODO: fix typeshead/
+/*
 var cities = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
-  prefetch: '../assets/cities.json'
+  prefetch: '../assets/us_institutions.json'
 });
 cities.initialize();
 
-var elt = $('input');
+var elt = $('.tagsinput');
 elt.tagsinput({
-  itemValue: 'value',
-  itemText: 'text',
+  itemValue: 'institution',
+  itemText: 'institution',
   typeaheadjs: {
-    name: 'cities',
+    name: 'us_institutions',
     displayKey: 'text',
     source: cities.ttAdapter()
   }
 });
-elt.tagsinput('add', { "value": 1 , "text": "Amsterdam"   , "continent": "Europe"    });
-elt.tagsinput('add', { "value": 4 , "text": "Washington"  , "continent": "America"   });
-elt.tagsinput('add', { "value": 7 , "text": "Sydney"      , "continent": "Australia" });
-elt.tagsinput('add', { "value": 10, "text": "Beijing"     , "continent": "Asia"      });
-elt.tagsinput('add', { "value": 13, "text": "Cairo"       , "continent": "Africa"    });
+*/
 
+//user information 
+var user = {};
 
 $(".next").click(function(){
 	//validate fields are set
@@ -36,6 +36,14 @@ $(".next").click(function(){
 		$('#reg-error').show();
 	}else{
 		$('#reg-error').hide();
+
+		//append data to user variable
+		user['school'] = $('#reg-school');
+		user['major'] = $('#reg-major');
+		user['graduationYear'] = $('#reg-graduationYear');
+		user['educationLevel'] = $('#reg-educationLevel');
+
+		//change form animation
 
 		if(animating) return false;
 		animating = true;
@@ -111,5 +119,5 @@ $(".previous").click(function(){
 });
 
 $(".submit").click(function(){
-	return false;
+	
 })

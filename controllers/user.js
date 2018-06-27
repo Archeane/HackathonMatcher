@@ -82,10 +82,12 @@ exports.logout = (req, res) => {
   });
 };
 
+
 /**
  * GET /signup
  * Signup page.
  */
+ /*
 exports.getSignup = (req, res) => {
   if (req.user) {
     return res.redirect('/');
@@ -94,7 +96,7 @@ exports.getSignup = (req, res) => {
     title: 'Create Account', 'css':['signup.css'], 'js':['signup.js']
   });
 };
-
+*/
 /**
  * POST /signup
  * Create a new local account.
@@ -136,21 +138,20 @@ exports.postSignup = (req, res, next) => {
       mailer.sendEmail('jennyxu1029@gmail.com', user.email, "Please verify your email", test);
       */
 
-      /*
       res.render('account/signup', {
-        title: 'Sign up', 'css':['signup.css']
+        title: 'Create Account', 'css':['signup.css'], 'js':['signup.js'], 
+        'name': user.name, 'email': user.email
       });
-      */
       
+      /*
       req.logIn(user, (err) => {
         if (err) {
           return next(err);
         }
       
-
-        res.redirect('/');
+        
       });
-      
+      */
     });
   });
 };
@@ -184,12 +185,32 @@ exports.postVerifyEmail = async (req,res,next)=>{
   }
 }
 
-exports.postSignup2 = (req,res,next)=>{
-  console.log('post signup2');
-  req.assert('school', 'Please enter the school you enter').notEmpty();
-  req.assert('major', 'Please enter your major').notEmpty();
-  req.assert('graduationYear', 'Please Enter your graduation year').notEmpty();
-  req.assert('educationLevel', 'Please Enter your Education Level').notEmpty();
+exports.postSignup2 = async (req,res,next) => {
+  console.log('in post signup2');
+  console.log(req.body.email);
+  User.findOne({ email: req.body.email }, (err,user) =>{
+    if(err) {return next(err);}
+    user.profile.school = req.body.school;
+    user.profile.major = req.body.major;
+    user.profile.graduationYear = req.body.graduationYear;
+    user.profile.educationLevel = req.body.educationLevel;
+/*
+    user.preferences.interests = req.body.email || '';
+    user.profile.name = req.body.name || '';
+    user.profile.gender = req.body.gender || '';
+    user.profile.location = req.body.location || '';
+    user.profile.website = req.body.website || '';
+*/
+    user.save((err) => {
+      if (err) {return next(err);}
+      req.logIn(user, (err) => {
+        if (err) {
+          return next(err);
+        }
+        res.redirect('/account/profile');
+      });
+    });
+  });
   
 }
 
