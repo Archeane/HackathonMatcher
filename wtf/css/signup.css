@@ -1,6 +1,7 @@
 /*custom font*/
 @import url(https://fonts.googleapis.com/css?family=Montserrat);
 
+
 /*basic reset*/
 * {margin: 0; padding: 0;}
 
@@ -9,6 +10,23 @@ body {
 	font-family: montserrat, arial, verdana;
 	background: #CA28AF;
 }
+
+/*tagsinput*/
+.bootstrap-tagsinput .tag {
+    margin-right: 2px;
+    color: black !important;
+}
+
+
+.chip {
+    height: 42px;
+    line-height: 42px;
+    border-radius: 21px;
+}
+
+
+
+
 /*form styles*/
 #msform {
 	width: 500px;
@@ -92,7 +110,7 @@ body {
 	display: none;
 }
 /*inputs*/
-#msform input, #msform textarea {
+#msform input, #msform textarea, {
 	padding: 15px;
 	border: 1px solid #ccc;
 	border-radius: 3px;

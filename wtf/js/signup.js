@@ -3,28 +3,48 @@
 var current_fs, next_fs, previous_fs; //fieldsets
 var left, opacity, scale; //fieldset properties which we will animate
 var animating; //flag to prevent quick multi-click glitches
-$('#reg-error').hide();
+$(document).ready(function(){
+	$('#reg-error').hide();
 
-/TODO: fix typeshead/
-/*
-var cities = new Bloodhound({
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-  prefetch: '../assets/us_institutions.json'
+	var interestContainer = document.querySelector('#interests');
+	
+	
+   	var unis = [];
+	
+	$.getJSON( "../../wtf/assets/us_institutions.json", function(data) {
+		for(i = 0 ; i < data.length; i++){
+			unis.push(data[i]["institution"]);
+		}
+		console.log(unis);
+		$( "#universities" ).autocomplete({
+			minLength:3,
+			source: unis
+		});
+		
+		
+		/*
+		var options = '';
+		for(i = 0; i < data.length; i++){
+			options += '<input type="checkbox" name="interest-group" value="unit-in-group" ng-click="addTags('+(data[i]['name']).toString()+');">'+data[i]['name']+"</input>";
+		}
+		interestContainer.innerHTML += options;
+		*/
+	});
+  
+    
+  	
 });
-cities.initialize();
 
-var elt = $('.tagsinput');
-elt.tagsinput({
-  itemValue: 'institution',
-  itemText: 'institution',
-  typeaheadjs: {
-    name: 'us_institutions',
-    displayKey: 'text',
-    source: cities.ttAdapter()
+
+$('#msform').on('keyup keypress', function(e) {
+  var keyCode = e.keyCode || e.which;
+  if (keyCode === 13) { 
+    e.preventDefault();
+    return false;
   }
 });
-*/
+
+
 
 //user information 
 var user = {};
