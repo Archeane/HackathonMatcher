@@ -35,6 +35,10 @@ body {
 	position: relative;
 }
 
+.row{
+	text-align: center;
+}
+
 #msform #reg-error{
 	padding:5px;
 }
@@ -90,7 +94,6 @@ body {
   background-color: #428bca;
 }
 
-
 /*field sets*/
 #msform fieldset {
 	background: white;
@@ -110,7 +113,7 @@ body {
 	display: none;
 }
 /*inputs*/
-#msform input, #msform textarea, {
+#msform input, #msform textarea, #msform select,{
 	padding: 15px;
 	border: 1px solid #ccc;
 	border-radius: 3px;

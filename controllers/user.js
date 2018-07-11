@@ -49,30 +49,30 @@ exports.postLogin = (req, res, next) => {
   req.sanitize('email').normalizeEmail({ gmail_remove_dots: false });
 
   const errors = req.validationErrors();
-
   if (errors) {
-    req.flash('errors', errors);
-    return res.redirect('/login');
+	  	console.log(errors);
+		req.flash('errors', errors);
+		return res.redirect('/login');
   }
 
   passport.authenticate('local', (err, user, info) => {
-    if (err) { return next(err); }
+	  console.log(err);
+	  console.log(user);
+	  console.log(info);
+    if (err) { req.flash('errors', errors); return next(err); }
     if (!user) {
       req.flash('errors', info);
       return res.redirect('/login');
     }
     req.logIn(user, (err) => {
       if (err) { return next(err); }
+		console.log('login success');
       req.flash('success', { msg: 'Success! You are logged in.' });
       res.redirect(req.session.returnTo || '/');
     });
   })(req, res, next);
 };
 
-/**
- * GET /logout
- * Log out.
- */
 exports.logout = (req, res) => {
   req.logout();
   req.session.destroy((err) => {
@@ -83,11 +83,6 @@ exports.logout = (req, res) => {
 };
 
 
-/**
- * GET /signup
- * Signup page.
- */
- /*
 exports.getSignup = (req, res) => {
   if (req.user) {
     return res.redirect('/');
@@ -96,11 +91,8 @@ exports.getSignup = (req, res) => {
     title: 'Create Account', 'css':['signup.css'], 'js':['signup.js']
   });
 };
-*/
-/**
- * POST /signup
- * Create a new local account.
- */
+
+
 exports.postSignup = (req, res, next) => {
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('password', 'Password must be at least 4 characters long').len(4);
