@@ -164,6 +164,15 @@ header hr {
 }
 
 /* skills section */
+.progressblock{
+	background: #f5f5f5;
+	height:4px;
+}
+
+.margin-0{
+	margin-right:-1.6em;
+}
+
 .skills {
   background: #3366CC;
   color: #f5f5f5;
@@ -179,6 +188,7 @@ header hr {
   display: inline-block;
   font-weight: normal;
   padding-bottom: 6px;
+	padding-right:10px;
 }
 
 /* education section */
