@@ -403,7 +403,7 @@ footer {
 }
 
 .content {
-	display: none;
+	display: block;
 }
 
 .settings {

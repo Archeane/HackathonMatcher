@@ -1,4 +1,4 @@
-// templatemo 467 easy profile
+// NOTE: DATA: technologies, fields, hackathons cannot have a field with same name
 
 // PRELOADER
 
@@ -23,15 +23,30 @@ $(function () {
 	//name, major, uni, educationLevel, graduationYear, Fb, phone, insta, github, linkdin, website
 	var about = ['Jenny Xu','Computer Science','Stony Brook University','Undergraduate','2021','Jenny Gong','6318939325','','www.github.com/archeane','www.linkedin.com/in/xu-jenny',''];
 	fillAbout(about);
-	var languages = [['Java', 50, 15],['Javascript', 35, 10],['Python', 20, 5],['jackdaniels', 100, 100],['vodka', 100,100],['tequila',100,100]];
 	fillAboutSettings(about);
+	var languages = [['Java', 50, 15],['Javascript', 35, 10],['Python', 20, 5],['jackdaniels', 100, 100],['vodka', 100,100],['tequila',100,100]];
 	fillLanaguages(languages);
 	var familiar = [['Virtual Reality', 8, 15],['Hardware', 2], ['Computer Vision', 4, 7],['Arduino', 5],['Data Visualization', 10],['data mining', 8]];
 	fillFamiliarTechnologies(familiar);
 	var interested = [['Augumented Reality', 4], ['Machine Learning', 10]];
 	fillInterestedTechnologies(interested);
-	fillFields('d');
-	fillHackathons('g');
+	var fields = [['Health', 3],['Finance', 4],['Wearable Tech', 10]];
+	fillFields(fields);
+	var hackathons = [['YHacks', 2017, 'https://devpost.com/software/vrbind','Top 8, Emotion Detect'],
+					  ['HackPrinceton', 2017, 'https://devpost.com/software/foodme-bopj6r'],
+					  ['PennApps', 2018, 'https://devpost.com/software/hackermatcher'],
+					  ['SheHacks', 2018, 'https://devpost.com/software/medrisk'],
+					  ['HackHealth', 2018, 'https://devpost.com/software/classroom-monitor']];
+	fillHackathons(hackathons);
+	var note = ['Unpacked now declared put you confined daughter improved. Celebrated imprudence few interested especially reasonable off one. Wonder bed elinor family secure met.', 'Luckily friends do ashamed to do suppose. Tried meant mr smile so. Exquisite behaviour as to middleton perfectly. Chicken no wishing waiting am.','Now residence dashwoods she excellent you. Shade being under his bed her. Much read on as draw. Blessing for ignorant exercise any yourself unpacked. '];
+	fillNote(note);
+
+
+	//modal content
+
+
+
+
 
 	$('.language').on('click', function (event) {
 		event.preventDefault();
@@ -119,6 +134,10 @@ function fillAboutSettings(data) {
 function fillLanaguages(data) {
 	var skillsContainer = document.querySelector("#skills");
 	for(i = 0; i < data.length; i++){
+		if(i == 5){
+			content += '<span>'+data.length-5+' more...</span>';
+			break;
+		}
 		var content = '<div class="lan">';
 		content += '<div class="content" style="padding-bottom: 10px;">';
 		content += '<strong>'+data[i][0]+'</strong><i class="fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span>'+data[i][2]+'</span>';
@@ -182,6 +201,7 @@ function fillInterestedTechnologies(data) {
 	var techContainer = document.querySelector("#interested > .content");
 	var content = '<ul>';
 	for(i = 0; i < data.length; i++){
+		if(i == 5){ break;}
 		content += '<div class="'+data[i][0].split(' ').join('_')+'">';
 		content += '<span class="pull-right">'+data[i][1]+'/10</span>';
 		content += '<li>'+data[i][0]+'</li>';
@@ -193,56 +213,114 @@ function fillInterestedTechnologies(data) {
 	var settingsContainer = document.querySelector("#interested > .settings");
 	var settings = '<ul>';
 	for(i = 0; i < data.length; i++){
+		if(i == 5){ break;}
 		settings += '<div style="padding-bottom: 20px;" class="'+data[i][0].split(' ').join('_')+'">';
 		settings += '<i class="tech pull-left fa fa-times" style="padding-right:5px"></i>'+data[i][0];
 		settings += '<input value='+data[i][1]+' class="max10Input pull-right" type="number" style="height: 20px !important;width:40px;" min="1" max="10">';
 		settings += '</div>';
 	}
 	settings += '</ul>';
-	settings += '<button style="border-radius: 0px; border-width: 1px;" data-toggle="modal" data-target="#tech-familiar">';
-	settings += '<i class="fa fa-plus"></i> add</button>';
+	if(data.length < 5){
+		settings += '<button style="border-radius: 0px; border-width: 1px; text-align:center" data-toggle="modal" data-target="#tech-familiar">';
+		settings += '<i class="fa fa-plus"></i> add</button>';
+	}
 
 	settingsContainer.innerHTML += settings;
 }
 
 function fillFields(data) {
 	var fieldsContainer = document.querySelector("#fields > .content");
-	var fields = '<ul>';
-	fields += '<li>Health</li>';
-	fields += '<li>Finance</li>';
-	fields += '</ul>'
-	fieldsContainer.innerHTML += fields;
+	var content = '<ul>';
+	for(i = 0; i < data.length; i++){
+		if(i == 5){ break;}
+		content += '<div class="'+data[i][0].split(' ').join('_')+'">';
+		content += '<span class="pull-right">'+data[i][1]+'/10</span>';
+		content += '<li>'+data[i][0]+'</li>';
+		content += '</div>'
+	}
+	content += '</ul>';
+	fieldsContainer.innerHTML += content;
 
 	var settingsContainer = document.querySelector("#fields > .settings");
 	var settings = '<ul>';
-	settings += '<i class="pull-left fa fa-times" style="padding-right:5px"></i>Health';
-	settings += '<button class="fa fa-plus" style="border-radius: 0px; border-width: 0px; margin-left: 80px;" data-toggle="modal" data-target="#tech-familiar"></button>Add';
-	settings += '</ul>'
+	for(i = 0; i < data.length; i++){
+		if(i == 5){ break;}
+		settings += '<div style="padding-bottom: 20px;" class="'+data[i][0].split(' ').join('_')+'">';
+		settings += '<i class="tech pull-left fa fa-times" style="padding-right:5px"></i>'+data[i][0];
+		settings += '<input value='+data[i][1]+' class="max10Input pull-right" type="number" style="height: 20px !important;width:40px;" min="1" max="10">';
+		settings += '</div>';
+	}
+	settings += '</ul>';
+	if(data.length < 5){
+		settings += '<button style="border-radius: 0px; border-width: 1px; text-align:center" data-toggle="modal" data-target="#tech-familiar">';
+		settings += '<i class="fa fa-plus"></i> add</button>';
+	}
+
 	settingsContainer.innerHTML += settings;
 
 }
 
 function fillHackathons(data) {
 	var hackContainer = document.querySelector("#hackathons > .content");
-	var hacks = '<p>YHacks 2017<i class="pull-right fa fa-trophy"></i></p>';
-	hackContainer.innerHTML += hacks;
+	var content = '<ul>';
+	for(i = 0; i < data.length; i++){
+		if(i == 5){
+			content += data.length-5+' more...';
+			break;
+		}
+		content += '<div class="'+data[i][0].split(' ').join('_')+'">';
+		if(data[i].length > 3){		//won an award
+			content += '<i class="pull-right fa fa-trophy" title="'+data[i][3]+'"></i>'
+		}
+		content += '<li><a href="'+data[i][2]+'" style="color: black">'+data[i][0]+ " "+ data[i][1]+'</a></li>';
+		content += '</div>'
+	}
+	content += '</ul>';
+	hackContainer.innerHTML += content;
 
 	var settingsContainer = document.querySelector("#hackathons > .settings");
 	var settings = '<ul>';
-	settings += '<i class="pull-left fa fa-times" style="padding-right:5px"></i>YHacks 2018';
-	settings += '<button class="fa fa-plus" style="border-radius: 0px; border-width: 0px; margin-left: 80px;" data-toggle="modal" data-target="#tech-familiar"></button>Add';
-	settings += '</ul>'
+	for(i = 0; i < data.length; i++){
+		if(i == 5){ break;}
+		settings += '<div style="padding-bottom: 20px;" class="'+data[i][0].split(' ').join('_')+'">';
+		settings += '<i class="tech pull-left fa fa-times" style="padding-right:5px"></i>'+data[i][0];
+		settings += '</div>';
+	}
+	settings += '</ul>';
+	if(data.length < 5){
+		settings += '<button style="border-radius: 0px; border-width: 1px; text-align:center" data-toggle="modal" data-target="#tech-familiar">';
+		settings += '<i class="fa fa-plus"></i> add</button>';
+	}
+
 	settingsContainer.innerHTML += settings;
 
 }
 
-function fillNote(note){
+function fillNote(data){
 	var container = document.querySelector("#note > .content");
-	var note = '<p>this is a note</p>';
-	container.innerHTML += note;
+	var content = '';
+	for(i = 0; i < data.length; i++){
+		content += '<p>' + data[i] + '</p>';
+	}
+	container.innerHTML += content;
 
-	var settings = document.querySelector("#note > .settings");
-	//var textArea = textArea();
+	var settingsContainer = document.querySelector("#note > .settings");
+	var settings = '<textarea id="noteText" cols="65" maxLength="5" style="height:10em;border-radius:0px; color:black"></textarea>';
+	settings += '<span>limit: 1000 characters</span>';
+	settings += '<button style="border-radius: 0px; border-width: 1px; text-align:center" onclick="print()"> submit</button>';
+	settingsContainer.innerHTML += settings;
+}
+function print(){
+	var note = $('#noteText').val();
+	var content = '<p>';
+	for(i = 0; i < note.length; i++){
+		if(note.charCodeAt(i) == 10){
+		   content += '</p><p>';
+		}
+		content += note.charAt(i);
+	}
+	content += '</p>';
+	container.innerHTML += content;
 }
 
 function addTechFamiliar(technology,like, endorse){
