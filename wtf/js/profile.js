@@ -11,25 +11,25 @@ $(window).on('load', function () {
 $(function () {
 	jQuery(document).ready(function () {
 		$('body').backstretch([
-	 		 "images/tm-bg-slide-1.jpg",
-	 		 "images/tm-bg-slide-2.jpg",
-			 "images/tm-bg-slide-3.jpg"
+	 		 "../../wtf/images/tm-bg-slide-1.jpg",
+	 		 "../../wtf/images/tm-bg-slide-2.jpg",
+			 "../../wtf/images/tm-bg-slide-3.jpg"
 	 			], {
 			duration: 3200,
 			fade: 1300
 		});
 	});
 
-
-
 	//name, major, uni, educationLevel, graduationYear, Fb, phone, insta, github, linkdin, website
 	var about = ['Jenny Xu','Computer Science','Stony Brook University','Undergraduate','2021','Jenny Gong','6318939325','','www.github.com/archeane','www.linkedin.com/in/xu-jenny',''];
 	fillAbout(about);
-	var languages = [['Java', 50, 15],['Javascript', 35, 10],['Python', 20, 5]];
-	fillAboutSettings(languages);
-	fillLanaguages('c');
-	fillFamiliarTechnologies('d');
-	fillInterestedTechnologies('e');
+	var languages = [['Java', 50, 15],['Javascript', 35, 10],['Python', 20, 5],['jackdaniels', 100, 100],['vodka', 100,100],['tequila',100,100]];
+	fillAboutSettings(about);
+	fillLanaguages(languages);
+	var familiar = [['Virtual Reality', 8, 15],['Hardware', 2], ['Computer Vision', 4, 7],['Arduino', 5],['Data Visualization', 10],['data mining', 8]];
+	fillFamiliarTechnologies(familiar);
+	var interested = [['Augumented Reality', 4], ['Machine Learning', 10]];
+	fillInterestedTechnologies(interested);
 	fillFields('d');
 	fillHackathons('g');
 
@@ -37,6 +37,34 @@ $(function () {
 		event.preventDefault();
 		$(this).parents().eq(2).remove();
 	});
+
+	$('.tech').on('click', function (event) {
+		event.preventDefault();
+		var remove = $(this).parent().attr('class');
+		if($('.'+remove).parents().eq(1).children().length < 5){	//append button if number of items is less than 5
+			var settingsContainer = document.querySelector("#familiar > .settings");
+			var settings = '';
+			settings += '<button style="border-radius: 0px; border-width: 1px; text-align:center" data-toggle="modal" data-target="#tech-familiar">';
+			settings += '<i class="fa fa-plus"></i> add</button>';
+			settingsContainer.innerHTML += settings;
+		}
+		$('.'+remove).remove();
+	});
+
+
+	//TODO: wait for user input to finish
+	$('.max10Input').on('input', function(val){
+		if($(this).val() > 10){
+			$(this).val(10);
+		}
+	});
+
+	$('.max100Input').on('input', function(val){
+		if($(this).val() > 100){
+			$(this).val(100);
+		}
+	});
+
 })
 
 
@@ -100,49 +128,81 @@ function fillLanaguages(data) {
 		content += '<div class="settings" style="padding-top:15px;"><div>';
 		content += '<strong>'+data[i][0]+'</strong><i class="fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span>'+data[i][2]+'</span>';
 		content += '<i class="language pull-right fa fa-times"></i><span class="pull-right">%</span>';
-		content += '<input value='+data[i][1]+'class="pull-right" type="number" style="margin-top: -.2em; height: 20px !important;width:70px;" min="1" max="100" class="progressInput">';
+		content += '<input value='+data[i][1]+' class="pull-right" type="number" style="margin-top: -.2em; height: 20px !important;width:40px;" min="1" max="100" class="max100input">';
 		content += '</div>';
-		var input = document.querySelector(".progressInput");
-		console.log($('.progressInput'));
-		/*input.addEventListener('input', function(){
-			content += '<div class="progress" style="margin-top:10px;">';
-			content += '<div class="progress-bar progress-bar-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+input.valueOf()+'" style="width:'+input.valueOf()+'%;"></div></div>';
-		})
-		*/
+		content += '<div class="progress" style="margin-top:10px;">';
+		content += '<div class="progress-bar progress-bar-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+data[i][1]+'" style="width:'+data[i][1]+'%;"></div></div>';
 		content += '</div></div>';
+		skillsContainer.innerHTML += content;
 	}
-	skillsContainer.innerHTML += content;
+
 }
 
 
 function fillFamiliarTechnologies(data) {
 	var techContainer = document.querySelector("#familiar > .content");
 	var content = '<ul>';
-	content += '<li>Virtual Reality</li>';
-	content += '<i class="pull-right fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span class="pull-right">15</span><span class="pull-right">8/10</span>';
-	content += '<li>Hardware</li>'
-	content += '<li>Virtual Reality</li>';
-	content += '<li>Virtual Reality</li>';
+	for(i = 0; i < data.length; i++){
+		if(i == 5){ break;}
+		content += '<div class="'+data[i][0].split(' ').join('_')+'">';
+		content += '<span class="pull-right">'+data[i][1]+'/10</span>';
+		if(data[i].length == 3){	//has thumbs up
+			content += '<i class="pull-right fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span class="pull-right">'+data[i][2]+'</span>';
+		}
+		content += '<li>'+data[i][0]+'</li>';
+		content += '</div>';
+	}
 	content += '</ul>';
 	techContainer.innerHTML += content;
 
 	var settingsContainer = document.querySelector("#familiar > .settings");
-	var settings = '<div style="padding-bottom: 20px;">';
-	settings += '<i class="pull-left fa fa-times" style="padding-right:5px"></i>Virtual Reality</div>';
-	settings += '<button class="fa fa-plus" style="border-radius: 0px; border-width: 0px; margin-left: 80px;" data-toggle="modal" data-target="#tech-familiar"></button>Add';
+	var settings = '<ul>';
+	for(i = 0; i < data.length; i++){
+		if(i == 5){ break;}
+		settings += '<div style="padding-bottom: 20px;" class="'+data[i][0].split(' ').join('_')+'">';
+		settings += '<i class="tech pull-left fa fa-times" style="padding-right:5px"></i>'+data[i][0];
+		settings += '<input value='+data[i][1]+' class="max10Input pull-right" type="number" style="height: 20px !important;width:40px;" min="1" max="10">';
+		if(data[i].length == 3){	//has thumbs up
+			content += '<i class="pull-right fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span class="pull-right">'+data[i][2]+'</span>';
+		}
+		settings += '</div>';
+	}
+	settings += '</ul>';
+	if(data.length < 5){
+		settings += '<button style="border-radius: 0px; border-width: 1px; text-align:center" data-toggle="modal" data-target="#tech-familiar">';
+		settings += '<i class="fa fa-plus"></i> add</button>';
+	}
+
+
 	settingsContainer.innerHTML += settings;
+
 }
 
 function fillInterestedTechnologies(data) {
 	var techContainer = document.querySelector("#interested > .content");
 	var content = '<ul>';
-	content += '<li>Virtual Reality</li>';
-	content += '<span class="pull-right">8/10</span>';
-	content += '<li>Hardware</li>'
-	content += '<li>Virtual Reality</li>';
-	content += '<li>Virtual Reality</li>';
+	for(i = 0; i < data.length; i++){
+		content += '<div class="'+data[i][0].split(' ').join('_')+'">';
+		content += '<span class="pull-right">'+data[i][1]+'/10</span>';
+		content += '<li>'+data[i][0]+'</li>';
+		content += '</div>'
+	}
 	content += '</ul>';
 	techContainer.innerHTML += content;
+
+	var settingsContainer = document.querySelector("#interested > .settings");
+	var settings = '<ul>';
+	for(i = 0; i < data.length; i++){
+		settings += '<div style="padding-bottom: 20px;" class="'+data[i][0].split(' ').join('_')+'">';
+		settings += '<i class="tech pull-left fa fa-times" style="padding-right:5px"></i>'+data[i][0];
+		settings += '<input value='+data[i][1]+' class="max10Input pull-right" type="number" style="height: 20px !important;width:40px;" min="1" max="10">';
+		settings += '</div>';
+	}
+	settings += '</ul>';
+	settings += '<button style="border-radius: 0px; border-width: 1px;" data-toggle="modal" data-target="#tech-familiar">';
+	settings += '<i class="fa fa-plus"></i> add</button>';
+
+	settingsContainer.innerHTML += settings;
 }
 
 function fillFields(data) {
@@ -185,10 +245,27 @@ function fillNote(note){
 	//var textArea = textArea();
 }
 
-function addTechFamiliar(technology,endorse){
+function addTechFamiliar(technology,like, endorse){
 	var techContainer = document.querySelector("#familiar > .content");
 	var tech = techContainer.querySelector('ul');
-	tech.innerHTML += '<li>'+technology+'</li>';
+	var content = '';
+	content += '<span class="pull-right">'+like+'/10</span>';
+	if(endorse != 0){
+		content += '<i class="pull-right fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span class="pull-right">'+endorse+'</span>';
+	}
+	content += '<li>'+technology+'</li>';
+	tech.innerHTML += content;
+
+	var settingsContainer = document.querySelector("#familiar > .settings");
+	var set = settingsContainer.querySelector('ul');
+	var settings = '<div style="padding-bottom: 20px;" class="familiarTech">';
+	settings += '<i class="tech pull-left fa fa-times" style="padding-right:5px"></i>'+technology;
+	if(endorse != 0){
+		settings += '<i class="pull-right fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span class="pull-right">'+endorse+'</span>';
+	}
+	settings += '<input value='+like+' class="max10Input pull-right" type="number" style="height: 20px !important;width:40px;" min="1" max="10">';
+	settings += '</div>';
+	set.innerHTML += settings;
 }
 
 

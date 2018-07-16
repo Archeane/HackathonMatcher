@@ -9,19 +9,21 @@ html
 		title #{title} - Hackathon Starter
 		link(rel='shortcut icon', href='/favicon.png')
 
-		link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css")
-		link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap-theme.min.css")
-		link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/themes/github.css")
-		link(rel="stylesheet" href="/css/lib/bootstrap.min.css")
-		link(rel="stylesheet" href="/css/lib/normalize.css")
-		link(rel="stylesheet" href="/css/lib/skeleton.css")
-		link(rel="stylesheet" href="/css/lib/mdb.min.css")
-		link(rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css")
-		link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css")
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap-theme.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/themes/github.css">
+		<link rel="stylesheet" href="css/lib/bootstrap.min.css">
+		<link rel="stylesheet" href="css/lib/normalize.css">
+		<link rel="stylesheet" href="css/lib/skeleton.css">
+		<link rel="stylesheet" href="css/lib/mdb.min.css" />
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
 		link(rel='stylesheet', href='/css/layout.css')
 		link(rel='stylesheet', href='/css/partials.css')
 		<link rel="stylesheet" href="/css/#{css}" />
+
+
 	
 	body
 		include partials/header
@@ -35,11 +37,14 @@ html
 		script(src='/js/lib/jquery-3.3.1.min.js')
 		script(src='/js/lib/bootstrap.min.js')
 		script(src='/js/lib/popper.min.js')
-		script(src='/js/lib/mdb.min.js')
-		script(src="/js/lib/jquery.backstretch.min.js")
-		script(src="https://code.jquery.com/ui/1.12.1/jquery-ui.js")
+		<script src='js/lib/mdb.min.js'></script>
+		<script src="js/lib/jquery.backstretch.min.js"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-		script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js")
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+
+		script.
+			var user = "#{user}";
 
 		<script src='/js/#{js}'></script>
 

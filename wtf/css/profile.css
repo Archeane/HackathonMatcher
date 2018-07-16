@@ -1,5 +1,5 @@
 html,
-body {
+body{
 	margin: 0;
 	border: 0;
 	padding: 0;
@@ -63,11 +63,25 @@ input {
 	color: dimgrey;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
 select {
 	border-radius: 0px !important;
 	height: 30px;
 	color: dimgrey;
 }
+
+button{
+	font-size: 16px !important;
+	font-family: 'Proxima' !important;
+
+}
+
 
 mmodal-dialog .modal-content {
 	border-top-left-radius: 0px !important;
@@ -389,9 +403,9 @@ footer {
 }
 
 .content {
-	display: block;
+	display: none;
 }
 
 .settings {
-	display: none;
+	display: block;
 }
