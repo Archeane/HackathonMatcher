@@ -112,7 +112,7 @@ body {
 	display: none;
 }
 /*inputs*/
-#msform input, #msform textarea, #msform select,{
+#msform input, #msform textarea,{
 	padding: 15px;
 	border: 1px solid #ccc;
 	border-radius: 3px;
@@ -123,6 +123,14 @@ body {
 	color: #2C3E50;
 	font-size: 13px;
 }
+
+/*selects*/
+#msform select {
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	margin-left: 40px;
+}
+
 /*buttons*/
 #msform .action-button {
 	width: 100px;

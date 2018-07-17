@@ -28,23 +28,28 @@ $(function () {
 	//name, major, uni, educationLevel, graduationYear, Fb, phone, insta, github, linkdin, website
 
 	var about = ['Jenny Xu','Computer Science','Stony Brook University','Undergraduate','2021','Jenny Gong','6318939325','','www.github.com/archeane','www.linkedin.com/in/xu-jenny',''];
-	fillAbout(about);
-	fillAboutSettings(about);
 	var languages = [['Java', 50, 15],['Javascript', 35, 10],['Python', 20, 5],['jackdaniels', 100, 100],['vodka', 100,100],['tequila',100,100]];
-	fillLanaguages(languages);
 	var familiar = [['Virtual Reality', 8, 15],['Hardware', 2], ['Computer Vision', 4, 7],['Arduino', 5],['Data Visualization', 10],['data mining', 8]];
-	fillFamiliarTechnologies(familiar);
 	var interested = [['Augumented Reality', 4], ['Machine Learning', 10]];
-	fillInterestedTechnologies(interested);
 	var fields = [['Health', 3],['Finance', 4],['Wearable Tech', 10]];
-	fillFields(fields);
 	var hackathons = [['YHacks', 2017, 'https://devpost.com/software/vrbind','Top 8, Emotion Detect'],
 					  ['HackPrinceton', 2017, 'https://devpost.com/software/foodme-bopj6r'],
 					  ['PennApps', 2018, 'https://devpost.com/software/hackermatcher'],
 					  ['SheHacks', 2018, 'https://devpost.com/software/medrisk'],
 					  ['HackHealth', 2018, 'https://devpost.com/software/classroom-monitor']];
-	fillHackathons(hackathons);
 	var note = ['Unpacked now declared put you confined daughter improved. Celebrated imprudence few interested especially reasonable off one. Wonder bed elinor family secure met.', 'Luckily friends do ashamed to do suppose. Tried meant mr smile so. Exquisite behaviour as to middleton perfectly. Chicken no wishing waiting am.','Now residence dashwoods she excellent you. Shade being under his bed her. Much read on as draw. Blessing for ignorant exercise any yourself unpacked. '];
+
+	var Userabout = [User.name, User.profile.major, User.profile.school, User.profile.educationLevel, User.profile.graduationYear, User.facebook, User.phone, User.instagram, User.github, User.linkedin, User.profile.website];
+
+
+	fillAbout(Userabout);
+	fillAboutSettings(Userabout);
+	fillLanaguages(languages);
+	fillFamiliarTechnologies(familiar);
+	fillInterestedTechnologies(interested);
+	fillFields(fields);
+
+	fillHackathons(hackathons);
 	fillNote(note);
 
 

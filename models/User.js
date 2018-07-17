@@ -14,6 +14,7 @@ const userSchema = new mongoose.Schema({
   passwordResetExpires: Date,
 
   facebook: String,
+  phone: String,
   twitter: String,
   google: String,
   github: String,

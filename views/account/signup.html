@@ -18,13 +18,13 @@
 	<body>
 		<div class='nav'></div>
 		
-		<form id='msform'><!--id="msform" action='/signup2' method="POST">
+<form id='msform'><!--id="msform" action='/signup2' method="POST">
     <input type='hidden', name='_csrf', value=_csrf>-->
     <!-- progressbar -->
     <ul id="progressbar">
-      <li class="active">Account Setup</li>
-      <li>Social Profiles</li>
+      <li class="active">Demographic Information</li>
       <li>Personal Details</li>
+      <li>Social Profile</li>
     </ul>
     <!-- fieldsets -->
     
@@ -35,7 +35,8 @@
 		<div class="bg-danger" id="reg-error"></div>
 		<input type="hidden" name='email' value='#{email}' />
 
-		<input id="university" type="text" id="reg-school" name="school" placeholder="School You Attend" list="unis-datalist"/><datalist id='unis-datalist'></datalist>
+		<input id="university" type="text" id="reg-school" name="school" placeholder="School You Attend" list="unis-datalist"/>
+		<datalist id='unis-datalist'></datalist>
 		<input id="major" type="text" id="reg-major" name="major" placeholder="Major" />
 		<select name="graduationYear" id="reg-graduationYear" placeholder="Your Graduation Year">
 			<option>2018</option>
@@ -52,37 +53,86 @@
 			<option>Undergraduate</option>
 			<option>Graduate</option>
 			<option>PhD</option>
+		<div class="row">
+			<select name="educationLevel" id="reg-educationLevel" placeholder="Your Current Education Level">
+				<option>High School</option>
+				<option>Undergraduate</option>
+				<option>Graduate</option>
+				<option>PhD</option>
+			</select>
+			<select name="graduationYear" id="reg-graduationYear" placeholder="Your Graduation Year">
+				<option>2018</option>
+				<option>2019</option>
+				<option>2020</option>
+				<option>2021</option>
+				<option>2022</option>
+				<option>2023</option>
+				<option>2024</option>
+				<option>2025</option>
+			</select>
+		</div>
+		<select name="reg-hackathons" id="hackathons" placeholder="How Many Hackathons Have You Been To?">
+			<option value="0">None</option>
+			<option value="1">1</option>
+			<option value="2">2</option>
+			<option value="3">3</option>
+			<option value="4">4</option>
+			<option value="5">5</option>
+			<option value="10">6-10</option>
+			<option value="15">11-15</option>
+			<option value="20">16-20</option>
+			<option value="21">20+</option>
 		</select>
+		<div id="selectHackathons">
+		</div>
+
 		<input type="button" name="next" class="next action-button" value="Next" id="next1"/>
     </fieldset>
     <fieldset>
-			<h2 class="fs-title">Personal Details</h2>
-			<h3 class="fs-subtitle">Let us know you better.</h3>
-			<div class="row" style="position:relative; left:20%;">
-				<select class="multiselect" name="interests" multiple="multiple" style="width:60%;" placeholder="what are you intereted in working on?">
-				</select>
-			</div>
-			
-			<input type="text" name="interests" id="interests" placeholder="What are you interested in working on?" />
-			<input type="text" name="languages" placeholder="What languages are you familiar with?" />
-			<input type="text" name="technologies" placeholder="What technologies have you used?" />
-			<input type="text" name="fields" placeholder="What fields are you interested in?" />
+		<h2 class="fs-title">Personal Details</h2>
+		<h3 class="fs-subtitle">Let us know you better.</h3>
+
+		<div>
+			<label for="multiselect" style="padding-right: 10px;">What Are You Interested In? </label>
+			<select id="interest" class="multiselect" name="interests" multiple="multiple" style="width:70%;height: 20px;"></select>
+		</div>
+		<div>
+			<label for="multiselect" style="padding-right: 10px;">Languages You Are Familiar With: </label>
+			<select id="languages" class="multiselect" name="languages" multiple="multiple" style="width:70%;height: 20px;"></select>
+		</div>
+		<div>
+			<label for="multiselect" style="padding-right: 10px;">What Technologies Have You Used? </label>
+			<select id="technologies" class="multiselect" name="technologies" multiple="multiple" style="width:70%;height: 20px;"></select>
+		</div>
+		<div>
+			<label for="multiselect" style="padding-right: 10px;">What Fields Are You Interested In Working On? </label>
+			<select id="fields" class="multiselect" name="fields" multiple="multiple" style="width:70%;height: 20px;"></select>
+		</div>
+
 			<input type="button" name="previous" class="previous action-button" value="Previous" />
 			<input type="button" name="next" class="next action-button" value="Next" />
+
+
     </fieldset>
     <fieldset>
 		<h2 class="fs-title">Social Profile</h2>
 		<h3 class="fs-subtitle">Help others know you better</h3>
-		<label>Upload Profile Image</label>
-		<input type="file" id="imgInp">
-		<img id='img-upload' height="300;" width="300;"/>
-
-		<input type="type" name="website" placeholder="Personal Website" />
-		<input type="type" name="website" placeholder="Devpost" />
-		<input type="text" name="phone" placeholder="Phone" />
-		<input type="button" name="facebook" placeholder="Connect With Facebook" />
-		<input type="button" name="linkedin" placeholder="Connect With Linkedin" />
-		<input type="button" name="github" placeholder="Connect With Github" />
+		<div>
+			<label>Upload Profile Image</label>
+			<input type="file" id="imgInp">
+			<img id='img-upload' height="300;" width="300;"/>
+		</div>
+		<div>
+			<input name="website" placeholder="Personal Website" />
+			<input name="devpost" placeholder="Devpost" />
+			<input type="number" name="phone" placeholder="Phone" />
+		</div>
+		<div>
+			<input type="button" name="facebook" placeholder="Connect With Facebook" />
+			<input type="button" name="instagram" placeholder="Connect With Instagram" />
+			<input type="button" name="linkedin" placeholder="Connect With Linkedin" />
+			<input type="button" name="github" placeholder="Connect With Github" />
+		</div>
 
 
 		<input type="button" name="previous" class="previous action-button" value="Previous" />

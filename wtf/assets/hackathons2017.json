@@ -1,0 +1,27 @@
+[
+	{
+		"id": 1,
+		"name": "HackMIT"
+	},
+	{
+		"id": 2,
+		"name": "HackPrinceton"
+	},
+	{
+		"id": 3,
+		"name": "NYUHacks"
+	},
+	{
+		"id": 4,
+		"name": "PennApps"
+	},
+	{
+		"id": 5,
+		"name": "ColumbiaHack"
+	},
+	{
+		"id": 6,
+		"name": "Hack CEWIT"
+	}
+
+]

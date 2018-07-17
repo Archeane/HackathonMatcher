@@ -6,86 +6,63 @@ var animating; //flag to prevent quick multi-click glitches
 $(document).ready(function () {
 	$('#reg-error').hide();
 
-	var data = [
-		{
-			"id": 1,
-			"text": "Artifical Intelligence"
-		},
-		{
-			"id": 2,
-			"text": "Computer Vision"
-		},
-		{
-			"id": 3,
-			"text": "Machine Learning"
-		},
-		{
-			"id": 4,
-			"text": "Medical Imaging"
-		},
-		{
-			"id": 5,
-			"text": "Tag5"
-		},
-		{
-			"id": 6,
-			"text": "Tag6"
-		},
-		{
-			"id": 7,
-			"text": "Tag7"
-		},
-		{
-			"id": 8,
-			"text": "Tag8"
-		},
-		{
-			"id": 11,
-			"text": "stony"
-		},
-		{
-			"id": 12,
-			"text": "mit"
+	//--------populate select2 options------------------
+	var $interests = $('#interest').select2();
+	var $intrequest = $.ajax({
+		url: '../../wtf/assets/interests.json' // wherever your data is actually coming from
+	});
+
+	$intrequest.then(function (data) {
+		for (var d = 0; d < data.length; d++) {
+			var item = data[d];
+			var option = new Option(item.name, item.id, false, false);
+			$interests.append(option);
 		}
-	];
-	$(".multiselect").select2({
-		data: data
+		$interests.trigger('change');
 	});
 
-	/*
-	// TODO: select2 ajax
-	$('.multiselect').select2({
-		 ajax: {
-			url: "../../wtf/assets/us_institutions.json",
-			dataType: 'json',
-			delay: 250,
-			data: function (params) {
-				var query = {
-					search: params.term,
-					type:'public'
-				}
-			  	return query;
-			},
-			processResults: function (data, params) {
-			  return {
-				results: $.map(data, function(obj) {
-					return { id: obj.institution, text: obj.institution };
-				})
-			  };
-			},
-			cache: true
-		  },
-		  placeholder: 'Search for a repository',
-		  escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
-		  minimumInputLength: 1,
-		  templateResult: formatRepo,
-		  templateSelection: formatRepoSelection,
-		  allowclear:true,
-		  multiple:true
+	var $lanelement = $('#languages').select2();
+	var $lanrequest = $.ajax({
+		url: '../../wtf/assets/languages.json' // wherever your data is actually coming from
 	});
-*/
 
-	//display chosen image
+	$lanrequest.then(function (data) {
+		for (var d = 0; d < data.length; d++) {
+			var item = data[d];
+			var option = new Option(item.name, item.id, false, false);
+			$lanelement.append(option);
+		}
+		$lanelement.trigger('change');
+	});
+
+	var $techelement = $('#technologies').select2();
+	var $techrequest = $.ajax({
+		url: '../../wtf/assets/technologies.json' // wherever your data is actually coming from
+	});
+
+	$techrequest.then(function (data) {
+		for (var d = 0; d < data.length; d++) {
+			var item = data[d];
+			var option = new Option(item.name, item.id, false, false);
+			$techelement.append(option);
+		}
+		$techelement.trigger('change');
+	});
+
+	var $fieldelement = $('#fields').select2();
+	var $fiedrequest = $.ajax({
+		url: '../../wtf/assets/fields.json' // wherever your data is actually coming from
+	});
+
+	$fiedrequest.then(function (data) {
+		for (var d = 0; d < data.length; d++) {
+			var item = data[d];
+			var option = new Option(item.name, item.id, false, false);
+			$fieldelement.append(option);
+		}
+		$fieldelement.trigger('change');
+	});
+	//-------------display chosen image-------------------
 	$(document).on('change', '.btn-file :file', function () {
 		var input = $(this),
 			label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
@@ -116,87 +93,102 @@ $(document).ready(function () {
 		readURL(this);
 	});
 
-	//TODO: auto-complete dropdown for universities and majors
-	/*
-		var unisDatalist = [];
-		var dataList = document.getElementById('unis-datalist');
-		var request = new XMLHttpRequest();
-		// Handle state changes for the request.
-		request.onreadystatechange = function(response) {
-			if (request.readyState === 4) {
-				if (request.status === 200) {
-					var jsonOptions = JSON.parse(request.responseText);
-					jsonOptions.forEach(function(item) {
-						var option = document.createElement('option');
-						option.value = item['institution'];
-						dataList.appendChild(option);
+	//-------------populate options---------------
+
+	//TODO: change route to localhost when integrating && Very slow autocomplete
+	var unisDatalist = [];
+	$.getJSON("../../wtf/assets/us_institutions.json", function (data) {
+		for (i = 0; i < data.length; i++) {
+			unisDatalist.push(data[i]["institution"]);
+		}
+		$("#university").autocomplete({
+			minLength: 2,
+			source: unisDatalist
+		});
+	});
+
+	$('#university').on('input', function (e) {
+		var input = $(e.target);
+		if (input.val().length < 3) {
+			input.attr('list', '');
+		} else {
+			input.attr('list', dataList);
+		}
+	})
+
+	var majors = [];
+	$.getJSON("../../wtf/assets/majors.json", function (data) {
+		for (i = 0; i < data.length; i++) {
+			majors.push(data[i]["major"]);
+		}
+		$("#major").autocomplete({
+			minLength: 2,
+			source: majors
+		});
+	});
+
+	//------------hackathon select-------------------
+	 $('#hackathons').change(function () {
+	 	if ($('#hackathons').val() != 0) {
+	 		var container = document.querySelector('#selectHackathons');
+	 		container.innerHTML = '';
+	 		if ($('#hackathons').val() > 5) {
+	 			container.innerHTML += '<div class="row">';
+	 			container.innerHTML += '<label>Choose Your Top 5 Hackathons</label>';
+	 			container.innerHTML += '</div>';
+	 		} else {
+	 			container.innerHTML += '<div class="row">';
+	 			container.innerHTML += '<label>Which Hackathons?</label>';
+	 			container.innerHTML += '</div>';
+	 		}
+	 		for (i = 1; i <= Math.min($('#hackathons').val(), 5); i++) {
+	 			var content = '';
+
+	 			content += '<div class="row">';
+	 			content += '<select placeholder="Year" id="hack' + i + '">';
+	 			content += '<option value="2014">2014</option>';
+	 			content += '<option value="2015">2015</option>';
+	 			content += '<option value="2016">2016</option>';
+	 			content += '<option value="2017">2017</option>';
+	 			content += '<option value="2018">2018</option>';
+				content += '</select><div class="selectHack"></div>';
+	 			content += '</div>';
+	 			container.innerHTML += content;
+	 		}
+			for(i = 1; i <= Math.min($('#hackathons').val(), 5); i++){
+				var content = '';
+	 			$('#hack' + i).on('change', function() {
+					//TODO: fix querySelector is not a function
+					//var ctncontainer = $(this).querySelector('.selectHack');
+	 				var content = '<select name="hackathon" placeHolder="hackathon" style="width:70%;">';
+					//ctncontainer.innerHTML = '';
+	 				var year = $(this).val();
+
+	 				$.getJSON({
+						method: "GET",
+	 					url: '../../wtf/assets/hackathons' + year + '.json', // wherever your data is actually coming from
+						data: {name:'value'},
+						dataType: 'JSON'
+	 				}).done(function(data){
+						for (var d = 0; d < data.length; d++) {
+	 						var item = data[d];
+							var option = '<option value="'+item.name+'">'+item.name+'</option>';
+	 						//var option = new Option(item.name, item.id, false, false);
+	 						content += option;
+	 					}
+	 					//$hackathon.trigger('change');
+						content += '</select>';
+						container.innerHTML += content;
+						console.log(container.innerHTML);
+					}).fail(function(data)  {
+						alert("Sorry. Server unavailable. ");
 					});
-					console.log(dataList);
-				} else {
-					input.placeholder = "Couldn't load datalist options :(";
-				}
+
+	 			});
 			}
-		};
-		request.open('GET', '../../wtf/assets/us_institutions.json', true);
-		request.send();
-
-		$.getJSON( "../../wtf/assets/us_institutions.json", function(data) {
-			for(i = 0 ; i < data.length; i++){
-				unisDatalist.push(data[i]["institution"]);
-			}
-			$( "#university" ).autocomplete({
-				minLength:3,
-				source: unis
-			});
-		});
-		
-		$('#university').on('input', function(e){
-			var input = $(e.target);
-
-			if(input.val().length < 3) {
-				input.attr('list', '');
-			} else {
-
-				input.attr('list', dataList);
-			}
-		})
-		
-
-
-		var majors = [];
-		$.getJSON( "../../wtf/assets/majors.json", function(data) {
-			for(i = 0 ; i < data.length; i++){
-				majors.push(data[i]["major"]);
-			}
-			$( "#major" ).autocomplete({
-				minLength:2,
-				source: majors
-			});
-		});
-
-			/*
-			var interestContainer = document.querySelector('#interests');
-
-			var options = '';
-			for(i = 0; i < data.length; i++){
-				options += '<input type="checkbox" name="interest-group" value="unit-in-group" ng-click="addTags('+(data[i]['name']).toString()+');">'+data[i]['name']+"</input>";
-			}
-			interestContainer.innerHTML += options;
-			*/
-
-
+	 	}
+	 });
 });
-
-
-function formatRepoSelection(repo) {
-	return repo.text;
-}
-
-
-function formatRepo(repo) {
-	var markup = "<div class='select2-result-repository clearfix'>" + repo.text + "</div>";
-	return markup;
-}
 
 
 
@@ -204,11 +196,6 @@ $("#next1").click(function () {
 	console.log($('#university').val());
 	console.log($('#reg-graduationYear').val(), $('#reg-educationLevel').val());
 })
-
-
-
-
-
 
 $('#msform').on('keyup keypress', function (e) {
 	var keyCode = e.keyCode || e.which;
