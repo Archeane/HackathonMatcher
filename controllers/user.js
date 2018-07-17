@@ -263,7 +263,7 @@ exports.postSignup2 = async (req, res, next) => {
  */
 exports.getAccount = (req, res) => {
 	res.render('account/dashboard', {
-		title: 'Account Management', css: 'profile.css', js:'profile.js'
+		title: 'Account Management', css: 'profile.css'
 	});
 };
 

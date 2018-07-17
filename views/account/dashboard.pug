@@ -1,5 +1,106 @@
 extends ../layout
 
 block content
-	.script
-		var user = "#{user}";
+	// preloader section
+	.preloader
+		.sk-spinner.sk-spinner-wordpress
+			span.sk-inner-circle
+	// header section
+	header
+		.container
+			.row
+				.col-md-12.col-sm-12
+					img.img-responsive.img-circle.tm-border(src='/images/tm-easy-profile.jpg', alt='templatemo easy profile')
+					hr
+					h3#email
+	// about and skills section
+	section.container
+		.row
+			.col-md-6.col-sm-12
+				#about
+					h3.accent About
+					h6 Jenny Xu
+					.content
+					.settings
+			.col-md-6.col-sm-12
+				#skills
+					h3.accent
+						| Top Languages
+						i.pull-right.fa.fa-cog
+	// education and languages
+	section.container
+		.row
+			.col-md-8.col-sm-12
+				.education
+					h2.accent Technologies
+					.row
+						#familiar.col-md-6
+							h4.bold Most Familiar
+							.content
+							.settings
+						#interested.col-md-6
+							h4.bold Most Interested
+							.content
+							.settings
+			.col-md-4.col-sm-12
+				#fields.languages
+					h2 Fields
+					.content
+					.settings
+	// contact and experience
+	section.container
+		.row
+			.col-md-4.col-sm-12
+				#hackathons.contact
+					h2 Hackathons
+					.content
+					.settings
+			.col-md-8.col-sm-12
+				.experience
+					h2 A Little More About Me...
+					#note.experience-content
+						.content
+						.settings
+	// modals
+	#tech-familiar.modal.fade(tabindex='-1', role='dialog', style='display:none;', aria-hidden='true')
+		.modal-dialog(role='document')
+			.modal-content
+				.modal-header
+					h5.modal-title Technologies
+					button.close(type='button', data-dismiss='modal', aria-label='Close')
+						span(aria-hidden='true') ×
+				.bg-light
+					.row(style='align-items: center;')
+						.col-md-1
+						.col-md-4
+							span Amazon Alexa
+						.col-md-4
+							span.pull-left 15
+							i.pull-left.fa.fa-thumbs-o-up.fa-lg(aria-hidden='true', style='margin-right:-15px;')
+						.col-md-3
+							button(style='border-radius: 0px; border-width: 0px;', onclick="addTechFamiliar('Alexa','8','15')")
+								i.fa.fa-plus
+								| Add
+				.bg-white
+					.row(style='align-items: center;')
+						.col-md-1
+						.col-md-8
+							span Amazon Alexa
+						.col-md-3
+							button(style='border-radius: 0px; border-width: 0px;')
+								i.fa.fa-plus
+								| Add
+				.bg-light
+					.row(style='align-items: center;')
+						.col-md-1
+						.col-md-8
+							span Amazon Alexa
+						.col-md-3
+							button(style='border-radius: 0px; border-width: 0px;')
+								i.fa.fa-plus
+								| Add
+
+	script.
+		var User = !{JSON.stringify(user)}
+	script(src='/js/profile.js')
+

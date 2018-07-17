@@ -3,7 +3,7 @@
 // PRELOADER
 
 $(window).on('load', function () {
-	$('.preloader').delay(1000).fadeOut("slow"); // set duration in brackets
+	$('.preloader').delay(500).fadeOut("slow"); // set duration in brackets
 });
 
 
@@ -11,16 +11,22 @@ $(window).on('load', function () {
 $(function () {
 	jQuery(document).ready(function () {
 		$('body').backstretch([
-	 		 "../../wtf/images/tm-bg-slide-1.jpg",
-	 		 "../../wtf/images/tm-bg-slide-2.jpg",
-			 "../../wtf/images/tm-bg-slide-3.jpg"
+	 		 "/images/tm-bg-slide-1.jpg",
+	 		 "/images/tm-bg-slide-2.jpg",
+			 "/images/tm-bg-slide-3.jpg"
 	 			], {
 			duration: 3200,
 			fade: 1300
 		});
 	});
 
+	//ajax request to get current logged in user
+	console.log(User);
+	var email = document.querySelector("#email");
+	console.log(email);
+	email.innerHTML += User.email;
 	//name, major, uni, educationLevel, graduationYear, Fb, phone, insta, github, linkdin, website
+
 	var about = ['Jenny Xu','Computer Science','Stony Brook University','Undergraduate','2021','Jenny Gong','6318939325','','www.github.com/archeane','www.linkedin.com/in/xu-jenny',''];
 	fillAbout(about);
 	fillAboutSettings(about);
@@ -89,7 +95,7 @@ function fillHeader(data) {
 }
 
 function fillAbout(data) {
-	const socialIcons = ['facebook','phone','instagram','github','linkedin','user'];
+	const socialIcons = ['facebook','phone', 'instagram','github','linkedin','user'];
 	var aboutContainer = document.querySelector("#about > .content");
 	var content = '';
 	content += '<div>';
