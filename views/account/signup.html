@@ -38,22 +38,7 @@
 		<input id="university" type="text" id="reg-school" name="school" placeholder="School You Attend" list="unis-datalist"/>
 		<datalist id='unis-datalist'></datalist>
 		<input id="major" type="text" id="reg-major" name="major" placeholder="Major" />
-		<select name="graduationYear" id="reg-graduationYear" placeholder="Your Graduation Year">
-			<option>2018</option>
-			<option>2019</option>
-			<option>2020</option>
-			<option>2021</option>
-			<option>2022</option>
-			<option>2023</option>
-			<option>2024</option>
-			<option>2025</option>
-		</select>
-		<select name="educationLevel" id="reg-educationLevel" placeholder="Your Current Education Level">
-			<option>High School</option>
-			<option>Undergraduate</option>
-			<option>Graduate</option>
-			<option>PhD</option>
-		<div class="row">
+		<div>
 			<select name="educationLevel" id="reg-educationLevel" placeholder="Your Current Education Level">
 				<option>High School</option>
 				<option>Undergraduate</option>
@@ -71,7 +56,8 @@
 				<option>2025</option>
 			</select>
 		</div>
-		<select name="reg-hackathons" id="hackathons" placeholder="How Many Hackathons Have You Been To?">
+		<label for="reg-hackathons">How Many Hackathons Have You Been To?</label>
+		<select id="reg-hackathons" name="hackathons">
 			<option value="0">None</option>
 			<option value="1">1</option>
 			<option value="2">2</option>
@@ -122,7 +108,7 @@
 			<input type="file" id="imgInp">
 			<img id='img-upload' height="300;" width="300;"/>
 		</div>
-		<div>
+		<div style="padding-top:15px;">
 			<input name="website" placeholder="Personal Website" />
 			<input name="devpost" placeholder="Devpost" />
 			<input type="number" name="phone" placeholder="Phone" />

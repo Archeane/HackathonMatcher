@@ -128,7 +128,6 @@ body {
 #msform select {
 	border: 1px solid #ccc;
 	border-radius: 3px;
-	margin-left: 40px;
 }
 
 /*buttons*/
@@ -140,7 +139,7 @@ body {
 	border: 0 none;
 	border-radius: 1px;
 	cursor: pointer;
-	padding: 10px 5px;
+	padding: 0px 5px;
 	margin: 10px 5px;
 }
 #msform .action-button:hover, #msform .action-button:focus {
