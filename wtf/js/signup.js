@@ -7,9 +7,9 @@ $(document).ready(function () {
 	$('#reg-error').hide();
 
 	//--------populate select2 options------------------
-	var $interests = $('#interest').select2();
+	var $interests = $('#reg-interest').select2();
 	var $intrequest = $.ajax({
-		url: '../../wtf/assets/interests.json' // wherever your data is actually coming from
+		url: '/assets/interests.json' // wherever your data is actually coming from
 	});
 
 	$intrequest.then(function (data) {
@@ -21,9 +21,9 @@ $(document).ready(function () {
 		$interests.trigger('change');
 	});
 
-	var $lanelement = $('#languages').select2();
+	var $lanelement = $('#reg-languages').select2();
 	var $lanrequest = $.ajax({
-		url: '../../wtf/assets/languages.json' // wherever your data is actually coming from
+		url: '/assets/languages.json' // wherever your data is actually coming from
 	});
 
 	$lanrequest.then(function (data) {
@@ -35,9 +35,9 @@ $(document).ready(function () {
 		$lanelement.trigger('change');
 	});
 
-	var $techelement = $('#technologies').select2();
+	var $techelement = $('#reg-technologies').select2();
 	var $techrequest = $.ajax({
-		url: '../../wtf/assets/technologies.json' // wherever your data is actually coming from
+		url: '/assets/technologies.json' // wherever your data is actually coming from
 	});
 
 	$techrequest.then(function (data) {
@@ -49,9 +49,9 @@ $(document).ready(function () {
 		$techelement.trigger('change');
 	});
 
-	var $fieldelement = $('#fields').select2();
+	var $fieldelement = $('#reg-fields').select2();
 	var $fiedrequest = $.ajax({
-		url: '../../wtf/assets/fields.json' // wherever your data is actually coming from
+		url: '/assets/fields.json' // wherever your data is actually coming from
 	});
 
 	$fiedrequest.then(function (data) {
@@ -62,6 +62,23 @@ $(document).ready(function () {
 		}
 		$fieldelement.trigger('change');
 	});
+
+
+	var $hobbieelement = $('#reg-hobbies').select2();
+	var $hobbyrequest = $.ajax({
+		url: '/assets/hobbies.json' // wherever your data is actually coming from
+	});
+
+	$hobbyrequest.then(function (data) {
+		for (var d = 0; d < data.length; d++) {
+			var item = data[d];
+			var option = new Option(item.name, item.id, false, false);
+			$hobbieelement.append(option);
+		}
+		$hobbieelement.trigger('change');
+	});
+
+
 	//-------------display chosen image-------------------
 	$(document).on('change', '.btn-file :file', function () {
 		var input = $(this),
@@ -97,17 +114,17 @@ $(document).ready(function () {
 
 	//TODO: change route to localhost when integrating && Very slow autocomplete
 	var unisDatalist = [];
-	$.getJSON("../../wtf/assets/us_institutions.json", function (data) {
+	$.getJSON("/assets/us_institutions.json", function (data) {
 		for (i = 0; i < data.length; i++) {
 			unisDatalist.push(data[i]["institution"]);
 		}
-		$("#university").autocomplete({
+		$("#reg-school").autocomplete({
 			minLength: 2,
 			source: unisDatalist
 		});
 	});
 
-	$('#university').on('input', function (e) {
+	$('#reg-school').on('input', function (e) {
 		var input = $(e.target);
 		if (input.val().length < 3) {
 			input.attr('list', '');
@@ -117,11 +134,11 @@ $(document).ready(function () {
 	})
 
 	var majors = [];
-	$.getJSON("../../wtf/assets/majors.json", function (data) {
+	$.getJSON("/assets/majors.json", function (data) {
 		for (i = 0; i < data.length; i++) {
 			majors.push(data[i]["major"]);
 		}
-		$("#major").autocomplete({
+		$("#reg-major").autocomplete({
 			minLength: 2,
 			source: majors
 		});
@@ -130,23 +147,21 @@ $(document).ready(function () {
 	//------------hackathon select-------------------
 	var attendedHackathons = [];
 	 $('#reg-hackathons').change(function () {
+		 var container = document.querySelector('#selectHackathons');
 	 	if ($('#reg-hackathons').val() != 0) {
-	 		var container = document.querySelector('#selectHackathons');
 	 		container.innerHTML = '';
 	 		if ($('#reg-hackathons').val() > 5) {
 	 			container.innerHTML += '<div class="row">';
 	 			container.innerHTML += '<label>Choose Your Top 5 Hackathons</label>';
 	 			container.innerHTML += '</div>';
 	 		} else {
-	 			container.innerHTML += '<div class="row">';
 	 			container.innerHTML += '<label>Which Hackathons?</label>';
-	 			container.innerHTML += '</div>';
 	 		}
 	 		for (i = 1; i <= Math.min($('#reg-hackathons').val(), 5); i++) {
 	 			var content = '';
-
 	 			content += '<div class="row">';
 	 			content += '<select placeholder="Year" class="hackYear" id="hack' + i + '">';
+				content += '<option value="0">Year</option>'
 	 			content += '<option value="2014">2014</option>';
 	 			content += '<option value="2015">2015</option>';
 	 			content += '<option value="2016">2016</option>';
@@ -158,42 +173,37 @@ $(document).ready(function () {
 	 		}
 
 			$('.hackYear').on('change', function(){
-				console.log($(this).attr('id'));
 				var selectHack = $(this).parent().children().last();
+				selectHack.empty();
 				selectHack.append('<select name="hackathon" style="width:100%; margin-left:20px;">');
 				var select = selectHack.children();
 				var year = $(this).val();
-				console.log(year);
 				$.getJSON({
 					method: "GET",
-					url: '../../wtf/assets/hackathons' + year + '.json', // wherever your data is actually coming from
+					url: '/assets/hackathons' + year + '.json', // wherever your data is actually coming from
 					data: {name:'value'},
 					dataType: 'JSON'
 				}).done(function(data){
 					for (var d = 0; d < data.length; d++) {
 						var item = data[d];
 						//var option = '<option value="'+item.name+'">'+item.name+'</option>';
-						var option = new Option(item.name, item.id, false, false);
+						var option = new Option(item.name, item.name, false, false);
 						select.append(option);
-						//content += option;
 					}
-					//$hackathon.trigger('change');
-					//selectHack.append('</select>');
 				}).fail(function(data)  {
 					alert("Sorry. Server unavailable. ");
 				});
 
 			});
-	 	}
+	 	}else{
+			container.innerHTML = '';
+		}
 	 });
 });
 
 
-
-$("#next1").click(function () {
-	console.log($('#university').val());
-	console.log($('#reg-graduationYear').val(), $('#reg-educationLevel').val());
-})
+//user information
+var user = {};
 
 $('#msform').on('keyup keypress', function (e) {
 	var keyCode = e.keyCode || e.which;
@@ -203,24 +213,41 @@ $('#msform').on('keyup keypress', function (e) {
 	}
 });
 
-//user information 
-var user = {};
 
 $(".next").click(function () {
-	//validate fields are set
-	//console.log(($('#reg-school').val() && $('#reg-major').val() && $('#reg-graduationYear').val() && $('#reg-educationLevel').val()));
-	if (!($('#reg-school').val() && $('#reg-major').val() && $('#reg-graduationYear').val() && $('#reg-educationLevel').val())) {
+	/*
+	if (!($('#reg-school').val() && $('#reg-major').val()) || $('#reg-graduationYear').val() == "null" || $('#reg-educationLevel').val() == "null") {
 		$('#reg-error').text('Please fill in all required fields');
 		$('#reg-error').show();
-	} else {
+	} else {*/
 		$('#reg-error').hide();
 
 		//append data to user variable
-		user['school'] = $('#reg-school');
-		user['major'] = $('#reg-major');
-		user['graduationYear'] = $('#reg-graduationYear');
-		user['educationLevel'] = $('#reg-educationLevel');
-		user['hackathons'] = $('#reg-hackathons');
+		user['school'] = $('#reg-school').val();
+		user['major'] = $('#reg-major').val();
+		user['graduationYear'] = $('#reg-graduationYear').val();
+		user['educationLevel'] = $('#reg-educationLevel').val();
+		user['numOfHackathons'] = $('#reg-hackathons').val();
+		if($('#reg-hackathons').val() > 0){
+			var hackathonArray = [];
+			$('#selectHackathons').children().each(function(index){
+				if(index > 0){
+					var arr = [];
+					$(this).children().each(function(index){
+						if(index == 1){	//at selectHack: select specific hackathon
+							arr.push($(this).children().val());
+							hackathonArray.push(arr);
+						}else{
+							arr.push($(this).val());
+						}
+					});
+				}
+			});
+			user['hackathons'] = [];
+			user['hackathons'].push(hackathonArray);
+		}
+
+		console.log(user);
 
 		//change form animation
 		if (animating) return false;
@@ -263,7 +290,7 @@ $(".next").click(function () {
 			//this comes from the custom easing plugin
 			easing: 'easeInOutBack'
 		});
-	}
+	//}
 });
 
 $(".previous").click(function () {

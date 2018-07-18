@@ -128,11 +128,11 @@ app.get('/reset/:token', userController.getReset);
 app.post('/reset/:token', userController.postReset);
 app.get('/verify', userController.getVerifyEmail);
 app.post('/verify', userController.postVerifyEmail);
-app.get('/signup', userController.getSignup);
+
 app.get('/signup', userController.getSignup);
 app.get('/account', userController.getAccount);
-app.post('/signuptest', userController.postSignup);
-//app.post('/signup', userController.postSignup);
+app.post('/signup', userController.postSignup);
+
 app.post('/signup2', userController.postSignup2);
 app.get('/contact', contactController.getContact);
 app.post('/contact', contactController.postContact);

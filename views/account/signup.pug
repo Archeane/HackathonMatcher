@@ -1,49 +1,148 @@
 extends ../layout
 
 block content
-  <form id="msform" action='/signup2' method="POST">
-    input(type='hidden', name='_csrf', value=_csrf)
-    <!-- progressbar -->
-    <ul id="progressbar">
-      <li class="active">Account Setup</li>
-      <li>Social Profiles</li>
-      <li>Personal Details</li>
-    </ul>
-    <!-- fieldsets -->
-    
-    <fieldset>
-      <h2 class="fs-title">Demographic Information</h2>
-      <h3 class="fs-subtitle">Just some quick info <span value='#{name}' name='username'>#{name}</span>...</h3>
-      <!--<input type="text" class="tagsinput"/>-->
-      <div class="bg-danger" id="reg-error"></div>
-      <input type="hidden" name='email' value='#{email}' />
-      <input type="text" id="reg-school" name="school" placeholder="School You Attend" />
-      <input type="text" id="reg-major" name="major" placeholder="Major" />
-      <input type="text" id="reg-graduationYear" name="graduationYear" placeholder="Graduation Year" />
-      <input type="text" id="reg-educationLevel" name="educationLevel" placeholder="Education Level" />
-      <input type="submit" name="submit" class="submit action-button" value="Submit" />
-      <input type="button" name="next" class="next action-button" value="Next" />
-    </fieldset>
-    <fieldset>
-      <h2 class="fs-title">Personal Details</h2>
-      <h3 class="fs-subtitle">Let us know you better.</h3>
-      <input type="text" value="Amsterdam,Washington,Sydney,Beijing,Cairo" data-role="tagsinput" />
-      <input type="text" name="interests" value="" data-role="tagsinput" placeholder="What are you interested in working on?" />
-      <input type="text" name="languages" placeholder="What languages are you familiar with?" />
-      <input type="text" name="technologies" placeholder="What technologies have you used?" />
-      <input type="text" name="fields" placeholder="What fields are you interested in?" />
-      <input type="button" name="previous" class="previous action-button" value="Previous" />
-      <input type="button" name="next" class="next action-button" value="Next" />
-    </fieldset>
-    <fieldset>
-      <h2 class="fs-title">Social Profile</h2>
-      <h3 class="fs-subtitle">Help others know you better</h3>
-      <input type="text" name="facebook" placeholder="First Name" />
-      <input type="text" name="linkedin" placeholder="Last Name" />
-      <input type="text" name="phone" placeholder="Phone" />
-      <textarea name="address" placeholder="Address"></textarea>
-      <input type="button" name="previous" class="previous action-button" value="Previous" />
-      <input type="submit" name="submit" class="submit action-button" value="Submit" />
-    </fieldset>
-  </form>
+	<form id="msform" action='/signup2' method="POST">
+		<input type='hidden', name='_csrf', value=_csrf>
+		<!-- progressbar -->
+		<ul id="progressbar">
+			<li class="active">Demographic Information</li>
+			<li>Personal Details</li>
+			<li>Social Profile</li>
+		</ul>
+		<!-- fieldsets -->
 
+		<fieldset>
+			<h2 class="fs-title">Demographic Information</h2>
+			<h3 class="fs-subtitle">Just some quick info <span value='#{name}' name='username'>#{name}</span>...</h3>
+			<!--<input type="text" class="tagsinput"/>-->
+			<div class="bg-danger" id="reg-error"></div>
+			<input type="hidden" name='email' value='#{email}' />
+			<label for="reg-school" class="required"><input type="text" id="reg-school" name="school" placeholder="School You Attend" list="unis-datalist" /></label>
+			<datalist id='unis-datalist'></datalist>
+			<label for="reg-major" class="required"><input type="text" id="reg-major" name="major" placeholder="Major"></label>
+			<div>
+				<label for="reg-educationLevel" class="required"><select name="educationLevel" id="reg-educationLevel" placeholder="Your Current Education Level">
+				<option value="null">Education level</option>
+				<option value="High School">High School</option>
+				<option value="Undergraduate">Undergraduate</option>
+				<option value="Graduate">Graduate</option>
+				<option value="PhD">PhD</option>
+				</select></label>
+				<label for="reg-graduationYear" class="required"><select name="graduationYear" id="reg-graduationYear" placeholder="Your Graduation Year">
+				<option value=null>Graduation Year</option>
+				<option value="2018">2018</option>
+				<option value="2019">2019</option>
+				<option value="2020">2020</option>
+				<option value="2021">2021</option>
+				<option value="2022">2022</option>
+				<option value="2023">2023</option>
+				<option value="2024">2024</option>
+				<option value="2025">2025</option>
+				</select></label>
+			</div>
+			<label for="reg-hackathons">How Many Hackathons Have You Been To?</label>
+			<select id="reg-hackathons" name="hackathons">
+			<option value="0">None</option>
+			<option value="1">1</option>
+			<option value="2">2</option>
+			<option value="3">3</option>
+			<option value="4">4</option>
+			<option value="5">5</option>
+			<option value="10">6-10</option>
+			<option value="15">11-15</option>
+			<option value="20">16-20</option>
+			<option value="21">20+</option>
+		</select>
+			<div id="selectHackathons">
+			</div>
+
+			<input type="button" name="next" class="next action-button" value="Next" id="next1" />
+		</fieldset>
+		<fieldset>
+			<h2 class="fs-title">Personal Details</h2>
+			<h3 class="fs-subtitle">Let us know you better.</h3>
+
+			<div>
+				<label for="multiselect" style="padding-right: 10px;">What Are You Interested In? </label>
+				<select id="reg-interest" class="multiselect" name="interests" multiple="multiple" style="width:70%;height: 20px;"></select>
+			</div>
+			<div>
+				<label for="multiselect" style="padding-right: 10px;">Languages You Are Familiar With: </label>
+				<select id="reg-languages" class="multiselect" name="languages" multiple="multiple" style="width:70%;height: 20px;"></select>
+			</div>
+			<div>
+				<label for="multiselect" style="padding-right: 10px;">What Technologies Have You Used? </label>
+				<select id="reg-technologies" class="multiselect" name="technologies" multiple="multiple" style="width:70%;height: 20px;"></select>
+			</div>
+			<div>
+				<label for="multiselect" style="padding-right: 10px;">What Fields Are You Interested In Working On? </label>
+				<select id="reg-fields" class="multiselect" name="fields" multiple="multiple" style="width:70%;height: 20px;"></select>
+			</div>
+			<div>
+				<label for="multiselect" style="padding-right: 10px;">What Are Your Hobbies? </label>
+				<select id="reg-hobbies" class="multiselect" name="hobbies" multiple="multiple" style="width:70%;height: 20px;"></select>
+			</div>
+
+			<input type="button" name="previous" class="previous action-button" value="Previous" />
+			<input type="button" name="next" class="next action-button" value="Next" />
+		</fieldset>
+		<fieldset>
+			<h2 class="fs-title">Social Profile</h2>
+			<h3 class="fs-subtitle">Help others know you better</h3>
+			<div>
+				<label>Upload Profile Image</label>
+				<input type="file" id="imgInp">
+				<img id='img-upload' height="300;" width="300;" />
+			</div>
+			<div style="padding-top:15px;">
+				<div class="row">
+					<div class="col-md-4">
+						<label>Website:</label>
+					</div>
+					<input class="pull-right" name="website" placeholder="Personal Website" />
+				</div>
+				<div class="row">
+					<div class="col-md-4">
+						<label>Devpost:</label>
+					</div>
+					<input class="pull-right" name="devpost" placeholder="Devpost" />
+				</div>
+				<div class="row">
+					<div class="col-md-4">
+						<label>Phone:</label>
+					</div>
+					<input class="pull-right" name="phone" placeholder="Phone" />
+				</div>
+			</div>
+			<div>
+				<div class="row">
+					<div class="col-md-3" style="margin-left: -12px;">
+						<label>Facebook:</label>
+					</div>
+					<input style="width:70%;" name="facebook" placeholder="https://www.facebook.com/your_name" />
+				</div>
+				<div class="row">
+					<div class="col-md-3" style="margin-left: -12px;">
+						<label>Instagram:</label>
+					</div>
+					<input style="width:70%;" name="instagram" placeholder="https://www.instagram.com/your_name" />
+				</div>
+				<div class="row">
+					<div class="col-md-3" style="margin-left: -12px;">
+						<label>Linkedin:</label>
+					</div>
+					<input style="width:70%;" name="linkedin" placeholder="https://www.linkedin.com/your_name" />
+				</div>
+				<div class="row">
+					<div class="col-md-3" style="margin-left: -12px;">
+						<label>Github:</label>
+					</div>
+					<input style="width:70%;" name="github" placeholder="https://www.github.com/your_name" />
+				</div>
+			</div>
+
+
+			<input type="button" name="previous" class="previous action-button" value="Previous" />
+			<input type="submit" name="submit" class="submit action-button" value="Submit" />
+		</fieldset>
+	</form>

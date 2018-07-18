@@ -12,25 +12,28 @@ html
 		<link rel="stylesheet" href="css/lib/bootstrap.min.css">
 		<link rel="stylesheet" href="css/lib/normalize.css">
 		<link rel="stylesheet" href="/css/lib/skeleton.css">
-		<link rel="stylesheet" href="css/lib/mdb.min.css" />
+
 		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
 
 
 		link(rel='stylesheet', href='/css/partials.css')
 		<link rel="stylesheet" href="/css/#{css}" />
 
 		script(src='/js/lib/jquery-3.3.1.min.js')
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		script(src='/js/lib/bootstrap.min.js')
 		script(src='/js/lib/popper.min.js')
-		<script src='js/lib/mdb.min.js'></script>
+
 		<script src="js/lib/jquery.backstretch.min.js"></script>
 		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.5/umd/popper.min.js'></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 
 
 
-		// Google Analytics: change UA-XXXXX-X to be your site's ID
 		script.
 			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -38,8 +41,6 @@ html
 			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 			ga('create', 'UA-XXXXX-X', 'auto');
 			ga('send', 'pageview');
-
-
 
 	body
 		include partials/header
@@ -49,4 +50,8 @@ html
 			block content
 
 		include partials/footer
+
+		<script src='/js/#{js}'></script>
+
+
 

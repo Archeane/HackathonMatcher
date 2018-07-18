@@ -23,6 +23,7 @@ body {
     border-radius: 21px;
 }
 
+label.required:after {content: " *"; color: red;}
 
 
 

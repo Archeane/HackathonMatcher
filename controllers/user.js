@@ -28,10 +28,7 @@ mailer.transport.sendMail({from: 'jennyxu1029@gmail.com',
 
 const randomBytesAsync = promisify(crypto.randomBytes);
 
-/**
- * GET /login
- * Login page.
- */
+//----------LOGIN--------------
 exports.getLogin = (req, res) => {
 	if (req.user) {
 		return res.redirect('/');
@@ -40,11 +37,6 @@ exports.getLogin = (req, res) => {
 		title: 'Login'
 	});
 };
-
-/**
- * POST /login
- * Sign in using email and password.
- */
 exports.postLogin = (req, res, next) => {
 	req.assert('email', 'Email is not valid').isEmail();
 	req.assert('password', 'Password cannot be blank').notEmpty();
@@ -87,7 +79,6 @@ exports.postLogin = (req, res, next) => {
 		});
 	})(req, res, next);
 };
-
 exports.logout = (req, res) => {
 	req.logout();
 	req.session.destroy((err) => {
@@ -97,28 +88,17 @@ exports.logout = (req, res) => {
 	});
 };
 
-
-//TODO: change to original signup here
-/*
+//---------SIGNUP-----------
 exports.getSignup = (req, res) => {
+	//NOTE: take comment out
+	/*
 	if (req.user) {
 		return res.redirect('/');
-	}
-	res.render('account/signup', {
-		title: 'Create Account',
-		'css': ['signup.css'],
-		'js': ['signup.js']
+	}*/
+	res.render('account/signup',{
+		"title":"Signup"//, "css":["signup.css"], "js":["signup.js"]
 	});
-};
-*/
-
-exports.getSignup = (req, res) => {
-	if (req.user) {
-		return res.redirect('/');
-	}
-	res.render('account/signuptest');
 }
-
 exports.postSignup = (req, res, next) => {
 	console.log('in postsignup');
 	req.assert('email', 'Email is not valid').isEmail();
@@ -188,11 +168,46 @@ exports.postSignup = (req, res, next) => {
 		});
 	});
 };
+exports.postSignup2 = async (req, res, next) => {
+	console.log('in post signup2');
+	/*
+	console.log(req.body.email);
+	User.findOne({
+		email: req.body.email
+	}, (err, user) => {
+		if (err) {
+			return next(err);
+		}
+		user.profile.school = req.body.school;
+		user.profile.major = req.body.major;
+		user.profile.graduationYear = req.body.graduationYear;
+		user.profile.educationLevel = req.body.educationLevel;
+		/*
+		    user.preferences.interests = req.body.email || '';
+		    user.profile.name = req.body.name || '';
+		    user.profile.gender = req.body.gender || '';
+		    user.profile.location = req.body.location || '';
+		    user.profile.website = req.body.website || '';
+		*/
+	/*
+		user.save((err) => {
+			if (err) {
+				return next(err);
+			}
+			req.logIn(user, (err) => {
+				if (err) {
+					return next(err);
+				}
+				res.redirect('/account/profile');
+			});
+		});
+	});
+*/
+}
 
 exports.getVerifyEmail = (req, res, next) => {
 	res.render('account/verifyemail');
 }
-
 exports.postVerifyEmail = async (req, res, next) => {
 	try {
 		const {
@@ -222,55 +237,12 @@ exports.postVerifyEmail = async (req, res, next) => {
 	}
 }
 
-exports.postSignup2 = async (req, res, next) => {
-	console.log('in post signup2');
-	console.log(req.body.email);
-	User.findOne({
-		email: req.body.email
-	}, (err, user) => {
-		if (err) {
-			return next(err);
-		}
-		user.profile.school = req.body.school;
-		user.profile.major = req.body.major;
-		user.profile.graduationYear = req.body.graduationYear;
-		user.profile.educationLevel = req.body.educationLevel;
-		/*
-		    user.preferences.interests = req.body.email || '';
-		    user.profile.name = req.body.name || '';
-		    user.profile.gender = req.body.gender || '';
-		    user.profile.location = req.body.location || '';
-		    user.profile.website = req.body.website || '';
-		*/
-		user.save((err) => {
-			if (err) {
-				return next(err);
-			}
-			req.logIn(user, (err) => {
-				if (err) {
-					return next(err);
-				}
-				res.redirect('/account/profile');
-			});
-		});
-	});
-
-}
-
-/**
- * GET /account
- * Profile page.
- */
+//---------dashboard--------------
 exports.getAccount = (req, res) => {
 	res.render('account/dashboard', {
 		title: 'Account Management', css: 'profile.css'
 	});
 };
-
-/**
- * POST /account/profile
- * Update profile information.
- */
 exports.postUpdateProfile = (req, res, next) => {
 	req.assert('email', 'Please enter a valid email address.').isEmail();
 	req.sanitize('email').normalizeEmail({
@@ -311,10 +283,9 @@ exports.postUpdateProfile = (req, res, next) => {
 	});
 };
 
-/**
- * POST /account/password
- * Update current password.
- */
+
+
+//-------account-----------
 exports.postUpdatePassword = (req, res, next) => {
 	req.assert('password', 'Password must be at least 4 characters long').len(4);
 	req.assert('confirmPassword', 'Passwords do not match').equals(req.body.password);
@@ -342,11 +313,6 @@ exports.postUpdatePassword = (req, res, next) => {
 		});
 	});
 };
-
-/**
- * POST /account/delete
- * Delete user account.
- */
 exports.postDeleteAccount = (req, res, next) => {
 	User.remove({
 		_id: req.user.id
@@ -361,11 +327,6 @@ exports.postDeleteAccount = (req, res, next) => {
 		res.redirect('/');
 	});
 };
-
-/**
- * GET /account/unlink/:provider
- * Unlink OAuth provider.
- */
 exports.getOauthUnlink = (req, res, next) => {
 	const {
 		provider
@@ -387,11 +348,6 @@ exports.getOauthUnlink = (req, res, next) => {
 		});
 	});
 };
-
-/**
- * GET /reset/:token
- * Reset Password page.
- */
 exports.getReset = (req, res, next) => {
 	if (req.isAuthenticated()) {
 		return res.redirect('/');
@@ -416,11 +372,6 @@ exports.getReset = (req, res, next) => {
 			});
 		});
 };
-
-/**
- * POST /reset/:token
- * Process the reset password request.
- */
 exports.postReset = (req, res, next) => {
 	req.assert('password', 'Password must be at least 4 characters long.').len(4);
 	req.assert('confirm', 'Passwords must match.').equals(req.body.password);
@@ -490,11 +441,6 @@ exports.postReset = (req, res, next) => {
 		})
 		.catch(err => next(err));
 };
-
-/**
- * GET /forgot
- * Forgot Password page.
- */
 exports.getForgot = (req, res) => {
 	if (req.isAuthenticated()) {
 		return res.redirect('/');
@@ -503,11 +449,6 @@ exports.getForgot = (req, res) => {
 		title: 'Forgot Password'
 	});
 };
-
-/**
- * POST /forgot
- * Create a random token, then the send user an email with a reset link.
- */
 exports.postForgot = (req, res, next) => {
 	req.assert('email', 'Please enter a valid email address.').isEmail();
 	req.sanitize('email').normalizeEmail({
