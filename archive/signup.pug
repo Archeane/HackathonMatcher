@@ -1,8 +1,8 @@
 extends ../layout
 
 block content
-	form(id='msform', method='POST' action='/signup2')
-		input(type='hidden', name='_csrf', value=_csrf)
+	<form id="msform" action='/signup2' method="POST">
+		<input type='hidden', name='_csrf', value=_csrf>
 		<!-- progressbar -->
 		<ul id="progressbar">
 			<li class="active">Demographic Information</li>
@@ -143,6 +143,6 @@ block content
 
 
 			<input type="button" name="previous" class="previous action-button" value="Previous" />
-			<input type="hidden" id="user" name="user" />
 			<input type="submit" name="submit" class="submit action-button" value="Submit" />
 		</fieldset>
+	</form>

@@ -33,11 +33,15 @@ const userSchema = new mongoose.Schema({
     picture: String
   },
 
+  numOfHackathons: Number,
+  hackathons: Array,
+
   preferences:{
     interests: Array,
     languages: Array,
     fields: Array,
-    technologies: Array
+    technologies: Array,
+	hobbies: Array
   }
 }, { timestamps: true });
 

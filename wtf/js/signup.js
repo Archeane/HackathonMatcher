@@ -15,7 +15,7 @@ $(document).ready(function () {
 	$intrequest.then(function (data) {
 		for (var d = 0; d < data.length; d++) {
 			var item = data[d];
-			var option = new Option(item.name, item.id, false, false);
+			var option = new Option(item.name, item.name, false, false);
 			$interests.append(option);
 		}
 		$interests.trigger('change');
@@ -29,7 +29,7 @@ $(document).ready(function () {
 	$lanrequest.then(function (data) {
 		for (var d = 0; d < data.length; d++) {
 			var item = data[d];
-			var option = new Option(item.name, item.id, false, false);
+			var option = new Option(item.name, item.name, false, false);
 			$lanelement.append(option);
 		}
 		$lanelement.trigger('change');
@@ -43,7 +43,7 @@ $(document).ready(function () {
 	$techrequest.then(function (data) {
 		for (var d = 0; d < data.length; d++) {
 			var item = data[d];
-			var option = new Option(item.name, item.id, false, false);
+			var option = new Option(item.name, item.name, false, false);
 			$techelement.append(option);
 		}
 		$techelement.trigger('change');
@@ -57,7 +57,7 @@ $(document).ready(function () {
 	$fiedrequest.then(function (data) {
 		for (var d = 0; d < data.length; d++) {
 			var item = data[d];
-			var option = new Option(item.name, item.id, false, false);
+			var option = new Option(item.name, item.name, false, false);
 			$fieldelement.append(option);
 		}
 		$fieldelement.trigger('change');
@@ -72,7 +72,7 @@ $(document).ready(function () {
 	$hobbyrequest.then(function (data) {
 		for (var d = 0; d < data.length; d++) {
 			var item = data[d];
-			var option = new Option(item.name, item.id, false, false);
+			var option = new Option(item.name, item.name, false, false);
 			$hobbieelement.append(option);
 		}
 		$hobbieelement.trigger('change');
@@ -246,7 +246,7 @@ $(".next").click(function () {
 			user['hackathons'] = [];
 			user['hackathons'].push(hackathonArray);
 		}
-
+		document.getElementById("user").value = user;
 		console.log(user);
 
 		//change form animation
@@ -336,5 +336,23 @@ $(".previous").click(function () {
 });
 
 $(".submit").click(function () {
+	/*
+	console.log('submit clicked');
+	var data = [{"username": "dmccreadie0"},
+	   {"username": "bwillerson1"},
+	   {"username": "fteese2"},
+	   {"username": "dsummerell3"}];
 
-})
+	fetch('http://localhost:3000/signup2', {
+		method: 'POST',
+		body: JSON.stringify(data),
+		headers: {'Content-Type': 'application/json'}
+	}).then(response => {
+	  return response.json();
+	}).then(data => {
+	  alert(JSON.stringify(data));
+	}).catch(err => {
+		alert(err);
+	});
+	*/
+});

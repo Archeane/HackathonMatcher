@@ -133,7 +133,9 @@ app.get('/signup', userController.getSignup);
 app.get('/account', userController.getAccount);
 app.post('/signup', userController.postSignup);
 
+//app.get('/signup2', userController.getSignup);
 app.post('/signup2', userController.postSignup2);
+
 app.get('/contact', contactController.getContact);
 app.post('/contact', contactController.postContact);
 app.get('/account', passportConfig.isAuthenticated, userController.getAccount);
