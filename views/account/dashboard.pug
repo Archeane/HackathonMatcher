@@ -12,6 +12,9 @@ block content
 				.col-md-12.col-sm-12
 					img.img-responsive.img-circle.tm-border(src='/images/tm-easy-profile.jpg', alt='templatemo easy profile')
 					hr
+					i.fa.fa-users
+					if user
+						i.fa.fa-user-edit
 					h3#email
 	// about and skills section
 	section.container
@@ -19,7 +22,7 @@ block content
 			.col-md-6.col-sm-12
 				#about
 					h3.accent About
-					h6 Jenny Xu
+					h6
 					.content
 					.settings
 			.col-md-6.col-sm-12
@@ -101,6 +104,6 @@ block content
 								| Add
 
 	script.
-		var User = !{JSON.stringify(user)}
-	script(src='/js/profile.js')
+		var User = !{JSON.stringify(dashboardUser)}
+	
 

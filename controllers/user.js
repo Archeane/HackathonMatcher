@@ -99,23 +99,23 @@ exports.getSignup = (req, res) => {
 		"title":"Signup", "css":["signup.css"], "js":["signup.js"]
 	});
 }
-exports.postSignup2 = async (req, res, next) => {
+exports.postSignup = async (req, res, next) => {
 	console.log('in post signup2');
 	//console.log(req.body.email);
-	console.log(req.body);
-	console.log(req.body.school);
+	//console.log(req.body);
+	//console.log(req.body.school);
    	//res.json(req.body);
 
 	User.findOne({
-		email: 'jennyxu8448@gmail.com'
+		email: "kennygu@gmail.com"
 	}, (err, user) => {
 		if (err) {
 			return next(err);
 		}
-		user.profile.school = req.body.school;
-		user.profile.major = req.body.major;
-		user.profile.graduationYear = req.body.graduationYear;
-		user.profile.educationLevel = req.body.educationLevel;
+		user.school = req.body.school;
+		user.major = req.body.major;
+		user.graduationYear = req.body.graduationYear;
+		user.educationLevel = req.body.educationLevel;
 		user.numOfHackathons = req.body.hackathons || 0;
 		user.hackathons = req.body.hackathon || '';
 
@@ -125,7 +125,7 @@ exports.postSignup2 = async (req, res, next) => {
 		user.preferences.fields = req.body.fields || '';
 		user.preferences.hobbies = req.body.hobbies || '';
 
-		user.profile.website = req.body.website || '';
+		user.website = req.body.website || '';
 		user.facebook = req.body.github || '';
 		user.github = req.body.github || '';
 
@@ -133,22 +133,16 @@ exports.postSignup2 = async (req, res, next) => {
 			if (err) {
 				return next(err);
 			}
-			/*
-			req.logIn(user, (err) => {
-				if (err) {
-					return next(err);
-				}
-				res.redirect('/account/profile');
+			res.render('/account/profile', {
+				title: 'Dashboard', css: 'profile.css', js: 'profile.js'
 			});
-			*/
 		});
 
 	});
 
 }
 
-exports.postSignup = (req, res, next) => {
-	console.log('in postsignup');
+exports.postHome = (req, res, next) => {
 	req.assert('email', 'Email is not valid').isEmail();
 	req.assert('password', 'Password must be at least 4 characters long').len(4);
 	req.assert('confirmpassword', 'Passwords do not match').equals(req.body.password);
@@ -189,34 +183,23 @@ exports.postSignup = (req, res, next) => {
 			if (err) {
 				return next(err);
 			}
-			res.render('account/signup',{
-				"title":"Signup", "css":["signup.css"], "js":["signup.js"]
-			});
-
-
+			
 			/*
 			/TODO: send email/
 
 			const html = "Hi there,<br />Thank you for registering!<br /><br />Please verify your email by typing the following token:<br />Token: ${secretToken} < br/> On the following page: <a href='http://localhost:3000/verify'> link</a>";
 			mailer.sendEmail('jennyxu1029@gmail.com', user.email, "Please verify your email", test);
 			*/
-			/*
-						res.render('account/signup', {
-							title: 'Create Account',
-							'css': ['signup.css'],
-							'js': ['signup.js'],
-							'name': user.name,
-							'email': user.email
-						});
-			*/
-/*
+
 			req.logIn(user, (err) => {
 				if (err) {
 					return next(err);
 				}
-				res.render('account/dashboard');
+				res.render('account/signup',{
+				"title":"Signup", "css":["signup.css"], "js":["signup.js"]
+				});
 			});
-*/
+
 		});
 	});
 };
@@ -254,6 +237,16 @@ exports.postVerifyEmail = async (req, res, next) => {
 }
 
 //---------dashboard--------------
+exports.getUserById = (req, res) => {
+	User.findById(req.params.id, (err, user) => {
+		if (err) {
+			return next(err);
+		}
+		res.render('account/dashboard', {
+			title: 'Account Management', dashboardUser: user, css: 'profile.css', js: 'profile.js'
+		});
+	});
+};
 exports.getAccount = (req, res) => {
 	res.render('account/dashboard', {
 		title: 'Account Management', css: 'profile.css'

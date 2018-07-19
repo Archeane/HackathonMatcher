@@ -1,7 +1,7 @@
 extends ../layout
 
 block content
-	form(id='msform', method='POST' action='/signup2')
+	form(id='msform', method='POST' action='/signup')
 		input(type='hidden', name='_csrf', value=_csrf)
 		<!-- progressbar -->
 		<ul id="progressbar">
@@ -99,19 +99,19 @@ block content
 					<div class="col-md-4">
 						<label>Website:</label>
 					</div>
-					<input class="pull-right" name="website" placeholder="Personal Website" />
+					<input class="pull-right" value="null" name="website" placeholder="Personal Website" />
 				</div>
 				<div class="row">
 					<div class="col-md-4">
 						<label>Devpost:</label>
 					</div>
-					<input class="pull-right" name="devpost" placeholder="Devpost" />
+					<input class="pull-right" value="null" name="devpost" placeholder="Devpost" />
 				</div>
 				<div class="row">
 					<div class="col-md-4">
 						<label>Phone:</label>
 					</div>
-					<input class="pull-right" name="phone" placeholder="Phone" />
+					<input class="pull-right" value="null" name="phone" placeholder="Phone" />
 				</div>
 			</div>
 			<div>
@@ -119,25 +119,25 @@ block content
 					<div class="col-md-3" style="margin-left: -12px;">
 						<label>Facebook:</label>
 					</div>
-					<input style="width:70%;" name="facebook" placeholder="https://www.facebook.com/your_name" />
+					<input style="width:70%;" value="null" name="facebook" placeholder="https://www.facebook.com/your_name" />
 				</div>
 				<div class="row">
 					<div class="col-md-3" style="margin-left: -12px;">
 						<label>Instagram:</label>
 					</div>
-					<input style="width:70%;" name="instagram" placeholder="https://www.instagram.com/your_name" />
+					<input style="width:70%;" value="null" name="instagram" placeholder="https://www.instagram.com/your_name" />
 				</div>
 				<div class="row">
 					<div class="col-md-3" style="margin-left: -12px;">
 						<label>Linkedin:</label>
 					</div>
-					<input style="width:70%;" name="linkedin" placeholder="https://www.linkedin.com/your_name" />
+					<input style="width:70%;" value="null" name="linkedin" placeholder="https://www.linkedin.com/your_name" />
 				</div>
 				<div class="row">
 					<div class="col-md-3" style="margin-left: -12px;">
 						<label>Github:</label>
 					</div>
-					<input style="width:70%;" name="github" placeholder="https://www.github.com/your_name" />
+					<input style="width:70%;" value="null" name="github" placeholder="https://www.github.com/your_name" />
 				</div>
 			</div>
 

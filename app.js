@@ -131,13 +131,16 @@ app.post('/verify', userController.postVerifyEmail);
 
 app.get('/signup', userController.getSignup);
 app.get('/account', userController.getAccount);
-app.post('/signup', userController.postSignup);
+app.post('/home', userController.postHome);
 
 //app.get('/signup2', userController.getSignup);
-app.post('/signup2', userController.postSignup2);
+app.post('/signup', userController.postSignup);
 
 app.get('/contact', contactController.getContact);
 app.post('/contact', contactController.postContact);
+
+app.get('/dashboard/:id', userController.getUserById);
+
 app.get('/account', passportConfig.isAuthenticated, userController.getAccount);
 app.post('/account/profile', passportConfig.isAuthenticated, userController.postUpdateProfile);
 app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);

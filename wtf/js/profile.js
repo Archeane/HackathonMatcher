@@ -23,10 +23,10 @@ $(function () {
 	//ajax request to get current logged in user
 	console.log(User);
 	var email = document.querySelector("#email");
-	console.log(email);
 	email.innerHTML += User.email;
+	console.log(User.preferences.languages);
 	//name, major, uni, educationLevel, graduationYear, Fb, phone, insta, github, linkdin, website
-
+/*
 	var about = ['Jenny Xu','Computer Science','Stony Brook University','Undergraduate','2021','Jenny Gong','6318939325','','www.github.com/archeane','www.linkedin.com/in/xu-jenny',''];
 	var languages = [['Java', 50, 15],['Javascript', 35, 10],['Python', 20, 5],['jackdaniels', 100, 100],['vodka', 100,100],['tequila',100,100]];
 	var familiar = [['Virtual Reality', 8, 15],['Hardware', 2], ['Computer Vision', 4, 7],['Arduino', 5],['Data Visualization', 10],['data mining', 8]];
@@ -38,19 +38,24 @@ $(function () {
 					  ['SheHacks', 2018, 'https://devpost.com/software/medrisk'],
 					  ['HackHealth', 2018, 'https://devpost.com/software/classroom-monitor']];
 	var note = ['Unpacked now declared put you confined daughter improved. Celebrated imprudence few interested especially reasonable off one. Wonder bed elinor family secure met.', 'Luckily friends do ashamed to do suppose. Tried meant mr smile so. Exquisite behaviour as to middleton perfectly. Chicken no wishing waiting am.','Now residence dashwoods she excellent you. Shade being under his bed her. Much read on as draw. Blessing for ignorant exercise any yourself unpacked. '];
-
-	var Userabout = [User.name, User.profile.major, User.profile.school, User.profile.educationLevel, User.profile.graduationYear, User.facebook, User.phone, User.instagram, User.github, User.linkedin, User.profile.website];
-
+*/
+	var Userabout = [User.name, User.major, User.school, User.educationLevel, User.graduationYear, User.facebook, User.phone, User.instagram, User.github, User.linkedin, User.website];
+	var UserLan = User.preferences.languages;
+	var UserFamiliar = User.preferences.technologies;
+	var UserInterest = User.preferences.interests;
+	var UserFields = User.preferences.fields;
+	var UserHobbies = User.preferences.hobbies;
+	var UserHackatons = User.hackathons;
 
 	fillAbout(Userabout);
 	fillAboutSettings(Userabout);
-	fillLanaguages(languages);
-	fillFamiliarTechnologies(familiar);
-	fillInterestedTechnologies(interested);
-	fillFields(fields);
+	fillLanaguages(UserLan);
+	fillFamiliarTechnologies(UserFamiliar);
+	fillInterestedTechnologies(UserInterest);
+	fillFields(UserFields);
 
-	fillHackathons(hackathons);
-	fillNote(note);
+	fillHackathons(UserHackatons);
+	fillNote(UserHobbies);
 
 
 	//modal content
@@ -101,21 +106,25 @@ function fillHeader(data) {
 
 function fillAbout(data) {
 	const socialIcons = ['facebook','phone', 'instagram','github','linkedin','user'];
+	//document.querySelector("#about > h6").innerHTML += data[0];
 	var aboutContainer = document.querySelector("#about > .content");
 	var content = '';
 	content += '<div>';
 	content += '<p style="margin-top:-1.5em;">'+data[1]+'<span class="pull-right">'+data[3]+'</span></p>';
 	content += '<p style="margin-top:-1.7em;">'+data[2]+'<span class="pull-right">'+data[4]+'</span></p>';
 	content += '</div>';
+	
 	content += '<div>';
 	content += '<ul class="social-icons">';
 	for(i=5; i < data.length; i++){
-		if(data[i] != ''){
+		console.log(data[i]);
+		if(data[i] != '' || data[i] != undefined || data[i] != null){
 			content += '<li><a href="'+data[i]+'" class="fa fa-'+socialIcons[i-5]+'"></a></li>';
 		}
 	}
 	content += '</ul>';
 	content += '</div>';
+
 	aboutContainer.innerHTML += content;
 }
 
@@ -144,26 +153,29 @@ function fillAboutSettings(data) {
 
 function fillLanaguages(data) {
 	var skillsContainer = document.querySelector("#skills");
+	console.log("languages length: ",data.length);
 	for(i = 0; i < data.length; i++){
 		if(i == 5){
 			content += '<span>'+data.length-5+' more...</span>';
 			break;
 		}
-		var content = '<div class="lan">';
-		content += '<div class="content" style="padding-bottom: 10px;">';
-		content += '<strong>'+data[i][0]+'</strong><i class="fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span>'+data[i][2]+'</span>';
-		content += '<span class="pull-right" >'+data[i][1]+'%</span>';
-		content += '<div class="progress">';
-		content += '<div class="progress-bar progress-bar-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+data[i][1]+'" style="width:'+data[i][1]+'%;"></div></div></div>';
-		content += '<div class="settings" style="padding-top:15px;"><div>';
-		content += '<strong>'+data[i][0]+'</strong><i class="fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span>'+data[i][2]+'</span>';
-		content += '<i class="language pull-right fa fa-times"></i><span class="pull-right">%</span>';
-		content += '<input value='+data[i][1]+' class="pull-right" type="number" style="margin-top: -.2em; height: 20px !important;width:40px;" min="1" max="100" class="max100input">';
-		content += '</div>';
-		content += '<div class="progress" style="margin-top:10px;">';
-		content += '<div class="progress-bar progress-bar-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+data[i][1]+'" style="width:'+data[i][1]+'%;"></div></div>';
-		content += '</div></div>';
-		skillsContainer.innerHTML += content;
+		if(data[i] != 0){
+			var content = '<div class="lan">';
+			content += '<div class="content" style="padding-bottom: 10px;">';
+			content += '<strong>'+data[i][0]+'</strong><i class="fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span>'+data[i][2]+'</span>';
+			content += '<span class="pull-right" >'+data[i][1]+'%</span>';
+			content += '<div class="progress">';
+			content += '<div class="progress-bar progress-bar-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+data[i][1]+'" style="width:'+data[i][1]+'%;"></div></div></div>';
+			content += '<div class="settings" style="padding-top:15px;"><div>';
+			content += '<strong>'+data[i][0]+'</strong><i class="fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span>'+data[i][2]+'</span>';
+			content += '<i class="language pull-right fa fa-times"></i><span class="pull-right">%</span>';
+			content += '<input value='+data[i][1]+' class="pull-right" type="number" style="margin-top: -.2em; height: 20px !important;width:40px;" min="1" max="100" class="max100input">';
+			content += '</div>';
+			content += '<div class="progress" style="margin-top:10px;">';
+			content += '<div class="progress-bar progress-bar-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+data[i][1]+'" style="width:'+data[i][1]+'%;"></div></div>';
+			content += '</div></div>';
+			skillsContainer.innerHTML += content;
+		}
 	}
 
 }
@@ -174,13 +186,15 @@ function fillFamiliarTechnologies(data) {
 	var content = '<ul>';
 	for(i = 0; i < data.length; i++){
 		if(i == 5){ break;}
-		content += '<div class="'+data[i][0].split(' ').join('_')+'">';
-		content += '<span class="pull-right">'+data[i][1]+'/10</span>';
-		if(data[i].length == 3){	//has thumbs up
-			content += '<i class="pull-right fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span class="pull-right">'+data[i][2]+'</span>';
+		if(data[i] != 0){
+			content += '<div class="'+data[i][0].split(' ').join('_')+'">';
+			content += '<span class="pull-right">'+data[i][1]+'/10</span>';
+			if(data[i].length == 3){	//has thumbs up
+				content += '<i class="pull-right fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span class="pull-right">'+data[i][2]+'</span>';
+			}
+			content += '<li>'+data[i][0]+'</li>';
+			content += '</div>';
 		}
-		content += '<li>'+data[i][0]+'</li>';
-		content += '</div>';
 	}
 	content += '</ul>';
 	techContainer.innerHTML += content;
@@ -189,13 +203,16 @@ function fillFamiliarTechnologies(data) {
 	var settings = '<ul>';
 	for(i = 0; i < data.length; i++){
 		if(i == 5){ break;}
-		settings += '<div style="padding-bottom: 20px;" class="'+data[i][0].split(' ').join('_')+'">';
-		settings += '<i class="tech pull-left fa fa-times" style="padding-right:5px"></i>'+data[i][0];
-		settings += '<input value='+data[i][1]+' class="max10Input pull-right" type="number" style="height: 20px !important;width:40px;" min="1" max="10">';
-		if(data[i].length == 3){	//has thumbs up
-			content += '<i class="pull-right fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span class="pull-right">'+data[i][2]+'</span>';
+		if(data[i] != 0){
+
+			settings += '<div style="padding-bottom: 20px;" class="'+data[i][0].split(' ').join('_')+'">';
+			settings += '<i class="tech pull-left fa fa-times" style="padding-right:5px"></i>'+data[i][0];
+			settings += '<input value='+data[i][1]+' class="max10Input pull-right" type="number" style="height: 20px !important;width:40px;" min="1" max="10">';
+			if(data[i].length == 3){	//has thumbs up
+				content += '<i class="pull-right fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span class="pull-right">'+data[i][2]+'</span>';
+			}
+			settings += '</div>';
 		}
-		settings += '</div>';
 	}
 	settings += '</ul>';
 	if(data.length < 5){
@@ -213,10 +230,12 @@ function fillInterestedTechnologies(data) {
 	var content = '<ul>';
 	for(i = 0; i < data.length; i++){
 		if(i == 5){ break;}
-		content += '<div class="'+data[i][0].split(' ').join('_')+'">';
-		content += '<span class="pull-right">'+data[i][1]+'/10</span>';
-		content += '<li>'+data[i][0]+'</li>';
-		content += '</div>'
+		if(data[i] != 0){
+			content += '<div class="'+data[i][0].split(' ').join('_')+'">';
+			content += '<span class="pull-right">'+data[i][1]+'/10</span>';
+			content += '<li>'+data[i][0]+'</li>';
+			content += '</div>'
+		}
 	}
 	content += '</ul>';
 	techContainer.innerHTML += content;
@@ -225,10 +244,13 @@ function fillInterestedTechnologies(data) {
 	var settings = '<ul>';
 	for(i = 0; i < data.length; i++){
 		if(i == 5){ break;}
-		settings += '<div style="padding-bottom: 20px;" class="'+data[i][0].split(' ').join('_')+'">';
-		settings += '<i class="tech pull-left fa fa-times" style="padding-right:5px"></i>'+data[i][0];
-		settings += '<input value='+data[i][1]+' class="max10Input pull-right" type="number" style="height: 20px !important;width:40px;" min="1" max="10">';
-		settings += '</div>';
+		if(data[i] != 0){
+
+			settings += '<div style="padding-bottom: 20px;" class="'+data[i][0].split(' ').join('_')+'">';
+			settings += '<i class="tech pull-left fa fa-times" style="padding-right:5px"></i>'+data[i][0];
+			settings += '<input value='+data[i][1]+' class="max10Input pull-right" type="number" style="height: 20px !important;width:40px;" min="1" max="10">';
+			settings += '</div>';
+		}
 	}
 	settings += '</ul>';
 	if(data.length < 5){
@@ -244,10 +266,12 @@ function fillFields(data) {
 	var content = '<ul>';
 	for(i = 0; i < data.length; i++){
 		if(i == 5){ break;}
-		content += '<div class="'+data[i][0].split(' ').join('_')+'">';
-		content += '<span class="pull-right">'+data[i][1]+'/10</span>';
-		content += '<li>'+data[i][0]+'</li>';
-		content += '</div>'
+		if(data[i] != 0){
+			content += '<div class="'+data[i][0].split(' ').join('_')+'">';
+			content += '<span class="pull-right">'+data[i][1]+'/10</span>';
+			content += '<li>'+data[i][0]+'</li>';
+			content += '</div>';
+		}
 	}
 	content += '</ul>';
 	fieldsContainer.innerHTML += content;
@@ -256,10 +280,12 @@ function fillFields(data) {
 	var settings = '<ul>';
 	for(i = 0; i < data.length; i++){
 		if(i == 5){ break;}
-		settings += '<div style="padding-bottom: 20px;" class="'+data[i][0].split(' ').join('_')+'">';
-		settings += '<i class="tech pull-left fa fa-times" style="padding-right:5px"></i>'+data[i][0];
-		settings += '<input value='+data[i][1]+' class="max10Input pull-right" type="number" style="height: 20px !important;width:40px;" min="1" max="10">';
-		settings += '</div>';
+		if(data[i] != 0){
+			settings += '<div style="padding-bottom: 20px;" class="'+data[i][0].split(' ').join('_')+'">';
+			settings += '<i class="tech pull-left fa fa-times" style="padding-right:5px"></i>'+data[i][0];
+			settings += '<input value='+data[i][1]+' class="max10Input pull-right" type="number" style="height: 20px !important;width:40px;" min="1" max="10">';
+			settings += '</div>';
+		}
 	}
 	settings += '</ul>';
 	if(data.length < 5){
@@ -279,12 +305,14 @@ function fillHackathons(data) {
 			content += data.length-5+' more...';
 			break;
 		}
-		content += '<div class="'+data[i][0].split(' ').join('_')+'">';
-		if(data[i].length > 3){		//won an award
-			content += '<i class="pull-right fa fa-trophy" title="'+data[i][3]+'"></i>'
+		if(data[i] != 0){
+			content += '<div class="'+data[i][0].split(' ').join('_')+'">';
+			if(data[i].length > 3){		//won an award
+				content += '<i class="pull-right fa fa-trophy" title="'+data[i][3]+'"></i>'
+			}
+			content += '<li><a href="'+data[i][2]+'" style="color: black">'+data[i][0]+ " "+ data[i][1]+'</a></li>';
+			content += '</div>';
 		}
-		content += '<li><a href="'+data[i][2]+'" style="color: black">'+data[i][0]+ " "+ data[i][1]+'</a></li>';
-		content += '</div>'
 	}
 	content += '</ul>';
 	hackContainer.innerHTML += content;
@@ -293,9 +321,11 @@ function fillHackathons(data) {
 	var settings = '<ul>';
 	for(i = 0; i < data.length; i++){
 		if(i == 5){ break;}
-		settings += '<div style="padding-bottom: 20px;" class="'+data[i][0].split(' ').join('_')+'">';
-		settings += '<i class="tech pull-left fa fa-times" style="padding-right:5px"></i>'+data[i][0];
-		settings += '</div>';
+		if(data[i] != 0){
+			settings += '<div style="padding-bottom: 20px;" class="'+data[i][0].split(' ').join('_')+'">';
+			settings += '<i class="tech pull-left fa fa-times" style="padding-right:5px"></i>'+data[i][0];
+			settings += '</div>';
+		}
 	}
 	settings += '</ul>';
 	if(data.length < 5){
@@ -309,9 +339,11 @@ function fillHackathons(data) {
 
 function fillNote(data){
 	var container = document.querySelector("#note > .content");
-	var content = '';
+	var content = '<h4 class="accent"> Hobbies</h4>';
 	for(i = 0; i < data.length; i++){
-		content += '<p>' + data[i] + '</p>';
+		if(data[i] != 0){
+			content += '<span>' + data[i] + '</span>';	
+		}
 	}
 	container.innerHTML += content;
 
