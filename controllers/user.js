@@ -6,6 +6,7 @@ const nodemailer = require('nodemailer');
 const passport = require('passport');
 const User = require('../models/User');
 const randomstring = require('randomstring');
+const fs = require('fs');
 //const mailer = require('../misc/mailer');
 //mailer.sendMail('jennyxu1029@gmail.com','jennyxu8448@gmail.com','Please work','please work');
 /*
@@ -100,22 +101,22 @@ exports.getSignup = (req, res) => {
 	});
 }
 exports.postSignup = async (req, res, next) => {
-	console.log('in post signup2');
+	//console.log('in post signup2');
 	//console.log(req.body.email);
-	//console.log(req.body);
+	console.log(req.body);
 	//console.log(req.body.school);
    	//res.json(req.body);
 
 	User.findOne({
-		email: "kennygu@gmail.com"
+		email: req.body.email || 'jennyxu8448@gmail.com'
 	}, (err, user) => {
 		if (err) {
 			return next(err);
 		}
-		user.school = req.body.school;
-		user.major = req.body.major;
-		user.graduationYear = req.body.graduationYear;
-		user.educationLevel = req.body.educationLevel;
+		user.school = req.body.school || '';
+		user.major = req.body.major || '';
+		user.graduationYear = req.body.graduationYear || '';
+		user.educationLevel = req.body.educationLevel || '';
 		user.numOfHackathons = req.body.hackathons || 0;
 		user.hackathons = req.body.hackathon || '';
 
@@ -125,6 +126,8 @@ exports.postSignup = async (req, res, next) => {
 		user.preferences.fields = req.body.fields || '';
 		user.preferences.hobbies = req.body.hobbies || '';
 
+		user.profileimg.data = fs.readFileSync(req.body.pfp);
+		user.profileimg.contentType = 'image/png';
 		user.website = req.body.website || '';
 		user.facebook = req.body.github || '';
 		user.github = req.body.github || '';
@@ -133,6 +136,8 @@ exports.postSignup = async (req, res, next) => {
 			if (err) {
 				return next(err);
 			}
+			res.contentType(doc.img.contentType);
+          	res.send(doc.img.data);
 			res.render('/account/profile', {
 				title: 'Dashboard', css: 'profile.css', js: 'profile.js'
 			});

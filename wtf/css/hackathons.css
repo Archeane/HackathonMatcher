@@ -1,0 +1,98 @@
+
+.seasons-events.seasons-events-index .event .event-wrapper {
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 300px;
+    min-height: 360px;
+}
+
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.old-layout {
+    background: #f7f9f9;
+    color: #333333;
+    font-family: "Open Sans", "Helvetica Neue", "Arial", "sans-serif";
+    font-weight: 400;
+    font-style: normal;
+    line-height: 1.78571429;
+    text-rendering: optimizeLegibility;
+}
+
+body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #333333;
+    background-color: white;
+}
+
+.seasons-events.seasons-events-index .event .event-wrapper .inner {
+    border: 1px solid #eaeaea;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    background-clip: padding-box;
+    -moz-background-clip: padding;
+    -webkit-background-clip: padding-box;
+    background-color: #fff;
+    background-position: center;
+    -webkit-box-shadow: 0px 0px 8px rgba(0,0,0,0.3);
+    -moz-box-shadow: 0px 0px 8px rgba(0,0,0,0.3);
+    box-shadow: 0px 0px 8px rgba(0,0,0,0.3);
+    padding-bottom: 20px;
+    text-align: center;
+    position: relative;
+}
+
+.seasons-events.seasons-events-index .event .event-wrapper .inner .image-wrap {
+    -webkit-border-top-left-radius: 3px;
+    -webkit-border-top-right-radius: 3px;
+    -moz-border-radius-topleft: 3px;
+    -moz-border-radius-topright: 3px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    height: 215px;
+    overflow: hidden;
+}
+
+.seasons-events.seasons-events-index .event .event-wrapper .inner .event-logo {
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    -moz-background-clip: padding;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    background-color: #fff;
+    height: 60px;
+    left: 50%;
+    margin-top: -46px;
+    margin-left: -30px;
+    position: absolute;
+    text-align: center;
+    width: 60px;
+}
+
+.seasons-events.seasons-events-index .event .event-wrapper h3 {
+    margin: 22px auto 3px !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 240px;
+}
+
+.old-layout h1, .old-layout h2, .old-layout h3, .old-layout h4, .old-layout h5, .old-layout h6, .old-layout .h1, .old-layout .h2, .old-layout .h3, .old-layout .h4, .old-layout .h5, .old-layout .h6 {
+    color: #333333;
+    font-family: "Open Sans", "Helvetica Neue", "Arial", "sans-serif";
+    font-weight: 700;
+    font-style: normal;
+    text-rendering: optimizeLegibility;
+}
+
+h3, .h3 {
+    font-size: 24px;
+}

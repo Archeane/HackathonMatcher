@@ -1,49 +1,8 @@
-const bcrypt = require('bcrypt-nodejs');
-const crypto = require('crypto');
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
+const hackathonSchema = new mongoose.Schema({
 	name: String,
-	gender: String,
-	email: {
-		type: String,
-		unique: true
-	},
-	password: String,
-
-	emailSecretToken: String,
-	emailActive: Boolean,
-	passwordResetToken: String,
-	passwordResetExpires: Date,
-
-	facebook: String,
-	phone: String,
-	google: String,
-	github: String,
-	instagram: String,
-	linkedin: String,
-	tokens: Array,
 	
-	
-	school: String,
-	major: String,
-	graduationYear: String,
-	educationLevel: String,
-	location: String,
-	website: String,
-	profileimg: 
-      { data: Buffer, contentType: String },		
-
-	numOfHackathons: Number,
-	hackathons: Array,
-
-	preferences: {
-		interests: Array,
-		languages: Array,
-		fields: Array,
-		technologies: Array,
-		hobbies: Array
-	}
 }, {
 	timestamps: true
 });

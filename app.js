@@ -34,6 +34,7 @@ const homeController = require('./controllers/home');
 const userController = require('./controllers/user');
 const apiController = require('./controllers/api');
 const contactController = require('./controllers/contact');
+const hackathonController = require('./controllers/hackathons');
 
 /**
  * API keys and Passport configuration.
@@ -115,6 +116,7 @@ app.use((req, res, next) => {
 });
 app.use(express.static(path.join(__dirname, 'wtf')));//, { maxAge: 31557600000 }));
 
+
 /**
  * Primary app routes.
  */
@@ -146,6 +148,9 @@ app.post('/account/profile', passportConfig.isAuthenticated, userController.post
 app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
+
+//----------hackathons----------
+app.get('/hackathons', hackathonController.getHackathonList);
 
 /**
  * API examples routes.
