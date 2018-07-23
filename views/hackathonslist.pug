@@ -1,0 +1,31 @@
+extends layout
+
+block content
+	.seasons-events.seasons-events-index.old-layout
+		.header
+			.row.feature
+				.col-md-12.text-center
+					h2 Upcoming Hackathons
+				.col-md-12.text-center
+					p.lead.animatedfadeInDown
+						| Find out more about hackathons including attending hackers, sponsors, and more!
+
+		.row.hackathons-list
+
+		.row
+			.col-md-12.text-center
+				h4
+					| Have an event you want to add to this list?  
+					a(href='https://mlh.io/event-membership') Find out How
+					| !
+
+
+	script.
+		var list = !{JSON.stringify(hackathonList)};
+		
+
+
+
+
+
+
