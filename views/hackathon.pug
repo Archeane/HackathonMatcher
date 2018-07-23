@@ -1,0 +1,46 @@
+extends layout
+
+block content 
+
+	.hackathon
+		header#mu-hero
+			.mu-hero-overlay
+				.container
+					.mu-hero-area
+						.mu-hero-featured-area
+							.mu-logo-area
+								img.mu-logo-img
+								a.mu-logo(href='#') 
+							.mu-hero-featured-content
+		.bg-light.text-dark
+			.container
+				.about.center
+					h2 About The Hackathon
+
+		.container
+			.sponsors.center
+				h2 Sponsors
+		
+		.bg-light.text-dark
+			.container
+				.hackers.center
+					h2 Attending Hackers
+					.row.attending-hackers
+						
+							
+							
+					.row
+						button View All in List 
+						button View All in Visual
+						button Set Sorting Filters
+
+			
+
+		
+
+	script.
+		var hackathon = !{JSON.stringify(foundHackathon)};
+
+
+		
+	
