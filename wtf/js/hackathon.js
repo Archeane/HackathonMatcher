@@ -3,7 +3,19 @@ $(document).ready(function(){
 	fillHeader();
 	fillAbout();
 	fillSponsors();
-
+/*
+	$.ajax({
+        type: "POST",
+        url: '/hackathons/ef49c2c0-d206-47fe-8241-5ac47feae273',
+        success: function(data) {
+        	console.log("data received!!");
+            console.log(data);
+        },
+        error: function(jqXHR, textstatus, errorThrown) {
+            alert('text status ' + textstatus + ', err ' + errorThrown);
+        }
+    });
+*/
 
 });
 

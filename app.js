@@ -152,6 +152,7 @@ app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userControl
 //----------hackathons----------
 app.get('/hackathons', hackathonController.getHackathonList);
 app.get('/hackathons/:id', hackathonController.getHackathonById);
+app.get('/hackathons/:id/process', hackathonController.process);
 
 /**
  * API examples routes.
