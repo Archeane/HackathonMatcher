@@ -1,21 +1,32 @@
 $(document).ready(function(){
 
-	fillHeader();
-	fillAbout();
-	fillSponsors();
-/*
+	
 	$.ajax({
-        type: "POST",
-        url: '/hackathons/ef49c2c0-d206-47fe-8241-5ac47feae273',
+        type: "GET",
+        url: '/hackathons/ef49c2c0-d206-47fe-8241-5ac47feae273/process',
         success: function(data) {
-        	console.log("data received!!");
+        	alert("data received");
+        	//console.log("data received!!");
             console.log(data);
         },
         error: function(jqXHR, textstatus, errorThrown) {
             alert('text status ' + textstatus + ', err ' + errorThrown);
         }
     });
+
+	fillHeader();
+	fillAbout();
+	fillSponsors();
+
+/*
+	fetch('/hackathons/ef49c2c0-d206-47fe-8241-5ac47feae273').then(function(data) {
+		console.log("DATA!", data);
+	}).catch(function(error){
+		alert(error);
+	});
 */
+	
+
 
 });
 

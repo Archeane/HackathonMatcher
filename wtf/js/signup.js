@@ -115,15 +115,22 @@ $(document).ready(function () {
 	//TODO: change route to localhost when integrating && Very slow autocomplete
 	var unisDatalist = [];
 	$.getJSON("/assets/us_institutions.json", function (data) {
+		/*
+		$.each(result, function() {
+		    $('#reg-school').append($("<option />").val(data['institution']).text(data['institution']));
+		});
+		*/
 		for (i = 0; i < data.length; i++) {
-			unisDatalist.push(data[i]["institution"]);
+			$('#reg-school').append($("<option />").val(data[i]["institution"]).text(data[i]['institution']));
 		}
+		/*
 		$("#reg-school").autocomplete({
 			minLength: 2,
 			source: unisDatalist
 		});
+		*/
 	});
-
+/*
 	$('#reg-school').on('input', function (e) {
 		var input = $(e.target);
 		if (input.val().length < 3) {
@@ -132,6 +139,8 @@ $(document).ready(function () {
 			input.attr('list', dataList);
 		}
 	})
+*/
+
 
 	var majors = [];
 	$.getJSON("/assets/majors.json", function (data) {

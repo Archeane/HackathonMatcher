@@ -126,8 +126,10 @@ exports.postSignup = async (req, res, next) => {
 		user.preferences.fields = req.body.fields || '';
 		user.preferences.hobbies = req.body.hobbies || '';
 
-		user.profileimg.data = fs.readFileSync(req.body.pfp);
-		user.profileimg.contentType = 'image/png';
+		/*
+		user.profileimg.data = fs.readFileSync(req.body.pfp) || '';
+		user.profileimg.contentType = 'image/png' || '';
+		*/
 		user.website = req.body.website || '';
 		user.facebook = req.body.github || '';
 		user.github = req.body.github || '';
@@ -136,9 +138,9 @@ exports.postSignup = async (req, res, next) => {
 			if (err) {
 				return next(err);
 			}
-			res.contentType(doc.img.contentType);
-          	res.send(doc.img.data);
-			res.render('/account/profile', {
+			//res.contentType(doc.img.contentType);
+          	//res.send(doc.img.data);
+			res.render('account/profile', {
 				title: 'Dashboard', css: 'profile.css', js: 'profile.js'
 			});
 		});
@@ -243,7 +245,17 @@ exports.postVerifyEmail = async (req, res, next) => {
 
 //---------dashboard--------------
 exports.getUserById = (req, res) => {
-	User.findById(req.params.id, (err, user) => {
+	var id = req.params.id;
+	if(id == ''){
+		if(req.user){
+			id = req.user._id;
+			//res.send(id);
+			throw new Error('_id field cannot be obtained');
+		}else{
+			res.send('404 User ID Not found');
+		}
+	}
+	User.findById(id, (err, user, next) => {
 		if (err) {
 			return next(err);
 		}
@@ -254,7 +266,7 @@ exports.getUserById = (req, res) => {
 };
 exports.getAccount = (req, res) => {
 	res.render('account/dashboard', {
-		title: 'Account Management', css: 'profile.css'
+		title: 'Account Management', dashboardUser: req.user, css: 'profile.css', js:'profile.js'
 	});
 };
 exports.postUpdateProfile = (req, res, next) => {

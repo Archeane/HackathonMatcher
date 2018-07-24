@@ -17,7 +17,10 @@ block content
 			<!--<input type="text" class="tagsinput"/>-->
 			<div class="bg-danger" id="reg-error"></div>
 			<input type="hidden" name='email' value='#{email}' />
-			<label for="reg-school" class="required"><input type="text" id="reg-school" name="school" placeholder="School You Attend" list="unis-datalist" /></label>
+			<label for="reg-school" class="required">
+				//<input type="text" id="reg-school" name="school" placeholder="School You Attend" list="unis-datalist" />
+				<select id='reg-school' name='school' placeholder="School"><option>School</option></select>
+			</label>
 			<datalist id='unis-datalist'></datalist>
 			<label for="reg-major" class="required"><input type="text" id="reg-major" name="major" placeholder="Major"></label>
 			<div>

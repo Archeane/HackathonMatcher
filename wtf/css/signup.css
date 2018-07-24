@@ -113,7 +113,7 @@ label.required:after {content: " *"; color: red;}
 	display: none;
 }
 /*inputs*/
-#msform input, #msform textarea,{
+#msform input, #msform textarea{
 	padding: 15px;
 	border: 1px solid #ccc;
 	border-radius: 3px;

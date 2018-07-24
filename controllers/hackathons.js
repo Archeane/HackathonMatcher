@@ -4,6 +4,7 @@ var MongoClient = require('mongodb').MongoClient
 
 var loggedinUser;
 var hackathonData;
+var processedData = null;
 
 //var db = new Db('test', new Server('localhost', 27017));
 exports.getHackathonList = (req,res, next) => {
@@ -58,25 +59,23 @@ exports.getHackathonById = (req, res, next) => {
 				var resultJson = convert.schema2json(result);
 
 
-				console.log('about to launch process');
-				console.log('before render', req.user);
-				var process = spawn('python', ["./algorithmn/process.py", req.user]);
-				console.log('process launched');
+				//console.log('about to launch process');
+				//console.log('before render', req.user);
+				var process = spawn('python', ["./algorithmn/process.py", resultJson, req.user]);
+				//console.log('process launched');
 
-
+				
 				process.stdout.on('data', function(data){
-					//hackathonData = data.toString();
-					console.log('DATATATARAT', data.toString());
-					res.write(data.toString());
-					res.end();
+					processedData = data.toString();
 				});
-
-				
-  				res.render('hackathon', {
-					title: '', foundHackathon: result, css:'hackathon.css', js:'hackathon.js'
+				process.on('close', function(){
+					console.log(processedData);
+					res.render('hackathon', {
+						title: '', foundHackathon: result, data: processedData, css:'hackathon.css', js:'hackathon.js'
+					});
 				});
-				//console.log('after render', req.user);
 				
+  				
 
 				
 
@@ -87,9 +86,15 @@ exports.getHackathonById = (req, res, next) => {
 };
 
 exports.process = (req, res, next) =>{
-	console.log('hackathonData from /processHackathonHackers', hackathonData);
-
+	//console.log('hackathonData from /processHackathonHackers', hackathonData);
+	//res.send('ABCDEFG');
+	//res.render('hackathon', {
+	//	title: '', css:'hackathon.css', js:'hackathon.js'
+	//});
+	//
 	
+	res.write('HELLLOOOOO')
+	res.end();
 };
 
 

@@ -4,12 +4,11 @@ import json
 
 
 print("in process.py")
-# currentHackathon = json.loads(sys.argv[1])
-currentUser = sys.argv[1]
-# print(currentHackathon)
-print(currentUser)
+currentHackathon = json.loads(sys.argv[1])
+currentUser = sys.argv[2]
+print('process.py:',currentHackathon)
+print('process.py:',currentUser)
 
-'''
 # TODO: change this current user to logged in user
 currentHacker = currentHackathon['hackers'][20];
 
@@ -139,14 +138,7 @@ json.dumps(list)
 print(list)
 '''
 '''
-class HelloRPC(object):
-    def hello(self, name):
-        return "Hello, %s" % name
 
-s = zerorpc.Server(HelloRPC())
-s.bind("tcp://0.0.0.0:4242")
-s.run()
-'''
 
 '''
 TODO: 
