@@ -154,6 +154,10 @@ app.get('/hackathons', hackathonController.getHackathonList);
 app.get('/hackathons/:id', hackathonController.getHackathonById);
 app.get('/hackathons/:id/process', hackathonController.process);
 
+
+//---------test----------------
+app.get('/test/init', hackathonController.testInit);
+
 /**
  * API examples routes.
  */

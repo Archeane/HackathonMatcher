@@ -1,12 +1,11 @@
 $(document).ready(function(){
 
-	
+	console.log(processedData);
 	$.ajax({
         type: "GET",
         url: '/hackathons/ef49c2c0-d206-47fe-8241-5ac47feae273/process',
         success: function(data) {
         	alert("data received");
-        	//console.log("data received!!");
             console.log(data);
         },
         error: function(jqXHR, textstatus, errorThrown) {
@@ -18,14 +17,7 @@ $(document).ready(function(){
 	fillAbout();
 	fillSponsors();
 
-/*
-	fetch('/hackathons/ef49c2c0-d206-47fe-8241-5ac47feae273').then(function(data) {
-		console.log("DATA!", data);
-	}).catch(function(error){
-		alert(error);
-	});
-*/
-	
+
 
 
 });

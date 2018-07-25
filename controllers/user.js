@@ -151,7 +151,7 @@ exports.postSignup = async (req, res, next) => {
 
 exports.postHome = (req, res, next) => {
 	req.assert('email', 'Email is not valid').isEmail();
-	req.assert('password', 'Password must be at least 4 characters long').len(4);
+	req.assert('', 'Password must be at least 4 characters long').len(4);
 	req.assert('confirmpassword', 'Passwords do not match').equals(req.body.password);
 	req.sanitize('email').normalizeEmail({
 		gmail_remove_dots: false
@@ -246,15 +246,17 @@ exports.postVerifyEmail = async (req, res, next) => {
 //---------dashboard--------------
 exports.getUserById = (req, res) => {
 	var id = req.params.id;
+	/*
 	if(id == ''){
 		if(req.user){
-			id = req.user._id;
+			//id = req.user.id;
 			//res.send(id);
-			throw new Error('_id field cannot be obtained');
+			//throw new Error('_id field cannot be obtained');
 		}else{
 			res.send('404 User ID Not found');
 		}
 	}
+	*/
 	User.findById(id, (err, user, next) => {
 		if (err) {
 			return next(err);

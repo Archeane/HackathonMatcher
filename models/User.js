@@ -44,12 +44,12 @@ const userSchema = new mongoose.Schema({
 		technologies: Array,
 		hobbies: Array
 	},
-	scores: {
-		interests: Array,
-		languages: Array,
-		fields: Array,
-		technologies: Array,
-		hobbies: Array
+	careScores: {
+		interests: Number,
+		languages: Number,
+		fields: Number,
+		technologies: Number,
+		hobbies: Number
 	}
 }, {
 	timestamps: true
