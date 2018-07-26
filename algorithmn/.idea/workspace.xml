@@ -17,8 +17,8 @@
       <file leaf-file-name="process.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/process.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="16" column="1" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
+            <state relative-caret-position="306">
+              <caret line="22" lean-forward="true" selection-start-line="22" selection-end-line="22" />
             </state>
           </provider>
         </entry>
@@ -41,7 +41,7 @@
   <component name="NodePackageJsonFileManager">
     <packageJsonPaths />
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="1232" />
     <option name="y" value="84" />
     <option name="width" value="1522" />
@@ -123,14 +123,15 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="616" y="42" width="761" height="966" extended-state="0" />
+    <frame x="-6" y="-6" width="1513" height="973" extended-state="7" />
+    <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Python Console" order="7" weight="0.329849" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.3325527" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3321719" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.329849" />
       <window_info content_ui="combo" id="Project" order="0" weight="0.50066936" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
@@ -156,12 +157,19 @@
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/process.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" column="1" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/process.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/process.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="16" column="1" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
+        <state relative-caret-position="306">
+          <caret line="22" lean-forward="true" selection-start-line="22" selection-end-line="22" />
         </state>
       </provider>
     </entry>

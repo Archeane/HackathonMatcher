@@ -1,14 +1,29 @@
 from random import randint
 import sys
 import json 
+import pymongo
+from pymongo import MongoClient
+
+# print('helllooo')
+client = MongoClient('mongodb://localhost:27017')
+db = client['test']
 
 print("in process.py")
-hacker = json.loads(sys.argv[1])
-user = sys.argv[2]
-print('process.py:',hacker)
+currentHackathon = json.loads(sys.argv[1])
+currentHacker = sys.argv[2]
+#print('process.py:',currentHackathon)
 #print('process.py:',currentHacker)
 
+#hackathon = db['hackathons'].find_one({'email': 'ome@zalhebu.tn'})
+#print(hackathon)
+allHackers = []
+for email in currentHackathon['hackers']:
+    temp = db['users'].find_one({'email':email})
+    allHackers.append(temp)
 
+
+#print(len(allHackers))
+   
 def calculateInterestScore(hacker, carescore):
     interestsArr = hacker['interests']
     if len(interestsArr) == 0:
@@ -111,13 +126,13 @@ def findcommonelements(arr1, arr2):
     return common
 
 
-def hackathonsimiliarscore(currentHacker, currentHackathon, filters):
+def hackathonsimiliarscore(currentHacker, allHackers, filters):
     hackathonsimiliarscores = []
 
-    resetuser(currentHacker,currentHacker['careScores'][0], currentHacker['careScores'][1])
+    resetuser(currentHacker,filters, filters)
     print(currentHacker)
-    hackers = currentHackathon['hackers']
-    for hacker in hackers:
+    #hackers = currentHackathon['hackers']
+    for hacker in allHackers:
         resetuser(hacker, filters[0][1], filters[1][1])
         score = str(calculateSimiliarScore(currentHacker, hacker, filters))
         hackathonsimiliarscores.append([[hacker['username']], score])
@@ -126,7 +141,8 @@ def hackathonsimiliarscore(currentHacker, currentHackathon, filters):
 
 
 filter = [['interests', 7],['languages', 3]]
-similiarscores = hackathonsimiliarscore(currentHacker, currentHackathon, filter)
+print('processing...')
+similiarscores = hackathonsimiliarscore(currentHacker, allHackers, filter)
 print('done');
 json.dumps(similiarscores)
 # similiarscoresJSON = json.dumps(similiarscores)

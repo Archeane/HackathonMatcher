@@ -267,6 +267,7 @@ exports.getHackathonById = (req, res, next) => {
 				    "educationLevel" : "graduate"
 				});
 
+/*
 				result.hackers.forEach(function(email){
 					var hacker = db.collection('users').findOne({'email': email});
 					
@@ -281,12 +282,11 @@ exports.getHackathonById = (req, res, next) => {
 						console.log(processedData);
 						/*res.render('hackathon', {
 							title: '', foundHackathon: result, data: processedData, css:'hackathon.css', js:'hackathon.js'
-						});*/
+						});
 					});
 				});
 				
-
-/*
+*/
 				var process = spawn('python', ["./algorithmn/process.py", resultJson, user]);
 					
 				process.stdout.on('data', function(data){
@@ -298,7 +298,7 @@ exports.getHackathonById = (req, res, next) => {
 						title: '', foundHackathon: result, data: processedData, css:'hackathon.css', js:'hackathon.js'
 					});
 				});
-*/				
+				
   				
 
   			}
