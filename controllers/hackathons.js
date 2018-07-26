@@ -39,7 +39,7 @@ exports.testInit = (req,res,next) =>{
 		const tech = require('../wtf/assets/technologies.json');
 		const lan = require('../wtf/assets/languages.json');
 		const fields = require('../wtf/assets/fields.json');
-		/*
+	/*	
 		var usersArr = [];
 		for(j = 0; j < 500; j++){
 			var firstname = random_name({first:true});
@@ -117,10 +117,10 @@ exports.testInit = (req,res,next) =>{
 		}catch(e){
 			console.log('Error!', e);
 		}
-		*/
+	*/	
 /*
 		const Hackathon = require('../models/Hackathon');
-		for(i = 0; i < 3; i++){
+		for(i = 0; i < 9; i++){
 			var uni = unis[Math.floor(30+Math.random()*50)].institution
 			var name = 'hack'+uni;
 			var email = chance.email();
@@ -155,10 +155,15 @@ exports.testInit = (req,res,next) =>{
 
 		var collection = db.collection('hackathons');
 		collection.find().forEach(function(doc) {
-			var rand = Math.floor(19+Math.random()*30);
-			db.collection('users').aggregate([ { $sample: { size: rand } } ], function(err, d){
+			var rand = Math.floor(100+Math.random()*200);
+			db.collection('users').aggregate([ { $sample: { size: rand } } ], function(err, data){
 				if(err) throw err;
-				collection.update({'name': doc.name}, {$set:{'hackers': d}});
+				var emails = [];
+				data.forEach(function(d){
+					emails.push(d.email);
+				});
+				//console.log(emails);
+				collection.update({'name': doc.name}, {$set:{'hackers': emails}});
 				console.log('update');
 			});
 		});
@@ -166,8 +171,6 @@ exports.testInit = (req,res,next) =>{
 	});
 };
 
-
-//var db = new Db('test', new Server('localhost', 27017));
 exports.getHackathonList = (req,res, next) => {
 	MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {
 		if (err) throw err;
@@ -186,46 +189,106 @@ exports.getHackathonList = (req,res, next) => {
 exports.getHackathonById = (req, res, next) => {
 	MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {
 		if (err) throw err;
-  		db.collection('hackathons').findOne({"guid": req.params.id}, (err, result) =>{
+		//console.log(req.params.id);
+  		db.collection('hackathons').findOne({"email": req.params.id}, (err, result) =>{
   			if(err) throw err;
 
   			if(result == null){
   				res.send("404 NOT FOUND");
   			}else{
-
-  				/*
-				/TODO: printing hacker.interests and hacker.languages as Array/
-				manager.loadTestHackathonData("CEWIT", function(err, hackathon){
-					if(err) throw err;
-					if(!hackathon) throw "Hackathon not found";
-					hack = hackathon;
-
-
-					var jsonStr = convert.schema2json(hack);
-					//console.log(jsonStr);
-
-
-					var process = spawn('python',["./algorithmn/process.py",
-				                         jsonStr] );
-					
-					process.stdout.on('data', function(data) {
-						console.log(data.toString());
-						var arr = eval(data.toString());
-						console.log(arr[0][0]);
-					});
-				});
-				*/
-			
 				var resultBson = result;
 				var resultJson = convert.schema2json(result);
+				var user = JSON.stringify({
+				    "preferences" : {
+				        "interests" : [ 
+				            [ 
+				                "Computer Vision", 
+				                1
+				            ], 
+				            [ 
+				                "Data Visulization", 
+				                6
+				            ]
+				        ],
+				        "languages" : [ 
+				            [ 
+				                "mysql", 
+				                0
+				            ], 
+				            [ 
+				                "C", 
+				                1
+				            ]
+				        ],
+				        "fields" : [ 
+				            [ 
+				                "Scinece", 
+				                9
+				            ], 
+				            [ 
+				                "Finance", 
+				                7
+				            ]
+				        ],
+				        "technologies" : [ 
+				            [ 
+				                "React Native", 
+				                7
+				            ], 
+				            [ 
+				                "Firebase", 
+				                4
+				            ], 
+				            [ 
+				                "Ruby-on-rails", 
+				                3
+				            ]
+				        ],
+				        "hobbies" : []
+				    },
+				    "careScores" : {
+				        "interests" : 3,
+				        "technologies" : 1,
+				        "languages" : 9,
+				        "fields" : 8
+				    },
+				    "tokens" : [],
+				    "hackathons" : [],
+				    "name" : "Eva Desak",
+				    "id" : "340JYLom9QrSHed96jRUxKGI941BuGai",
+				    "index" : 1,
+				    "email" : "eva@gmail.com",
+				    "password" : "1234",
+				    "emailSecretToken" : "secretToken",
+				    "emailActive" : true,
+				    "school" : "AVTEC-Alaska's Institute of Technology",
+				    "major" : "Accounting",
+				    "graduationYear" : "2022",
+				    "educationLevel" : "graduate"
+				});
 
+				result.hackers.forEach(function(email){
+					var hacker = db.collection('users').findOne({'email': email});
+					
 
-				//console.log('about to launch process');
-				//console.log('before render', req.user);
-				var process = spawn('python', ["./algorithmn/process.py", resultJson, req.user]);
-				//console.log('process launched');
-
+					
+					var process = spawn('python', ["./algorithmn/process.py", hacker, user]);
+					
+					process.stdout.on('data', function(data){
+						processedData = data.toString();
+					});
+					process.on('close', function(){
+						console.log(processedData);
+						/*res.render('hackathon', {
+							title: '', foundHackathon: result, data: processedData, css:'hackathon.css', js:'hackathon.js'
+						});*/
+					});
+				});
 				
+
+/*
+				var process = spawn('python', ["./algorithmn/process.py", resultJson, user]);
+					
 				process.stdout.on('data', function(data){
 					processedData = data.toString();
 				});
@@ -235,7 +298,7 @@ exports.getHackathonById = (req, res, next) => {
 						title: '', foundHackathon: result, data: processedData, css:'hackathon.css', js:'hackathon.js'
 					});
 				});
-				
+*/				
   				
 
   			}

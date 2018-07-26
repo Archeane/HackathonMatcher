@@ -53,9 +53,6 @@ exports.postLogin = (req, res, next) => {
 	}
 
 	passport.authenticate('local', (err, user, info) => {
-		console.log(err);
-		console.log(user);
-		console.log(info);
 		if (err) {
 			req.flash('errors', errors);
 			return next(err);
@@ -73,7 +70,7 @@ exports.postLogin = (req, res, next) => {
 				msg: 'Success! You are logged in.'
 			});
 
-			res.render('account/dashboard');
+			res.render('account/account');
 
 			//TODO: What is this?
       //res.redirect(req.session.returnTo || '/');
@@ -197,7 +194,7 @@ exports.postHome = (req, res, next) => {
 			const html = "Hi there,<br />Thank you for registering!<br /><br />Please verify your email by typing the following token:<br />Token: ${secretToken} < br/> On the following page: <a href='http://localhost:3000/verify'> link</a>";
 			mailer.sendEmail('jennyxu1029@gmail.com', user.email, "Please verify your email", test);
 			*/
-
+/*
 			req.logIn(user, (err) => {
 				if (err) {
 					return next(err);
@@ -206,6 +203,7 @@ exports.postHome = (req, res, next) => {
 				"title":"Signup", "css":["signup.css"], "js":["signup.js"]
 				});
 			});
+			*/
 
 		});
 	});
@@ -245,7 +243,6 @@ exports.postVerifyEmail = async (req, res, next) => {
 
 //---------dashboard--------------
 exports.getUserById = (req, res) => {
-	var id = req.params.id;
 	/*
 	if(id == ''){
 		if(req.user){
@@ -257,6 +254,15 @@ exports.getUserById = (req, res) => {
 		}
 	}
 	*/
+	User.findOne({email: req.params.id}, (err, user, next) => {
+		if (err) {
+			return next(err);
+		}
+		res.render('account/dashboard', {
+			title: 'Account Management', dashboardUser: user, css: 'profile.css', js: 'profile.js'
+		});
+	});
+	/*
 	User.findById(id, (err, user, next) => {
 		if (err) {
 			return next(err);
@@ -265,6 +271,7 @@ exports.getUserById = (req, res) => {
 			title: 'Account Management', dashboardUser: user, css: 'profile.css', js: 'profile.js'
 		});
 	});
+	*/
 };
 exports.getAccount = (req, res) => {
 	res.render('account/dashboard', {

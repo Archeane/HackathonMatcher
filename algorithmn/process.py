@@ -2,23 +2,18 @@ from random import randint
 import sys
 import json 
 
-
 print("in process.py")
-currentHackathon = json.loads(sys.argv[1])
-currentUser = sys.argv[2]
-print('process.py:',currentHackathon)
-print('process.py:',currentUser)
+hacker = json.loads(sys.argv[1])
+user = sys.argv[2]
+print('process.py:',hacker)
+#print('process.py:',currentHacker)
 
-# TODO: change this current user to logged in user
-currentHacker = currentHackathon['hackers'][20];
 
 def calculateInterestScore(hacker, carescore):
     interestsArr = hacker['interests']
     if len(interestsArr) == 0:
         return []
-
     newInterestArr = []
-
     scoresum = 0;
     for interest in interestsArr:
         scoresum = scoresum + interest[1]
@@ -61,10 +56,13 @@ def calculateLanguageScore(hacker, carescore):
 
 # TODO: not good practice to modify the parameter
 def resetuser(hacker, interestcarescore, languagecarescore):
+#   user = [];
     newInterestArr = calculateInterestScore(hacker, interestcarescore)
     newLanguageArr = calculateLanguageScore(hacker, languagecarescore)
     newInterestArr.sort()
     newLanguageArr.sort()
+    user.append(newInterestArr)
+    user.append(newLanguageArr)
     hacker['interests'] = newInterestArr
     hacker['languages'] = newLanguageArr
 
@@ -116,7 +114,8 @@ def findcommonelements(arr1, arr2):
 def hackathonsimiliarscore(currentHacker, currentHackathon, filters):
     hackathonsimiliarscores = []
 
-    resetuser(currentHacker,filters[0][1], filters[1][1])
+    resetuser(currentHacker,currentHacker['careScores'][0], currentHacker['careScores'][1])
+    print(currentHacker)
     hackers = currentHackathon['hackers']
     for hacker in hackers:
         resetuser(hacker, filters[0][1], filters[1][1])
@@ -128,16 +127,10 @@ def hackathonsimiliarscore(currentHacker, currentHackathon, filters):
 
 filter = [['interests', 7],['languages', 3]]
 similiarscores = hackathonsimiliarscore(currentHacker, currentHackathon, filter)
+print('done');
 json.dumps(similiarscores)
 # similiarscoresJSON = json.dumps(similiarscores)
 print(similiarscores)
-'''
-'''
-list = [[1,2],[3,4]] # Note that the 3rd element is a tuple (3, 4)
-json.dumps(list)
-print(list)
-'''
-'''
 
 
 '''
