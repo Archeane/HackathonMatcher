@@ -7,9 +7,25 @@ var loggedinUser;
 var hackathonData;
 var processedData = null;
 
+var x = 0;
+var asyncLoop = function(arr) {
+    asyncFunction(arr[x],function(){
+        x++;
+        if(x < arr.length) {
+            loopArray(arr);   
+        }
+    }); 
+}
+
+function asyncFunction(msg,callback) {
+   	//code for async function
+    callback();
+}
+
 exports.testInit = (req,res,next) =>{
 	MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {
 		if (err) throw err;
+		this.db = db;
 
 		const User = require('../models/User');
 		const random_name = require('node-random-name');
@@ -23,15 +39,18 @@ exports.testInit = (req,res,next) =>{
 		const tech = require('../wtf/assets/technologies.json');
 		const lan = require('../wtf/assets/languages.json');
 		const fields = require('../wtf/assets/fields.json');
-		
+		/*
 		var usersArr = [];
-		for(j = 0; j < 10; j++){
+		for(j = 0; j < 500; j++){
 			var firstname = random_name({first:true});
 			var lastname = random_name({last:true});
 			var id = randomstring.generate();
+			var index = j;
 			var email = firstname.toLowerCase()+'@gmail.com';
 			var user = new User({
 				name: firstname+' ' +lastname,
+				id: id,
+				index: index,
 				email: email,
 				password: '1234',
 				emailSecretToken: 'secretToken',
@@ -91,25 +110,17 @@ exports.testInit = (req,res,next) =>{
 			user.careScores.fields = Math.floor(Math.random()*10);
 			user.isNew = true;
 			usersArr.push(user);
-			/*
-			user.save((err) => {
-				if (err) {
-					return next(err);
-				}
-				console.log('\x1b[33m%s\x1b[0m', 'user save success!');
-			});
-			*/
 		}
-		console.log(usersArr);
 		try{
-			db.collection('users').insertMany(usersArr);
+			console.log('userArr', usersArr.length);
+			db.collection('users').insertMany(usersArr, {ordered:false});
 		}catch(e){
 			console.log('Error!', e);
 		}
-
+		*/
 /*
 		const Hackathon = require('../models/Hackathon');
-		for(i = 0; i < 1; i++){
+		for(i = 0; i < 3; i++){
 			var uni = unis[Math.floor(30+Math.random()*50)].institution
 			var name = 'hack'+uni;
 			var email = chance.email();
@@ -117,14 +128,8 @@ exports.testInit = (req,res,next) =>{
 			var state = chance.state({ country: 'us' });
 			var city = chance.city();
 			var url = chance.url();
-			var hackers = null;
 
-			db.collection('users').aggregate(
-			   [ { $sample: { size: Math.floor(50+Math.random()*200) } } ]
-			).toArray(function(err, data){
-				if(err) throw err;
-				hackers = data;
-				var hackathon = new Hackathon({
+			var hackathon = new Hackathon({
 					name: name,
 					guid: chance.guid(),
 					university: uni,
@@ -134,19 +139,30 @@ exports.testInit = (req,res,next) =>{
 					city: city,
 					street: chance.street({country:'us'}),
 					date: chance.date({year: 2018}),
-					about: chance.paragraph(),
-					hackers: hackers
+					about: chance.paragraph()
 				});
-
-				hackathon.save((err) => {
-					if (err) {
-						return next(err);
-					}
+			hackathon.isNew = true;
+			try{
+				console.log(hackathon);
+				db.collection('hackathons').insertOne(hackathon, function(){
+					console.log("\x1b[36m","hackathon save success!");
 				});
-			});
+			}catch(e){
+				console.log('Error!', e);
+			}
 		}
 */
-	  	
+
+		var collection = db.collection('hackathons');
+		collection.find().forEach(function(doc) {
+			var rand = Math.floor(19+Math.random()*30);
+			db.collection('users').aggregate([ { $sample: { size: rand } } ], function(err, d){
+				if(err) throw err;
+				collection.update({'name': doc.name}, {$set:{'hackers': d}});
+				console.log('update');
+			});
+		});
+
 	});
 };
 
