@@ -4,15 +4,15 @@ import json
 import pymongo
 from pymongo import MongoClient
 
-# print('helllooo')
 client = MongoClient('mongodb://localhost:27017')
 db = client['test']
 
 print("in process.py")
+
 currentHackathon = json.loads(sys.argv[1])
-currentHacker = sys.argv[2]
-#print('process.py:',currentHackathon)
-#print('process.py:',currentHacker)
+currentHacker = json.loads(sys.argv[2])
+# print('process.py:',currentHackathon)
+# print('process.py:',currentHacker)
 
 #hackathon = db['hackathons'].find_one({'email': 'ome@zalhebu.tn'})
 #print(hackathon)
@@ -21,11 +21,11 @@ for email in currentHackathon['hackers']:
     temp = db['users'].find_one({'email':email})
     allHackers.append(temp)
 
-
 #print(len(allHackers))
-   
+
+
 def calculateInterestScore(hacker, carescore):
-    interestsArr = hacker['interests']
+    interestsArr = hacker['preferences']['interests']
     if len(interestsArr) == 0:
         return []
     newInterestArr = []
@@ -33,9 +33,13 @@ def calculateInterestScore(hacker, carescore):
     for interest in interestsArr:
         scoresum = scoresum + interest[1]
 
-    multipler = float(100)/scoresum
-    caremultipler = carescore/float(10)
+    multipler = 0
+    caremultipler = 0
+    if scoresum != 0:
+        multipler = float(100) / scoresum
 
+    if carescore != 0:
+        caremultipler = carescore / float(10)
 
     for interest in interestsArr:
         score = []
@@ -47,7 +51,7 @@ def calculateInterestScore(hacker, carescore):
 
 
 def calculateLanguageScore(hacker, carescore):
-    languagesArr = hacker['languages']
+    languagesArr = hacker['preferences']['languages']
     if len(languagesArr) == 0:
         return []
 
@@ -57,8 +61,13 @@ def calculateLanguageScore(hacker, carescore):
     for language in languagesArr:
         scoresum = scoresum + language[1]
 
-    multipler = float(100) / scoresum
-    caremultipler = carescore / float(10)
+    multipler = 0
+    caremultipler = 0
+    if scoresum != 0:
+        multipler = float(100) / scoresum
+
+    if carescore != 0:
+        caremultipler = carescore / float(10)
 
     for language in languagesArr:
         score = []
@@ -69,41 +78,104 @@ def calculateLanguageScore(hacker, carescore):
     return newLanguagesArr
 
 
+def calculateTechScore(hacker, carescore):
+    interestsArr = hacker['preferences']['technologies']
+    if len(interestsArr) == 0:
+        return []
+    newInterestArr = []
+    scoresum = 0;
+    for interest in interestsArr:
+        scoresum = scoresum + interest[1]
+
+    multipler = 0
+    caremultipler = 0
+    if scoresum != 0:
+        multipler = float(100) / scoresum
+
+    if carescore != 0:
+        caremultipler = carescore / float(10)
+
+    for interest in interestsArr:
+        score = []
+        score.append(interest[0])
+        score.append(round(interest[1]*multipler*caremultipler,2))
+        newInterestArr.append(score)
+
+    return newInterestArr
+
+
+def calculateFieldScore(hacker, carescore):
+    interestsArr = hacker['preferences']['fields']
+    if len(interestsArr) == 0:
+        return []
+    newInterestArr = []
+    scoresum = 0;
+    for interest in interestsArr:
+        scoresum = scoresum + interest[1]
+
+    multipler = 0
+    caremultipler = 0
+    if scoresum != 0:
+        multipler = float(100) / scoresum
+
+    if carescore != 0:
+        caremultipler = carescore / float(10)
+
+    for interest in interestsArr:
+        score = []
+        score.append(interest[0])
+        score.append(round(interest[1]*multipler*caremultipler,2))
+        newInterestArr.append(score)
+
+    return newInterestArr
+
+
+
 # TODO: not good practice to modify the parameter
-def resetuser(hacker, interestcarescore, languagecarescore):
-#   user = [];
+def resetuser(hacker, interestcarescore, languagecarescore, techscore, fieldscore):
     newInterestArr = calculateInterestScore(hacker, interestcarescore)
     newLanguageArr = calculateLanguageScore(hacker, languagecarescore)
+    newTechArr = calculateTechScore(hacker, techscore)
+    newFieldsArr = calculateFieldScore(hacker, fieldscore)
     newInterestArr.sort()
     newLanguageArr.sort()
-    user.append(newInterestArr)
-    user.append(newLanguageArr)
-    hacker['interests'] = newInterestArr
-    hacker['languages'] = newLanguageArr
+    newTechArr.sort()
+    newFieldsArr.sort()
+    hacker['preferences']['interests'] = newInterestArr
+    hacker['preferences']['languages'] = newLanguageArr
+    hacker['preferences']['technologies'] = newTechArr
+    hacker['preferences']['fields'] = newFieldsArr
 
 
 # TODO: @param filter: can be expanded to an array, along with carescores for each filter
-def calculateSimiliarScore(currentHacker, compareHacker, filters):
+def calculateSimiliarScore(currentHacker, compareHacker, interestsCare, languageCare, techCare, fieldCare):
     intsimiliar = 0
     langsimiliar = 0
+    techsimiliar = 0
+    fieldsimiliar = 0
 
-    for condition in filters:
-        if condition[0] == 'interests':
-            thisinterest = currentHacker['interests']
-            otherinterest = compareHacker['interests']
-            commonelements = findcommonelements(thisinterest, otherinterest)
-            intsimiliar = commonelements[len(commonelements)-1] * condition[1]
+    thisinterest = currentHacker['preferences']['interests']
+    otherinterest = compareHacker['preferences']['interests']
+    commonelements = findcommonelements(thisinterest, otherinterest)
+    intsimiliar = commonelements[len(commonelements)-1] * interestsCare
 
+    thislanguage = currentHacker['preferences']['languages']
+    otherlanguage = compareHacker['preferences']['languages']
+    commonelements = findcommonelements(thislanguage, otherlanguage)
+    langsimiliar = commonelements[len(commonelements)-1] * languageCare
 
-        if condition[0] == 'languages':
-            thislanguage = currentHacker['languages']
-            otherlanguage = compareHacker['languages']
-            commonelements = findcommonelements(thislanguage, otherlanguage)
-            langsimiliar = commonelements[len(commonelements)-1] * condition[1]
+    thistech = currentHacker['preferences']['technologies']
+    othertech = compareHacker['preferences']['technologies']
+    commonelements = findcommonelements(thistech, othertech)
+    techsimiliar = commonelements[len(commonelements)-1] * techCare
 
+    thisfields = currentHacker['preferences']['fields']
+    otherfields = compareHacker['preferences']['fields']
+    commonelements = findcommonelements(thisfields, otherfields)
+    fieldsimiliar = commonelements[len(commonelements)-1] * fieldCare
 
-    # print intsimiliar+langsimiliar
-    return intsimiliar+langsimiliar
+    #print(intsimiliar+langsimiliar)
+    return intsimiliar+langsimiliar+techsimiliar+fieldsimiliar
 
 
 def findcommonelements(arr1, arr2):
@@ -123,40 +195,45 @@ def findcommonelements(arr1, arr2):
         else:
             j += 1
     common.append(interestsum)
+    #print(common)
     return common
 
 
-def hackathonsimiliarscore(currentHacker, allHackers, filters):
+def hackathonsimiliarscore(currentHacker, allHackers, carescores, filters):
     hackathonsimiliarscores = []
-
-    resetuser(currentHacker,filters, filters)
-    print(currentHacker)
-    #hackers = currentHackathon['hackers']
     for hacker in allHackers:
-        resetuser(hacker, filters[0][1], filters[1][1])
-        score = str(calculateSimiliarScore(currentHacker, hacker, filters))
-        hackathonsimiliarscores.append([[hacker['username']], score])
+        isMatch = True;
+        '''
+        for filter in filters:
+            condition = filters[filter]
+            if isinstance(condition, (bool)):
+                if condition == True:
+                    if hacker.school != currentHacker.school:
+                        isMatch = False
+            else:
+                if hacker[filter] in condition:
+                    isMatch = True
+                else:
+                    isMatch = False
+        '''
+        if isMatch == True:
+            resetuser(hacker, carescores['interests'], carescores['languages'], carescores['technologies'], carescores['fields'])
+            score = calculateSimiliarScore(currentHacker, hacker, carescores['interests'], carescores['languages'], carescores['technologies'], carescores['fields'])
+            if score != 0:
+                hackathonsimiliarscores.append([hacker['name'], score])
 
+
+    hackathonsimiliarscores.sort(key=lambda x: x[1],reverse=True)
     return hackathonsimiliarscores
 
 
-filter = [['interests', 7],['languages', 3]]
+
 print('processing...')
-similiarscores = hackathonsimiliarscore(currentHacker, allHackers, filter)
+#user = currentHacker.json()
+#print(currentHacker['filters'])
+#filters = {'major': [],'graduationYear': ['2018', '2019', '2020', '2021', '2022'],'educationLevel': ['undergraduate', 'graduate'],'school':False}
+similiarscores = hackathonsimiliarscore(currentHacker, allHackers, currentHacker['careScores'], currentHacker['filters'])
 print('done');
 json.dumps(similiarscores)
-# similiarscoresJSON = json.dumps(similiarscores)
+#similiarscoresJSON = json.dumps(similiarscores)
 print(similiarscores)
-
-
-'''
-TODO: 
---1. Establish connection with Node.js thru childprocess
--?2. Communicate with Node.js to: a) get data of current user   b) get current hackathon selected  or  load hackathon data from node.js 
---3. Assign locally specific scores of each area for each user in current hackathon
---4. return a sorted list of users ordered by  a) interest scores  b) language scores  c) Technologies  d) Interested Fields 
---5. return a sorted list of general similiarity list based on input params such as: a) score of how much the current user cares about each field combined  
---6. format all data in JSON
-7. Send the list to visualization 
-'''
-

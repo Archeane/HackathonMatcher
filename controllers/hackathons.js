@@ -39,7 +39,7 @@ exports.testInit = (req,res,next) =>{
 		const tech = require('../wtf/assets/technologies.json');
 		const lan = require('../wtf/assets/languages.json');
 		const fields = require('../wtf/assets/fields.json');
-	/*	
+		
 		var usersArr = [];
 		for(j = 0; j < 500; j++){
 			var firstname = random_name({first:true});
@@ -108,6 +108,14 @@ exports.testInit = (req,res,next) =>{
 			}
 			user.preferences.fields = arr;
 			user.careScores.fields = Math.floor(Math.random()*10);
+
+			
+			user.filters.numOfHackathons = [Math.floor(Math.Random()), Math.floor(Math.Random())];
+			user.filters.school = false;
+			user.filters.majors = [user.major]
+			user.filters.graduationYear = [user.graduationYear]
+			user.filters.educationLevel = [user.educationLevel]
+
 			user.isNew = true;
 			usersArr.push(user);
 		}
@@ -117,7 +125,7 @@ exports.testInit = (req,res,next) =>{
 		}catch(e){
 			console.log('Error!', e);
 		}
-	*/	
+		
 /*
 		const Hackathon = require('../models/Hackathon');
 		for(i = 0; i < 9; i++){
@@ -206,18 +214,22 @@ exports.getHackathonById = (req, res, next) => {
 				                1
 				            ], 
 				            [ 
-				                "Data Visulization", 
+				                "Graphics", 
 				                6
 				            ]
 				        ],
 				        "languages" : [ 
 				            [ 
 				                "mysql", 
-				                0
+				                2
 				            ], 
 				            [ 
-				                "C", 
-				                1
+				                "C++", 
+				                5
+				            ],
+				            [
+				            	"PHP",
+				            	3
 				            ]
 				        ],
 				        "fields" : [ 
@@ -252,6 +264,13 @@ exports.getHackathonById = (req, res, next) => {
 				        "languages" : 9,
 				        "fields" : 8
 				    },
+				    "filters":{
+				    	'numOfHackathons':[2,5],
+						'major': [],
+						'graduationYear': ['2018', '2019', '2020', '2021', '2022'],
+						'educationLevel': ['undergraduate', 'graduate'],
+						'school':false
+				    },
 				    "tokens" : [],
 				    "hackathons" : [],
 				    "name" : "Eva Desak",
@@ -269,24 +288,24 @@ exports.getHackathonById = (req, res, next) => {
 
 /*
 				result.hackers.forEach(function(email){
+					//console.log(email);
 					var hacker = db.collection('users').findOne({'email': email});
-					
 
-					
 					var process = spawn('python', ["./algorithmn/process.py", hacker, user]);
-					
 					process.stdout.on('data', function(data){
 						processedData = data.toString();
 					});
 					process.on('close', function(){
 						console.log(processedData);
-						/*res.render('hackathon', {
+						res.render('hackathon', {
 							title: '', foundHackathon: result, data: processedData, css:'hackathon.css', js:'hackathon.js'
 						});
 					});
+
+					//console.log(hacker.toString());
 				});
-				
 */
+
 				var process = spawn('python', ["./algorithmn/process.py", resultJson, user]);
 					
 				process.stdout.on('data', function(data){
@@ -294,9 +313,12 @@ exports.getHackathonById = (req, res, next) => {
 				});
 				process.on('close', function(){
 					console.log(processedData);
+
+					/*
 					res.render('hackathon', {
 						title: '', foundHackathon: result, data: processedData, css:'hackathon.css', js:'hackathon.js'
 					});
+					*/
 				});
 				
   				

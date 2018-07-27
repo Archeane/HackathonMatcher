@@ -52,6 +52,13 @@ const userSchema = new mongoose.Schema({
 		fields: Number,
 		technologies: Number,
 		hobbies: Number
+	},
+	filters: {
+		numOfHackathons:Array,
+		school:Boolean,
+		major: Array,
+		graduationYear: Array,
+		educationLevel: Array
 	}
 }, {
 	timestamps: true
