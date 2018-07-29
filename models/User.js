@@ -55,7 +55,6 @@ const userSchema = new mongoose.Schema({
 	},
 	filters: {
 		numOfHackathons:Array,
-		school:Boolean,
 		major: Array,
 		graduationYear: Array,
 		educationLevel: Array
