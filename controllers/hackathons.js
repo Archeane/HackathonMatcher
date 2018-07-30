@@ -421,7 +421,8 @@ exports.visual = (req, res, next) =>{
 								"school":data.school,
 								"major":data.major,
 								"graduationYear":data.graduationYear,
-								"educationLevel":data.educationLevel
+								"educationLevel":data.educationLevel,
+								"score": arr[1]
 							});
 							minUsers.push(user);
 							if(minUsers.length == matches.length){
@@ -450,7 +451,8 @@ exports.visual = (req, res, next) =>{
 								"school":data.school,
 								"major":data.major,
 								"graduationYear":data.graduationYear,
-								"educationLevel":data.educationLevel
+								"educationLevel":data.educationLevel,
+								"score":hacker[1]
 							});
 							minUsers.push(user);
 							if(minUsers.length == matches.length){
