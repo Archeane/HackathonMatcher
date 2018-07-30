@@ -410,17 +410,31 @@ exports.visual = (req, res, next) =>{
 						}
 					);
 
-					var allMatches = [];
+					var minUsers = [];
 					arr.forEach(function(hacker){
-						console.log(hacker);
+						db.collection('users').findOne({"email":arr[0]}, function(err, data){
+							var user = JSON.stringify({
+								"_id":data._id,
+								"email":data.email,
+								"hackathons":data.hackathons,
+								"name": data.name,
+								"school":data.school,
+								"major":data.major,
+								"graduationYear":data.graduationYear,
+								"educationLevel":data.educationLevel
+							});
+							minUsers.push(user);
+							if(minUsers.length == matches.length){
+								resolve(minUsers);
+							}
+						});
+					}).then(function(result){
+						res.render('visualization', {
+							title:'Visualization', matches: result, css:"visualization.css", js:"visualization.js"
+						});
+					}, function(err){
+						throw err;
 					});
-
-					/*
-
-					res.render('visualization', {
-						title: '', data: topten, css:'visualization.css', js:'visualization.js'
-					});
-					*/
 				});
 			}else{
 				var matches = data.matches;
@@ -457,6 +471,12 @@ exports.visual = (req, res, next) =>{
 	});
 
 	
+};
+
+exports.updateVisual = (req,res,next) => {
+	console.log(req.body);
+	res.write('received');
+	res.end();
 };
 
 

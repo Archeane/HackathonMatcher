@@ -89,6 +89,8 @@ app.use(flash());
 app.use((req, res, next) => {
   if (req.path === '/api/upload') {
     next();
+  }else if(req.path === '/test'){
+    next();
   } else {
     lusca.csrf()(req, res, next);
   }
@@ -153,6 +155,7 @@ app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userControl
 app.get('/hackathons', hackathonController.getHackathonList);
 app.get('/hackathons/:id', hackathonController.getHackathonById);
 app.get('/hackathons/:id/visual', hackathonController.visual);
+app.post('/test', hackathonController.updateVisual)
 
 
 //---------test----------------
