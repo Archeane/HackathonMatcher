@@ -109,13 +109,6 @@ exports.testInit = (req,res,next) =>{
 			user.preferences.fields = arr;
 			user.careScores.fields = Math.floor(Math.random()*10);
 
-			
-			user.filters.numOfHackathons = [Math.floor(Math.Random()), Math.floor(Math.Random())];
-			user.filters.school = false;
-			user.filters.majors = [user.major]
-			user.filters.graduationYear = [user.graduationYear]
-			user.filters.educationLevel = [user.educationLevel]
-
 			user.isNew = true;
 			usersArr.push(user);
 		}
@@ -207,6 +200,7 @@ exports.getHackathonById = (req, res, next) => {
 				var resultBson = result;
 				var resultJson = convert.schema2json(result);
 				var user = JSON.stringify({
+					"_id":"5b5a01fce094f20594668460",
 				    "preferences" : {
 				        "interests" : [ 
 				            [ 
@@ -264,13 +258,6 @@ exports.getHackathonById = (req, res, next) => {
 				        "languages" : 9,
 				        "fields" : 8
 				    },
-				    "filters":{
-				    	'numOfHackathons':[2,5],
-						'major': [],
-						'graduationYear': ['2018', '2019', '2020', '2021', '2022'],
-						'educationLevel': ['undergraduate', 'graduate'],
-						'school':false
-				    },
 				    "tokens" : [],
 				    "hackathons" : [],
 				    "name" : "Eva Desak",
@@ -311,17 +298,27 @@ exports.getHackathonById = (req, res, next) => {
 				process.stdout.on('data', function(data){
 					processedData = data.toString();
 				});
-				process.on('close', function(){
-					console.log(processedData);
 
+				process.stdout.on('end', function(){
+					var arr = eval("["+processedData+"]")[0];
+					console.log(arr);
+					db.collection("users").update({"email":"eva@gmail.com"},
+						{
+							$set: {
+								"matches":arr
+							}
+						}
+					);
+					//console.log(user['email']);
+
+					//var topten = arr.slice(0,10);
+					//console.log(topten);
 					/*
 					res.render('hackathon', {
 						title: '', foundHackathon: result, data: processedData, css:'hackathon.css', js:'hackathon.js'
 					});
 					*/
 				});
-				
-  				
 
   			}
   			

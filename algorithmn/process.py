@@ -7,21 +7,20 @@ from pymongo import MongoClient
 client = MongoClient('mongodb://localhost:27017')
 db = client['test']
 
-print("in process.py")
-
 currentHackathon = json.loads(sys.argv[1])
 currentHacker = json.loads(sys.argv[2])
-# print('process.py:',currentHackathon)
-# print('process.py:',currentHacker)
 
-#hackathon = db['hackathons'].find_one({'email': 'ome@zalhebu.tn'})
-#print(hackathon)
+
 allHackers = []
+'''
+hackathon = db['hackathons'].find_one({'email': 'ome@zalhebu.tn'})
+for email in hackathon['hackers']:
+    temp = db['users'].find_one({'email':email})
+    allHackers.append(temp)
+'''
 for email in currentHackathon['hackers']:
     temp = db['users'].find_one({'email':email})
     allHackers.append(temp)
-
-#print(len(allHackers))
 
 
 def calculateInterestScore(hacker, carescore):
@@ -199,41 +198,24 @@ def findcommonelements(arr1, arr2):
     return common
 
 
-def hackathonsimiliarscore(currentHacker, allHackers, carescores, filters):
+def hackathonsimiliarscore(currentHacker, allHackers, carescores):
     hackathonsimiliarscores = []
     for hacker in allHackers:
-        isMatch = True;
-        '''
-        for filter in filters:
-            condition = filters[filter]
-            if isinstance(condition, (bool)):
-                if condition == True:
-                    if hacker.school != currentHacker.school:
-                        isMatch = False
-            else:
-                if hacker[filter] in condition:
-                    isMatch = True
-                else:
-                    isMatch = False
-        '''
-        if isMatch == True:
+        if hacker != None:
             resetuser(hacker, carescores['interests'], carescores['languages'], carescores['technologies'], carescores['fields'])
             score = calculateSimiliarScore(currentHacker, hacker, carescores['interests'], carescores['languages'], carescores['technologies'], carescores['fields'])
             if score != 0:
                 hackathonsimiliarscores.append([hacker['name'], score])
 
-
+    print(hackathonsimiliarscores)
     hackathonsimiliarscores.sort(key=lambda x: x[1],reverse=True)
     return hackathonsimiliarscores
 
 
-
-print('processing...')
-#user = currentHacker.json()
-#print(currentHacker['filters'])
 #filters = {'major': [],'graduationYear': ['2018', '2019', '2020', '2021', '2022'],'educationLevel': ['undergraduate', 'graduate'],'school':False}
-similiarscores = hackathonsimiliarscore(currentHacker, allHackers, currentHacker['careScores'], currentHacker['filters'])
-print('done');
+#similiarscores = hackathonsimiliarscore(allHackers[0], allHackers, allHackers[0]['careScores'])
+
+similiarscores = hackathonsimiliarscore(currentHacker, allHackers, currentHacker['careScores'])
 json.dumps(similiarscores)
-#similiarscoresJSON = json.dumps(similiarscores)
-print(similiarscores)
+
+#print(similiarscores)
