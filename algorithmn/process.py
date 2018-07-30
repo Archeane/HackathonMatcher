@@ -205,7 +205,7 @@ def hackathonsimiliarscore(currentHacker, allHackers, carescores):
             resetuser(hacker, carescores['interests'], carescores['languages'], carescores['technologies'], carescores['fields'])
             score = calculateSimiliarScore(currentHacker, hacker, carescores['interests'], carescores['languages'], carescores['technologies'], carescores['fields'])
             if score != 0:
-                hackathonsimiliarscores.append([hacker['name'], score])
+                hackathonsimiliarscores.append([hacker['email'], score])
 
     print(hackathonsimiliarscores)
     hackathonsimiliarscores.sort(key=lambda x: x[1],reverse=True)

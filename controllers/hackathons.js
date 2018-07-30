@@ -199,6 +199,9 @@ exports.getHackathonById = (req, res, next) => {
   			}else{
 				var resultBson = result;
 				var resultJson = convert.schema2json(result);
+				
+				//If user matches is empty
+				//TODO: replace test user with logged in user
 				var user = JSON.stringify({
 					"_id":"5b5a01fce094f20594668460",
 				    "preferences" : {
@@ -273,51 +276,36 @@ exports.getHackathonById = (req, res, next) => {
 				    "educationLevel" : "graduate"
 				});
 
-/*
-				result.hackers.forEach(function(email){
-					//console.log(email);
-					var hacker = db.collection('users').findOne({'email': email});
-
-					var process = spawn('python', ["./algorithmn/process.py", hacker, user]);
-					process.stdout.on('data', function(data){
-						processedData = data.toString();
-					});
-					process.on('close', function(){
-						console.log(processedData);
-						res.render('hackathon', {
-							title: '', foundHackathon: result, data: processedData, css:'hackathon.css', js:'hackathon.js'
+				db.collection('users').findOne({"email": "eva@gmail.com"}, function(err, data){
+					if(data.matches.length == 0){
+						var process = spawn('python', ["./algorithmn/process.py", resultJson, user]);
+						process.stdout.on('data', function(data){
+							processedData = data.toString();
 						});
-					});
 
-					//console.log(hacker.toString());
-				});
-*/
-
-				var process = spawn('python', ["./algorithmn/process.py", resultJson, user]);
-					
-				process.stdout.on('data', function(data){
-					processedData = data.toString();
-				});
-
-				process.stdout.on('end', function(){
-					var arr = eval("["+processedData+"]")[0];
-					console.log(arr);
-					db.collection("users").update({"email":"eva@gmail.com"},
-						{
-							$set: {
-								"matches":arr
-							}
-						}
-					);
-					//console.log(user['email']);
-
-					//var topten = arr.slice(0,10);
-					//console.log(topten);
-					/*
-					res.render('hackathon', {
-						title: '', foundHackathon: result, data: processedData, css:'hackathon.css', js:'hackathon.js'
-					});
-					*/
+						process.stdout.on('end', function(){
+							var arr = eval("["+processedData+"]")[0];
+							db.collection("users").update({"email":"eva@gmail.com"},
+								{
+									$set: {
+										"matches":arr
+									}
+								}
+							);
+							var topten = arr.slice(0,10);
+							console.log(topten);
+							res.render('hackathon', {
+								title: '', foundHackathon: result, data: topten, css:'hackathon.css', js:'hackathon.js'
+							});
+							
+						});
+					}else{
+						var matches = data.matches;
+						var topten = matches.slice(0,10);
+						res.render('hackathon', {
+							title: '', foundHackathon: result, data: topten, css:'hackathon.css', js:'hackathon.js'
+						});
+					}
 				});
 
   			}
@@ -326,16 +314,149 @@ exports.getHackathonById = (req, res, next) => {
 	});
 };
 
-exports.process = (req, res, next) =>{
-	//console.log('hackathonData from /processHackathonHackers', hackathonData);
-	//res.send('ABCDEFG');
-	//res.render('hackathon', {
-	//	title: '', css:'hackathon.css', js:'hackathon.js'
-	//});
-	//
+exports.visual = (req, res, next) =>{
+	MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {
+		if (err) throw err;
+
+		//TODO: replace with logged in user info
+		var user = JSON.stringify({
+						"_id":"5b5a01fce094f20594668460",
+					    "preferences" : {
+					        "interests" : [ 
+					            [ 
+					                "Computer Vision", 
+					                1
+					            ], 
+					            [ 
+					                "Graphics", 
+					                6
+					            ]
+					        ],
+					        "languages" : [ 
+					            [ 
+					                "mysql", 
+					                2
+					            ], 
+					            [ 
+					                "C++", 
+					                5
+					            ],
+					            [
+					            	"PHP",
+					            	3
+					            ]
+					        ],
+					        "fields" : [ 
+					            [ 
+					                "Scinece", 
+					                9
+					            ], 
+					            [ 
+					                "Finance", 
+					                7
+					            ]
+					        ],
+					        "technologies" : [ 
+					            [ 
+					                "React Native", 
+					                7
+					            ], 
+					            [ 
+					                "Firebase", 
+					                4
+					            ], 
+					            [ 
+					                "Ruby-on-rails", 
+					                3
+					            ]
+					        ],
+					        "hobbies" : []
+					    },
+					    "careScores" : {
+					        "interests" : 3,
+					        "technologies" : 1,
+					        "languages" : 9,
+					        "fields" : 8
+					    },
+					    "tokens" : [],
+					    "hackathons" : [],
+					    "name" : "Eva Desak",
+					    "id" : "340JYLom9QrSHed96jRUxKGI941BuGai",
+					    "index" : 1,
+					    "email" : "eva@gmail.com",
+					    "password" : "1234",
+					    "emailSecretToken" : "secretToken",
+					    "emailActive" : true,
+					    "school" : "AVTEC-Alaska's Institute of Technology",
+					    "major" : "Accounting",
+					    "graduationYear" : "2022",
+					    "educationLevel" : "graduate"
+					});
+
+		db.collection('users').findOne({"email": "eva@gmail.com"}, function(err, data){
+			if(data.matches.length == 0){
+				var process = spawn('python', ["./algorithmn/process.py", resultJson, user]);
+				process.stdout.on('data', function(data){
+					processedData = data.toString();
+				});
+
+				process.stdout.on('end', function(){
+					var arr = eval("["+processedData+"]")[0];
+					db.collection("users").update({"email":"eva@gmail.com"},
+						{
+							$set: {
+								"matches":arr
+							}
+						}
+					);
+
+					var allMatches = [];
+					arr.forEach(function(hacker){
+						console.log(hacker);
+					});
+
+					/*
+
+					res.render('visualization', {
+						title: '', data: topten, css:'visualization.css', js:'visualization.js'
+					});
+					*/
+				});
+			}else{
+				var matches = data.matches;
+				var minUsers = [];
+				new Promise(function(resolve, reject){
+					matches.forEach(function(hacker){
+						db.collection('users').findOne({"email":hacker[0]}, function(err, data){
+							var user = JSON.stringify({
+								"_id":data._id,
+								"email":data.email,
+								"hackathons":data.hackathons,
+								"name": data.name,
+								"school":data.school,
+								"major":data.major,
+								"graduationYear":data.graduationYear,
+								"educationLevel":data.educationLevel
+							});
+							minUsers.push(user);
+							if(minUsers.length == matches.length){
+								resolve(minUsers);
+							}
+						});
+					});
+				}).then(function(result){
+					res.render('visualization', {
+						title:'Visualization', matches: result, css:"visualization.css", js:"visualization.js"
+					});
+				}, function(err){
+					throw err;
+				});
+			}
+		});
+
+	});
+
 	
-	res.write('HELLLOOOOO')
-	res.end();
 };
 
 

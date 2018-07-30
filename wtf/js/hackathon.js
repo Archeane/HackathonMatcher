@@ -1,6 +1,6 @@
 $(document).ready(function(){
 
-	console.log(processedData);
+	console.log(matches);
 	$.ajax({
         type: "GET",
         url: '/hackathons/ef49c2c0-d206-47fe-8241-5ac47feae273/process',
