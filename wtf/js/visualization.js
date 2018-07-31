@@ -37,7 +37,7 @@ $(document).ready(function(){
 		checkBox.value = allGradYears[g];
 		checkBox.id = allGradYears[g];
 
-		var label = document.createElement('label');
+		var label = document.createElement('span');
 		label.htmlFor = allGradYears[g];
 		label.appendChild(document.createTextNode(allGradYears[g]));
 		div.appendChild(checkBox);
@@ -54,7 +54,7 @@ $(document).ready(function(){
 		checkBox.value = allEduLevels[m];
 		checkBox.id = allEduLevels[m];
 
-		var label = document.createElement('label');
+		var label = document.createElement('span');
 		label.htmlFor = allEduLevels[m];
 		label.appendChild(document.createTextNode(allEduLevels[m]));
 		div.appendChild(checkBox);
@@ -71,7 +71,7 @@ $(document).ready(function(){
 		checkBox.value = allNumOfHacks[m];
 		checkBox.id = allNumOfHacks[m];
 
-		var label = document.createElement('label');
+		var label = document.createElement('span');
 		label.htmlFor = allNumOfHacks[m];
 		label.appendChild(document.createTextNode(allNumOfHacks[m]));
 		div.appendChild(checkBox);
@@ -88,11 +88,10 @@ $(document).ready(function(){
 		checkBox.value = allMajors[m];
 		checkBox.id = allMajors[m];
 
-		var label = document.createElement('label');
-		label.htmlFor = allMajors[m];
-		label.appendChild(document.createTextNode(allMajors[m]));
+		var span = document.createElement('span');
+		span.appendChild(document.createTextNode(allMajors[m]));
 		div.appendChild(checkBox);
-		div.appendChild(label);
+		div.appendChild(span);
 		majorsFilter.appendChild(div);
 	}
 /*
@@ -132,7 +131,6 @@ $(document).ready(function(){
 			$('#vis').empty();
 			var parent = $(this).parentsUntil(".dropdown").parent().attr('id');
 			filters[parent].push($(this).val());
-			console.log(filters[parent]);
 			display(matches, filters);
 		}else{
 			$('#vis').empty();
@@ -197,6 +195,7 @@ function bubbleChart() {
 	// working with data.
 	var myNodes = rawData.map(function (d) {
 	  return {
+	  	email: d.email,
 		radius: radiusScale(+d.score),
 		value: d.score,
 		name: d.name,
@@ -230,15 +229,19 @@ function bubbleChart() {
 	bubbles = svg.selectAll('.bubble')
 	  .data(nodes, function (d) { return d.name; });
 
-	bubbles.enter().append('circle')
+	bubbles.enter()
+	.append('circle')
 	  .classed('bubble', true)
 	  .attr('r', 0)
 	  .attr('fill', function (d) { return fillColor(d.group); })
 	  .attr('stroke', function (d) { return d3.rgb(fillColor(d.group)).darker(); })
 	  .attr('stroke-width', 2)
 	  .on('mouseover', showDetail)
-	  .on('mouseout', hideDetail);
-
+	  .on('mouseout', hideDetail)
+	  .on('click', function(d){
+	  	window.location = "http://localhost:8080/dashboard/" + d.email;
+	  });
+	
 	bubbles.transition()
 	  .duration(2000)
 	  .attr('r', function (d) { return d.radius; });

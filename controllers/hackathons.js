@@ -22,6 +22,32 @@ function asyncFunction(msg,callback) {
     callback();
 }
 
+exports.search = (req, res, next) =>{
+	console.log(req.query.key);
+	MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {
+		db.collection('users').find({ "name": { $regex: req.query.key, $options:"i m"}}).toArray(function(err,docs){
+			if(err) throw err;
+			console.log(docs);
+			return docs;
+		});
+		/*
+		db.collection('users').find({ "$or": [
+		    { "name": { "$regex": "/^"+req.query.key+"$/i", "$options" : "m"} }, 
+		    { "email": { "$regex": "/^"+req.query.key+"$/i", "$options" : "m"}}
+		]}, function(err, data){
+			if(err) throw err;
+			console.log(data);
+			return data;
+		});*/
+	});
+
+};
+
+
+
+
+
+
 exports.testInit = (req,res,next) =>{
 	MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {
 		if (err) throw err;

@@ -158,6 +158,8 @@ app.get('/hackathons/:id/visual', hackathonController.visual);
 app.post('/test', hackathonController.updateVisual)
 
 
+app.get('/search', hackathonController.search);
+
 //---------test----------------
 app.get('/test/init', hackathonController.testInit);
 

@@ -6,16 +6,16 @@
     span.sr-only Toggle navigation
     span.navbar-toggler-icon
   .collapse.navbar-collapse
-    if user
+    if !user
       ul.nav.navbar-nav
+        li.active.nav-item
+          .search-container
+              button
+                i.fa.fa-search
+              <input type="text" name="typeahead" class="typeahead tt-query" autocomplete="off" spellcheck="false" placeholder="Type your Query">
         li.active.nav-item(class=(title === 'Home') ? 'active' : undefined)
           a.nav-link(href='/') Home
-        li.nav-item(class=(title === 'API Examples') ? 'active' : undefined)
-          a.nav-link(href='/api') API Examples
-        li.nav-item(class=(title === 'Contact') ? 'active' : undefined)
-          a.nav-link(href='/contact') Contact
-        li.nav-item(class=(title === 'Status') ? 'active' : undefined)
-          a.nav-link(href='/status') Status
+    
     ul.nav.navbar-nav.ml-auto
       if !user
         li.nav-item(class=(title === 'Login') ? 'active' : undefined)
@@ -37,3 +37,35 @@
             li.divider.dropdown-item
             li.dropdown-item
               a(href='/logout') Logout
+script.
+  // Instantiate the Bloodhound suggestion engine
+  var movies = new Bloodhound({
+      datumTokenizer: function (datum) {
+          return Bloodhound.tokenizers.whitespace(datum.value);
+      },
+      queryTokenizer: Bloodhound.tokenizers.whitespace,
+      remote: {
+          url: '/search?key=%QUERY',
+          filter: function (movies) {
+              console.log(movies)
+              // Map the remote source JSON array to a JavaScript object array
+              return $.map(movies.results, function (movie) {
+                  return {
+                      value: movie.name
+                  };
+              });
+          }
+      }
+  });
+
+  // Initialize the Bloodhound suggestion engine
+  movies.initialize();
+
+  // Instantiate the Typeahead UI
+  $('.typeahead').typeahead(null, {
+      displayKey: 'value',
+      source: movies.ttAdapter()
+  });
+
+
+  

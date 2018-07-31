@@ -20,18 +20,19 @@ button{
 	border-width: 0;
 }
 
-/*
+
 .dropdown-menu{
 	width: 120%;
 }
-*/
+
 .dropdown-menu input{
 	margin-left: 0.5em;
 }
 
-.dropdown-menu label{
+.dropdown-menu span{
 	font-size:2em;
 	padding-left:0.5em;
+	padding-right: 0em;
 }
 
 label {
