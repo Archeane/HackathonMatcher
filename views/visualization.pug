@@ -5,18 +5,27 @@ block content
 	.container
 			.row
 				.col-md-3
-					.major
-				.col-md-3
-					.gradYear
-				.col-md-3
-					.eduLevel
-				.col-md-3
-					.numOfHacks
-			
-			button(id="submitFilters") Set Filters
+					#major.dropdown
+						button#dropdownMenuButton.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+							| Majors
+						.dropdown-menu(aria-labelledby='dropdownMenuButton')
 
-			<div id="vis"></div>
-
+				.col-md-3
+					#graduationYear.dropdown
+						button#dropdownMenuButton.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+							| Graduation Year
+						.dropdown-menu(aria-labelledby='dropdownMenuButton')
+				.col-md-3
+					#educationLevel.dropdown
+						button#dropdownMenuButton.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+							| Education Level
+						.dropdown-menu(aria-labelledby='dropdownMenuButton')
+				.col-md-3
+					#hackathons.dropdown
+						button#dropdownMenuButton.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+							| Number Of Hackathons
+						.dropdown-menu(aria-labelledby='dropdownMenuButton')
+			#vis
 
 	script.
 		var allMatches = !{JSON.stringify(matches)};

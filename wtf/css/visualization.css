@@ -1,0 +1,64 @@
+@font-face{
+	font-family: Brooklyn;
+	src:url('/fonts/brooklyn.otf') format("opentype");
+}
+
+@font-face{
+	font-family: Brooklyn;
+	font-weight: bold;
+	src:url('/fonts/brooklyn_bold.otf') format("opentype");
+}
+
+
+body{
+	font-family:Brooklyn;
+	letter-spacing: 2px;
+	font-size: 2em;
+}
+
+button{
+	border-width: 0;
+}
+
+/*
+.dropdown-menu{
+	width: 120%;
+}
+*/
+.dropdown-menu input{
+	margin-left: 0.5em;
+}
+
+.dropdown-menu label{
+	font-size:2em;
+	padding-left:0.5em;
+}
+
+label {
+    display: inline-block;
+    width: 5em;
+  }
+
+
+.tooltip{
+	font-family:Brooklyn;
+	letter-spacing: 2px;
+	font-size: 0.6em;
+	background-color: white;
+	border-radius: 10px;
+	height:wrap-content;
+	width: wrap-content;
+}
+
+.tooltip > .content{
+	margin-left:10px;
+}
+
+
+.pull-left {
+  float: left !important;
+}
+.pull-right {
+  float: right !important;
+}
+
