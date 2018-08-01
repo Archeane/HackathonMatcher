@@ -25,10 +25,10 @@ function asyncFunction(msg,callback) {
 exports.search = (req, res, next) =>{
 	console.log(req.query.key);
 	MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {
-		db.collection('users').find({ "name": { $regex: req.query.key, $options:"i m"}}).toArray(function(err,docs){
+		db.collection('users').find({ "name": { $regex: req.query.key, $options:"i m"}}).toArray(function(err, docs){
 			if(err) throw err;
 			console.log(docs);
-			return docs;
+			res.end(JSON.stringify(docs));
 		});
 		/*
 		db.collection('users').find({ "$or": [
