@@ -6,6 +6,13 @@ var animating; //flag to prevent quick multi-click glitches
 $(document).ready(function () {
 	$('#reg-error').hide();
 
+	$('button.registerButton').click( function() {
+        $('form.registerForm').submit();
+    });
+    $('button.upload').click( function() {
+        $('form.uploadForm').submit();
+    });
+
 	//--------populate select2 options------------------
 	var $interests = $('#reg-interest').select2();
 	var $intrequest = $.ajax({

@@ -19,8 +19,11 @@ const expressValidator = require('express-validator');
 const expressStatusMonitor = require('express-status-monitor');
 const sass = require('node-sass-middleware');
 const multer = require('multer');
+const csrf = require('csurf');
 
 const upload = multer({ dest: path.join(__dirname, 'uploads') });
+const busboy = require('connect-busboy');
+
 
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
@@ -86,15 +89,22 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
+
+
+//app.use(upload.single('myFile'));
+//app.use(csrf());
+
 app.use((req, res, next) => {
   if (req.path === '/api/upload') {
     next();
   }else if(req.path === '/test'){
     next();
   } else {
+    //csrf();
     lusca.csrf()(req, res, next);
   }
 });
+
 app.use(lusca.xframe('SAMEORIGIN'));
 app.use(lusca.xssProtection(true));
 app.disable('x-powered-by');
@@ -117,6 +127,8 @@ app.use((req, res, next) => {
   next();
 });
 app.use(express.static(path.join(__dirname, 'wtf')));//, { maxAge: 31557600000 }));
+//app.use(busboy);
+
 
 
 /**
@@ -155,7 +167,7 @@ app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userControl
 app.get('/hackathons', hackathonController.getHackathonList);
 app.get('/hackathons/:id', hackathonController.getHackathonById);
 app.get('/hackathons/:id/visual', hackathonController.visual);
-app.post('/test', hackathonController.updateVisual)
+//app.post('/test', hackathonController.updateVisual)
 
 
 app.get('/search', hackathonController.search);
@@ -166,6 +178,10 @@ app.get('/test/init', hackathonController.testInit);
 /**
  * API examples routes.
  */
+var multipart = require('connect-multiparty');
+var multipartMiddleware = multipart();
+//app.post('/api/upload', multipartMiddleware, apiController.postFileUpload);
+
 app.get('/api', apiController.getApi);
 app.get('/api/lastfm', apiController.getLastfm);
 app.get('/api/nyt', apiController.getNewYorkTimes);

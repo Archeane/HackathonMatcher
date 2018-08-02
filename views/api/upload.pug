@@ -24,3 +24,7 @@ block content
           .col-md-6
             input(type='file', name='myFile')
         button.btn.btn-primary(type='submit') Submit
+
+  script.
+    var data = !{JSON.stringify(matches)};
+    console.log(data);

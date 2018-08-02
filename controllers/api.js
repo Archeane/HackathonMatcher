@@ -25,6 +25,42 @@ const { Venues, Users } = require('node-foursquare')({
   }
 });
 
+
+
+exports.testUpload = (req,res, next) =>{
+  console.log("???");
+  var file = req.files.file;
+  console.log(file);
+  fs.readFile(file.path, function(err,data){
+    if(err) throw err;
+    var s3bucket = new AWS.S3({params:{Bucket: 'hackermatchertest'}});
+    s3bucket.createBucket(function () {
+        var params = {
+            Key: file.originalFilename, //file.name doesn't exist as a property
+            Body: data
+        };
+        s3bucket.upload(params, function (err, data) {
+            // Whether there is an error or not, delete the temp file
+            fs.unlink(file.path, function (err) {
+                if (err) {
+                    console.error(err);
+                }
+                console.log('Temp File Delete');
+            });
+
+            console.log("PRINT FILE:", file);
+            if (err) {
+                console.log('ERROR MSG: ', err);
+                res.status(500).send(err);
+            } else {
+                console.log('Successfully uploaded data');
+                res.status(200).end();
+            }
+        });
+    });
+  });
+};
+
 /**
  * GET /api
  * List of API examples.
@@ -570,20 +606,67 @@ exports.getLob = (req, res, next) => {
   });
 };
 
+const fs = require('fs');
+const AWS = require('aws-sdk');
+
+const BUCKET_NAME = 'hackermatcher';
+const IAM_USER_KEY = 'AKIAJTVQG35QJUSGGKKA';
+const IAM_USER_SECRET = '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';
+
+const s3 = new AWS.S3({
+    accessKeyId: 'AKIAJTVQG35QJUSGGKKA',
+    secretAccessKey: 'BqiY2FT+O6ttOEDr6r7gYu8L1KfJ1QbMy+pDmWTA'
+});
 /**
  * GET /api/upload
  * File Upload API example.
  */
 
 exports.getFileUpload = (req, res) => {
-  res.render('api/upload', {
-    title: 'File Upload'
-  });
+ res.render('api/upload', {
+      title: 'File Upload'});
+ /*
+ var getParams = {
+    Bucket: BUCKET_NAME, // your bucket name,
+    Key: 'contacts' // path to the object you're looking for
+  } 
+
+  s3.getObject(getParams, function(err, data) {
+      // Handle any error and exit
+      if (err)
+          return err;
+
+    // No error happened
+    // Convert Body from a Buffer to a String
+
+    let objectData = data.Body.toString('utf-8'); // Use the encoding necessary
+    
+    var data = Buffer.from(String.fromCharCode.apply(null, new Uint16Array(objectData)), "base64")
+    console.log(data);
+    res.send(data);
+  });*/
 };
 
+
 exports.postFileUpload = (req, res) => {
-  req.flash('success', { msg: 'File was uploaded successfully.' });
-  res.redirect('/api/upload');
+  var file = req.file;
+  var fileName = file.path;
+  console.log(file);
+  console.log(file.path);
+  console.log(file.filename);
+  fs.readFile(fileName, (err, data) => {
+     if (err) throw err;
+     const params = {
+         Bucket: BUCKET_NAME, // pass your bucket name
+         Key: file.filename, // file will be saved as testBucket/contacts.csv
+         Body: JSON.stringify(data, null, 2)
+     };
+     s3.upload(params, function(s3Err, data) {
+         if (s3Err) throw s3Err
+         console.log(`File uploaded successfully at ${data.Location}`)
+     });
+  });
+  
 };
 
 /**

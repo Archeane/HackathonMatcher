@@ -7,6 +7,8 @@ const passport = require('passport');
 const User = require('../models/User');
 const randomstring = require('randomstring');
 const fs = require('fs');
+
+
 //const mailer = require('../misc/mailer');
 //mailer.sendMail('jennyxu1029@gmail.com','jennyxu8448@gmail.com','Please work','please work');
 /*
@@ -97,19 +99,44 @@ exports.getSignup = (req, res) => {
 		"title":"Signup", "css":["signup.css"], "js":["signup.js"]
 	});
 }
-exports.postSignup = async (req, res, next) => {
-	//console.log('in post signup2');
-	//console.log(req.body.email);
-	console.log(req.body);
-	//console.log(req.body.school);
-   	//res.json(req.body);
 
+
+const AWS = require('aws-sdk');
+
+const BUCKET_NAME = 'hackermatcher';
+const IAM_USER_KEY = 'AKIAJTVQG35QJUSGGKKA';
+const IAM_USER_SECRET = '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';
+
+const s3 = new AWS.S3({
+    accessKeyId: 'AKIAJTVQG35QJUSGGKKA',
+    secretAccessKey: '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'
+});
+exports.postSignup = async (req, res, next) => {
+	console.log(req.body);
 	User.findOne({
 		email: req.body.email || 'jennyxu8448@gmail.com'
 	}, (err, user) => {
 		if (err) {
 			return next(err);
 		}
+		
+		var file = req.file;
+		console.log(file);
+		var fileName = req.file.path;
+		fs.readFile(fileName, (err, data) => {
+		 if (err) throw err;
+		 const params = {
+		     Bucket: BUCKET_NAME, // pass your bucket name
+		     Key: file.originalName, // file will be saved as testBucket/contacts.csv
+		     Body: JSON.stringify(data, null, 2)
+		 };
+		 s3.upload(params, function(s3Err, data) {
+		     if (s3Err) throw s3Err
+		     console.log(`File uploaded successfully at ${data.Location}`)
+		 });
+		});
+
+
 		user.school = req.body.school || '';
 		user.major = req.body.major || '';
 		user.graduationYear = req.body.graduationYear || '';
@@ -122,11 +149,10 @@ exports.postSignup = async (req, res, next) => {
 		user.preferences.technologies = req.body.technologies || '';
 		user.preferences.fields = req.body.fields || '';
 		user.preferences.hobbies = req.body.hobbies || '';
+		
+		
 
-		/*
-		user.profileimg.data = fs.readFileSync(req.body.pfp) || '';
-		user.profileimg.contentType = 'image/png' || '';
-		*/
+
 		user.website = req.body.website || '';
 		user.facebook = req.body.github || '';
 		user.github = req.body.github || '';
