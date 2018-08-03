@@ -64,7 +64,6 @@ span.required:after {content:" *";color: red; }
 }
 
 
-
 /*selects*/
 #msform #fieldset1 select {
 	border: 1px solid #ccc;

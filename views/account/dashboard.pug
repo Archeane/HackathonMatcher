@@ -1,11 +1,14 @@
 extends ../layout
 
+block append head
+	link(href="/css/profile.css", rel="stylesheet", type="text/css")
+
 block content
-	// preloader section
 	.preloader
 		.sk-spinner.sk-spinner-wordpress
 			span.sk-inner-circle
-	// header section
+
+	
 	header
 		.container
 			.row
@@ -16,13 +19,16 @@ block content
 					if user
 						i.fa.fa-user-edit
 					h3#email
-	// about and skills section
-	section.container
+
+
+	.section.container
 		.row
 			.col-md-6.col-sm-12
 				#about
-					h3.accent About
+					h3.accent
+						| About
 					h6
+						| Jenny Xu
 					.content
 					.settings
 			.col-md-6.col-sm-12
@@ -30,78 +36,61 @@ block content
 					h3.accent
 						| Top Languages
 						i.pull-right.fa.fa-cog
-	// education and languages
-	section.container
-		.row
-			.col-md-8.col-sm-12
-				.education
-					h2.accent Technologies
-					.row
-						#familiar.col-md-6
-							h4.bold Most Familiar
-							.content
-							.settings
-						#interested.col-md-6
-							h4.bold Most Interested
-							.content
-							.settings
-			.col-md-4.col-sm-12
-				#fields.languages
-					h2 Fields
-					.content
-					.settings
-	// contact and experience
-	section.container
-		.row
-			.col-md-4.col-sm-12
-				#hackathons.contact
-					h2 Hackathons
-					.content
-					.settings
-			.col-md-8.col-sm-12
-				.experience
-					h2 A Little More About Me...
-					#note.experience-content
-						.content
-						.settings
-	// modals
-	#tech-familiar.modal.fade(tabindex='-1', role='dialog', style='display:none;', aria-hidden='true')
-		.modal-dialog(role='document')
-			.modal-content
-				.modal-header
-					h5.modal-title Technologies
-					button.close(type='button', data-dismiss='modal', aria-label='Close')
-						span(aria-hidden='true') ×
-				.bg-light
-					.row(style='align-items: center;')
-						.col-md-1
-						.col-md-4
-							span Amazon Alexa
-						.col-md-4
-							span.pull-left 15
-							i.pull-left.fa.fa-thumbs-o-up.fa-lg(aria-hidden='true', style='margin-right:-15px;')
-						.col-md-3
-							button(style='border-radius: 0px; border-width: 0px;', onclick="addTechFamiliar('Alexa','8','15')")
-								i.fa.fa-plus
-								| Add
-				.bg-white
-					.row(style='align-items: center;')
-						.col-md-1
-						.col-md-8
-							span Amazon Alexa
-						.col-md-3
-							button(style='border-radius: 0px; border-width: 0px;')
-								i.fa.fa-plus
-								| Add
-				.bg-light
-					.row(style='align-items: center;')
-						.col-md-1
-						.col-md-8
-							span Amazon Alexa
-						.col-md-3
-							button(style='border-radius: 0px; border-width: 0px;')
-								i.fa.fa-plus
-								| Add
+
+	<section class="container">
+		<div class="row">
+			<div class="col-md-8 col-sm-12">
+				<div class="education">
+					<h2 class="accent">Technologies</h2>
+					<div class="row">
+						<div class='col-md-6' id="familiar">
+							<h4 class='bold'>Most Familiar</h4>
+							<div class="content">
+
+							</div>
+							<div class="settings">
+
+							</div>
+						</div>
+						<div class='col-md-6' id="interested">
+							<h4 class='bold'>Most Interested</h4>
+							<div class="content"></div>
+							<div class="settings"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4 col-sm-12">
+				<div class="languages" id="fields">
+					<h2>Fields</h2>
+					<div class="content"></div>
+					<div class="settings"></div>
+
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="container">
+		<div class="row">
+			<div class="col-md-4 col-sm-12">
+				<div class="contact" id="hackathons">
+					<h2>Hackathons</h2>
+					<div class="content"></div>
+					<div class="settings"></div>
+				</div>
+			</div>
+			<div class="col-md-8 col-sm-12">
+				<div class="experience">
+					<h2>A Little More About Me...</h2>
+					<div class="experience-content" id="note">
+						<div class="content"></div>
+						<div class="settings"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
 
 	script.
 		var User = !{JSON.stringify(dashboardUser)};

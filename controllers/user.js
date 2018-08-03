@@ -288,7 +288,7 @@ exports.getUserById = (req, res) => {
 			return next(err);
 		}
 		res.render('account/dashboard', {
-			title: 'Account Management', dashboardUser: user, css: 'profile.css', js: 'profile.js'
+			title: 'Account Management', dashboardUser: user,  js: 'profile.js'
 		});
 	});
 	/*

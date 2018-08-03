@@ -1,5 +1,9 @@
 extends ../layout
 
+block append head
+	link(href="/css/layout.css", rel="stylesheet", type="text/css" )
+	link(href="/css/signup.css", rel="stylesheet", type="text/css" )
+
 block content
 	form(id='msform', method='POST' action='/signup', class="registerForm")
 		input(type='hidden', name='_csrf', value=_csrf)
