@@ -7,10 +7,15 @@ $(document).ready(function () {
 	$('#reg-error').hide();
 
 	$('button.registerButton').click( function() {
+		$('form.uploadForm').submit(function(event){
+        	$(this).append('<input type="hidden" name="field_name" value="value" /> ');
+        	return true;
+        });
         $('form.registerForm').submit();
     });
     $('button.upload').click( function() {
-        $('form.uploadForm').submit();
+    	console.log('??');
+    	console.log($('#hello').val())
     });
 
 	//--------populate select2 options------------------

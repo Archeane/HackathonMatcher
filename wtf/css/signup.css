@@ -6,29 +6,17 @@
 
 
 body {
-	font-family: montserrat, arial, verdana;
 	background: #CA28AF;
 }
 
-/*tagsinput*/
-.bootstrap-tagsinput .tag {
-    margin-right: 2px;
-    color: black !important;
-}
 
-
-.chip {
-    height: 42px;
-    line-height: 42px;
-    border-radius: 21px;
-}
-
-label.required:after {content: " *"; color: red;}
+span.required:after {content:" *";color: red; }
 
 
 
 /*form styles*/
 #msform {
+	font-family: montserrat, arial, verdana;
 	width: 500px;
 	margin: 50px auto;
 	text-align: center;
@@ -41,57 +29,6 @@ label.required:after {content: " *"; color: red;}
 
 #msform #reg-error{
 	padding:5px;
-}
-
-/*typeshead*/
-.twitter-typeahead .tt-query,
-.twitter-typeahead .tt-hint {
-    margin-bottom: 0;
-}
-
-.twitter-typeahead .tt-hint
-{
-    display: none;
-}
-
-.tt-menu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    z-index: 1000;
-    display: none;
-    float: left;
-    min-width: 160px;
-    padding: 5px 0;
-    margin: 2px 0 0;
-    list-style: none;
-    font-size: 14px;
-    background-color: #ffffff;
-    border: 1px solid #cccccc;
-    border: 1px solid rgba(0, 0, 0, 0.15);
-    border-radius: 4px;
-    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-    background-clip: padding-box;
-    cursor: pointer;
-}
-
-.tt-suggestion {
-    display: block;
-    padding: 3px 20px;
-    clear: both;
-    font-weight: normal;
-    line-height: 1.428571429;
-    color: #333333;
-    white-space: nowrap;
-}
-
-.tt-suggestion:hover,
-.tt-suggestion:focus {
-  color: #ffffff;
-  text-decoration: none;
-  outline: 0;
-  background-color: #428bca;
 }
 
 /*field sets*/
@@ -112,27 +49,39 @@ label.required:after {content: " *"; color: red;}
 #msform fieldset:not(:first-of-type) {
 	display: none;
 }
-/*inputs*/
-#msform input, #msform textarea{
+
+
+#msform #fieldset1 input, #msform textarea{
 	padding: 15px;
 	border: 1px solid #ccc;
 	border-radius: 3px;
 	margin-bottom: 10px;
-	width: 100%;
+	width: 80%;
 	box-sizing: border-box;
 	font-family: montserrat;
 	color: #2C3E50;
 	font-size: 13px;
 }
 
+
+
 /*selects*/
-#msform select {
+#msform #fieldset1 select {
 	border: 1px solid #ccc;
 	border-radius: 3px;
+	width:80%;
+	margin-bottom: 10px;
 }
 
+#msform .multiselect{
+	width:70%;
+	height: 20px;
+}
+
+
+
 /*buttons*/
-#msform .action-button {
+#msform .action-button, #msform #fieldset1 .action-button {
 	width: 100px;
 	background: #27AE60;
 	font-weight: bold;

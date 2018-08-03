@@ -40,10 +40,11 @@ exports.getLogin = (req, res) => {
 		title: 'Login'
 	});
 };
+
 exports.postLogin = (req, res, next) => {
-	req.assert('email', 'Email is not valid').isEmail();
-	req.assert('password', 'Password cannot be blank').notEmpty();
-	req.sanitize('email').normalizeEmail({
+	req.assert('login-email', 'Email is not valid').isEmail();
+	req.assert('login-password', 'Password cannot be blank').notEmpty();
+	req.sanitize('login-email').normalizeEmail({
 		gmail_remove_dots: false
 	});
 
@@ -51,7 +52,7 @@ exports.postLogin = (req, res, next) => {
 	if (errors) {
 		console.log(errors);
 		req.flash('errors', errors);
-		return res.redirect('/login');
+		return res.redirect('/');
 	}
 
 	passport.authenticate('local', (err, user, info) => {
@@ -60,8 +61,9 @@ exports.postLogin = (req, res, next) => {
 			return next(err);
 		}
 		if (!user) {
+			console.log(info);
 			req.flash('errors', info);
-			return res.redirect('/login');
+			return res.redirect('/');
 		}
 		req.logIn(user, (err) => {
 			if (err) {
@@ -111,31 +113,33 @@ const s3 = new AWS.S3({
     accessKeyId: 'AKIAJTVQG35QJUSGGKKA',
     secretAccessKey: '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'
 });
+
+exports.saveToS3 = (req,res,next) =>{
+	var file = req.file;
+	console.log(file);
+	var fileName = req.file.path;
+	fs.readFile(fileName, (err, data) => {
+	 if (err) throw err;
+	 const params = {
+	     Bucket: BUCKET_NAME, // pass your bucket name
+	     Key: file.originalName, // file will be saved as testBucket/contacts.csv
+	     Body: JSON.stringify(data, null, 2)
+	 };
+	 s3.upload(params, function(s3Err, data) {
+	     if (s3Err) throw s3Err
+	     console.log(`File uploaded successfully at ${data.Location}`)
+	 });
+	});
+};
+
 exports.postSignup = async (req, res, next) => {
 	console.log(req.body);
 	User.findOne({
-		email: req.body.email || 'jennyxu8448@gmail.com'
+		email: req.body.email || 'jenny@gmail.com'
 	}, (err, user) => {
 		if (err) {
 			return next(err);
 		}
-		
-		var file = req.file;
-		console.log(file);
-		var fileName = req.file.path;
-		fs.readFile(fileName, (err, data) => {
-		 if (err) throw err;
-		 const params = {
-		     Bucket: BUCKET_NAME, // pass your bucket name
-		     Key: file.originalName, // file will be saved as testBucket/contacts.csv
-		     Body: JSON.stringify(data, null, 2)
-		 };
-		 s3.upload(params, function(s3Err, data) {
-		     if (s3Err) throw s3Err
-		     console.log(`File uploaded successfully at ${data.Location}`)
-		 });
-		});
-
 
 		user.school = req.body.school || '';
 		user.major = req.body.major || '';
@@ -150,19 +154,18 @@ exports.postSignup = async (req, res, next) => {
 		user.preferences.fields = req.body.fields || '';
 		user.preferences.hobbies = req.body.hobbies || '';
 		
-		
-
-
 		user.website = req.body.website || '';
+		user.devpost = req.body.devpost || '';
+		user.phone = req.body.phone || '';
 		user.facebook = req.body.github || '';
+		user.instagram = req.body.instagram || '';
+		user.linkedin = req.body.linkedin || '';
 		user.github = req.body.github || '';
 
 		user.save((err) => {
 			if (err) {
 				return next(err);
 			}
-			//res.contentType(doc.img.contentType);
-          	//res.send(doc.img.data);
 			res.render('account/profile', {
 				title: 'Dashboard', css: 'profile.css', js: 'profile.js'
 			});
@@ -558,7 +561,7 @@ exports.postForgot = (req, res, next) => {
 		});
 		const mailOptions = {
 			to: user.email,
-			from: 'hackathon@starter.com',
+			from: 'jennyxu8448@gmail.com',
 			subject: 'Reset your password on Hackathon Starter',
 			text: `You are receiving this email because you (or someone else) have requested the reset of the password for your account.\n\n
         Please click on the following link, or paste this into your browser to complete the process:\n\n
