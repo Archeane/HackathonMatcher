@@ -1,0 +1,209 @@
+
+@media (min-width: 550px)
+.container {
+    width: 100% !important;
+}
+
+@media (min-width: 400px)
+.container {
+    width: 100% !important;
+    padding: 0;
+}
+
+
+@font-face {
+	font-family: 'Proxima';
+	src: url(ProximaNova-Regular.otf);
+}
+
+@font-face {
+	font-family: 'Proxima Bold';
+	src: url(ProximaNova-Bold.otf);
+}
+
+html {
+	-webkit-font-smoothing: antialiased;
+}
+
+h1 {
+	font-size: 40px;
+}
+
+h2 {
+	font-size: 36px;
+}
+
+h3 {
+	font-size: 30px;
+}
+
+h4 {
+	font-size: 24px;
+}
+
+h5 {
+	font-size: 20px;
+}
+
+h6 {
+	font-size: 18px;
+}
+
+h2 {
+	padding-bottom: 14px;
+}
+
+i {
+	transition: all .2s ease-in-out;
+}
+
+i:hover {
+	cursor: pointer;
+	transform: scale(1.1);
+}
+
+
+
+hr{
+	padding:10px;
+	margin: 0px;
+}
+
+body{
+	margin: 0;
+	border: 0;
+	padding: 0;
+	font-size: 16px;
+	font-family: 'Proxima';
+	overflow-x: hidden;
+	position: relative;
+	vertical-align: baseline;
+}
+
+
+input {
+	width: 250px;
+	border-radius: 0px !important;
+	height: 30px !important;
+	color: dimgrey;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+select {
+	border-radius: 0px !important;
+	height: 30px;
+	color: dimgrey;
+}
+
+button{
+	font-size: 16px !important;
+	font-family: 'Proxima' !important;
+
+}
+
+.tm-border {
+	border: 5px solid #fff;
+	box-shadow: 2px 2px #000;
+}
+
+.shadow {
+	text-shadow: 1px 1px #000;
+}
+
+.tm-title {
+	color: #66CCFF;
+}
+
+.white {
+	color: #fff;
+}
+
+.accent {
+	font-family: 'Proxima Bold';
+	line-height: 14px;
+	color: #60A9F0;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+.center {
+	text-align: center;
+}
+
+.content {
+	background: #3366CC;
+	color: #f5f5f5;
+	box-shadow: 0px 1px 5px rgba(50, 50, 50, 0.08);
+	padding: 40px;
+	min-height: 330px;
+	max-width: 500px;
+	position: relative;
+	top: 30;
+}
+
+.col-md-6{
+	padding:20;
+}
+
+/* +/- button */
+
+input {
+	-webkit-align-items: center;
+	-ms-flex-align: center;
+	align-items: center;
+}
+
+input[type=number] {
+	text-align: center;
+	margin-left: 0.5rem;
+	margin-right: 0.5rem;
+	padding: 1rem;
+	width: 50;
+}
+
+.settings .plusminus input:focus{
+    outline: none;
+}
+.settings .plusminus button{
+	width: 10px !important;
+	text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+	border: none;
+}
+
+.plus-minus-input .input-group-field::-webkit-inner-spin-button,
+.plus-minus-input .input-group-field ::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+.plus-minus-input .input-group-button .circle {
+	border-radius: 50%;
+	padding: 0.25em 0.8em;
+}
+
+.action-button{
+	background: #27AE60 !important;
+	font-weight: bold;
+	width: 100px;
+	font-weight: bold;
+	border: 0 none;
+	border-radius: 1px;
+	cursor: pointer;
+	padding: 0px 5px;
+	margin: 10px 5px;
+}
+.action-button:hover,  .action-button:focus {
+	box-shadow: 0 0 0 2px white, 0 0 0 3px #27AE60;
+}

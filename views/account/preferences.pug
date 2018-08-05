@@ -1,9 +1,203 @@
 extends ../layout
 
 block append head
-	link(href="/css/layout.css", rel="stylesheet", type="text/css")
 	link(href="/css/preferences.css", rel="stylesheet", type="text/css")
+		
 
 
 block content
-	
+	.container
+		h3.center.bold(style='padding-top:50;') Your Preferences
+		.row
+			.col-md-6
+				.content
+					.settings.interests
+						.row
+							.col-md-12
+								h5.accent Interests
+								h6 How interested are you in these fields?
+					.row
+						button(style='border:none; color:antiquewhite; font-weight: 500;', data-toggle='modal', data-target='#modalinterests')
+							i.fa.fa-plus-square
+							|  Add interest
+			.col-md-6
+				.content
+					.settings.languages
+						.row
+							.col-md-12
+								h5.accent Languages
+								h6 How familiar are you with the language?
+					.row
+						button(style='border:none; color:antiquewhite; font-weight: 500;', data-toggle='modal', data-target='#modallanguages')
+							i.fa.fa-plus-square
+							|  Add Language
+		.row
+			.col-md-6
+				.content
+					.settings.techhnologies
+						.row
+							.col-md-12
+								h5.accent Technologies
+								h6 How familiar are you with the technology?
+					.row
+						button(style='border:none; color:antiquewhite; font-weight: 500;', data-toggle='modal', data-target='#modaltechnologies')
+							i.fa.fa-plus-square
+							|  Add Technology
+			.col-md-6
+				.content
+					.settings.fields
+						.row
+							.col-md-12
+								h5.accent Fields
+								h6 How interested are you in these fields?
+						.row
+							.col-md-8(style='margin-left: 10')
+								span Computer Vision
+							.plusminus
+								i.sub.fa.fa-minus
+								input.field(disabled='', type='number', value='0')
+								i.add.fa.fa-plus
+					.row
+						button(style='border:none; color:antiquewhite; font-weight: 500;', data-toggle='modal', data-target='#modalfieds')
+							i.fa.fa-plus-square
+							|  Add interest
+		h3.bold.center(style='padding-top:50px;') How much do you care about these when looking for a teammate?
+		.row.center(style='padding:30px;')
+			.col-md-4
+				h5.accent Similiar Interest
+			form#careInterests
+				.col-md-8
+					.pretty.p-default.p-curve
+						input(type='radio', name='similiarinterersts', value='0')
+						.state.p-info-o
+							label Don't care at all
+					.pretty.p-default.p-curve
+						input(type='radio', name='similiarinterersts', value='1')
+						.state.p-info-o
+							label A bit important
+					.pretty.p-default.p-curve
+						input(type='radio', name='similiarinterersts', value='2')
+						.state.p-info-o
+							label Somewhat important
+					.pretty.p-default.p-curve
+						input(type='radio', name='similiarinterersts', value='3')
+						.state.p-info-o
+							label Pretty important
+					.pretty.p-default.p-curve
+						input(type='radio', name='similiarinterersts', value='4')
+						.state.p-info-o
+							label Most important
+		.row.center(style='padding:30px;')
+			.col-md-4
+				h5.accent Similiar Languages
+			.col-md-8
+				form#carelanguages
+					.pretty.p-default.p-curve
+						input(type='radio', name='similiarlanguages', value='0')
+						.state.p-info-o
+							label Don't care at all
+					.pretty.p-default.p-curve
+						input(type='radio', name='similiarlanguages', value='1')
+						.state.p-info-o
+							label A bit important
+					.pretty.p-default.p-curve
+						input(type='radio', name='similiarlanguages', value='2')
+						.state.p-info-o
+							label Somewhat important
+					.pretty.p-default.p-curve
+						input(type='radio', name='similiarlanguages', value='3')
+						.state.p-info-o
+							label Pretty important
+					.pretty.p-default.p-curve
+						input(type='radio', name='similiarlanguages', value='4')
+						.state.p-info-o
+							label Most important
+		.row.center(style='padding:30px;')
+			.col-md-4
+				h5.accent Similiar Interest
+			.col-md-8
+				form#caretechnologies
+					.pretty.p-default.p-curve
+						input(type='radio', name='similiartechnologies', value='0')
+						.state.p-info-o
+							label Don't care at all
+					.pretty.p-default.p-curve
+						input(type='radio', name='similiartechnologies', value='1')
+						.state.p-info-o
+							label A bit important
+					.pretty.p-default.p-curve
+						input(type='radio', name='similiartechnologies', value='2')
+						.state.p-info-o
+							label Somewhat important
+					.pretty.p-default.p-curve
+						input(type='radio', name='similiartechnologies', value='3')
+						.state.p-info-o
+							label Pretty important
+					.pretty.p-default.p-curve
+						input(type='radio', name='similiartechnologies', value='4')
+						.state.p-info-o
+							label Most important
+		.row.center(style='padding:30px;')
+			.col-md-4
+				h5.accent Similiar Fields
+			.col-md-8
+				form#carefields
+					.pretty.p-default.p-curve
+						input(type='radio', name='similiarfields', value='0')
+						.state.p-info-o
+							label Don't care at all
+					.pretty.p-default.p-curve
+						input(type='radio', name='similiarfields', value='1')
+						.state.p-info-o
+							label A bit important
+					.pretty.p-default.p-curve
+						input(type='radio', name='similiarfields', value='2')
+						.state.p-info-o
+							label Somewhat important
+					.pretty.p-default.p-curve
+						input(type='radio', name='similiarfields', value='3')
+						.state.p-info-o
+							label Pretty important
+					.pretty.p-default.p-curve
+						input(type='radio', name='similiarfields', value='4')
+						.state.p-info-o
+							label Most important
+		.center(style='padding:30px; padding-bottom: 100;')
+			input.action-button.submit(type='button', value='Submit')
+	#modalinterests.modal.fade(tabindex='-1', role='dialog', style='display:none;', aria-hidden='true')
+		.modal-dialog(role='document')
+			.modal-content
+				.modal-header(style='padding-bottom: 0px;')
+					.col-md-11
+						h5.modal-title Interests
+					button.close(type='button', data-dismiss='modal', aria-label='Close')
+						span(aria-hidden='true') ×
+				.modal-body
+	#modallanguages.modal.fade(tabindex='-1', role='dialog', style='display:none;', aria-hidden='true')
+		.modal-dialog(role='document')
+			.modal-content
+				.modal-header(style='padding-bottom: 0px;')
+					.col-md-11
+						h5.modal-title Languages
+					button.close(type='button', data-dismiss='modal', aria-label='Close')
+						span(aria-hidden='true') ×
+				.modal-body
+	#modaltechnologies.modal.fade(tabindex='-1', role='dialog', style='display:none;', aria-hidden='true')
+		.modal-dialog(role='document')
+			.modal-content
+				.modal-header(style='padding-bottom: 0px;')
+					.col-md-11
+						h5.modal-title Technologies
+					button.close(type='button', data-dismiss='modal', aria-label='Close')
+						span(aria-hidden='true') ×
+				.modal-body
+	#modalfields.modal.fade(tabindex='-1', role='dialog', style='display:none;', aria-hidden='true')
+		.modal-dialog(role='document')
+			.modal-content
+				.modal-header(style='padding-bottom: 0px;')
+					.col-md-11
+						h5.modal-title Fields
+					button.close(type='button', data-dismiss='modal', aria-label='Close')
+						span(aria-hidden='true') ×
+				.modal-body
+
