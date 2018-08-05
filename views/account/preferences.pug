@@ -1,8 +1,9 @@
 extends ../layout
 
 block append head
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css">
 	link(href="/css/preferences.css", rel="stylesheet", type="text/css")
-		
+	script(src="/js/preferences.js" type="text/javascript")
 
 
 block content
@@ -65,8 +66,8 @@ block content
 		.row.center(style='padding:30px;')
 			.col-md-4
 				h5.accent Similiar Interest
-			form#careInterests
-				.col-md-8
+			.col-md-8
+				form#careInterests
 					.pretty.p-default.p-curve
 						input(type='radio', name='similiarinterersts', value='0')
 						.state.p-info-o
@@ -200,4 +201,11 @@ block content
 					button.close(type='button', data-dismiss='modal', aria-label='Close')
 						span(aria-hidden='true') ×
 				.modal-body
+
+	script.
+		var csrf_token = '#{token_value}';
+		console.log(csrf_token);
+		//var user = !{JSON.stringify(dashboardUser)}
+		//console.log(user);
+	
 

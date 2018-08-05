@@ -272,6 +272,7 @@ exports.postVerifyEmail = async (req, res, next) => {
 
 //---------dashboard--------------
 exports.getUserById = (req, res) => {
+	console.log('in getUserById');
 	/*
 	if(id == ''){
 		if(req.user){
@@ -303,6 +304,7 @@ exports.getUserById = (req, res) => {
 	*/
 };
 exports.getAccount = (req, res) => {
+	console.log('in getAccount');
 	res.render('account/dashboard', {
 		title: 'Account Management', dashboardUser: req.user, css: 'profile.css', js:'profile.js'
 	});
@@ -345,6 +347,19 @@ exports.postUpdateProfile = (req, res, next) => {
 			res.redirect('/account');
 		});
 	});
+};
+
+
+exports.getPreferences = (req, res) => {
+	console.log('??????');
+	console.log(req.user);
+	res.render('account/preferences', {
+		title: 'Preferences', dashboardUser: req.user, js:'preferences.js', css:'preferences.css'
+	});
+};
+
+exports.postPreferences = (req,res) => {
+	console.log(req.body);
 };
 
 

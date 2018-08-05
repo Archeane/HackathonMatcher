@@ -60,35 +60,9 @@
             li.divider.dropdown-item
             li.dropdown-item
               a(href='/logout') Logout
-script.
-  // Instantiate the Bloodhound suggestion engine
-  var movies = new Bloodhound({
-      datumTokenizer: function (datum) {
-          return Bloodhound.tokenizers.whitespace(datum.value);
-      },
-      queryTokenizer: Bloodhound.tokenizers.whitespace,
-      remote: {
-          url: '/search?key=%QUERY',
-          filter: function (movies) {
-              console.log(movies)
-              // Map the remote source JSON array to a JavaScript object array
-              return $.map(movies, function (movie) {
-                  return {
-                      value: movie.name
-                  };
-              });
-          }
-      }
-  });
 
-  // Initialize the Bloodhound suggestion engine
-  movies.initialize();
 
-  // Instantiate the Typeahead UI
-  $('.typeahead').typeahead(null, {
-      displayKey: 'value',
-      source: movies.ttAdapter()
-  });
+
 
 
 

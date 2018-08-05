@@ -97,7 +97,7 @@ app.use(flash());
 app.use((req, res, next) => {
   if (req.path === '/api/upload') {
     next();
-  }else if(req.path === '/test'){
+  }else if(req.path === '/preferences'){
     next();
   } else {
     //csrf();
@@ -155,7 +155,7 @@ app.post('/signup', userController.postSignup);
 app.get('/contact', contactController.getContact);
 app.post('/contact', contactController.postContact);
 
-app.get('/:id', userController.getUserById);
+app.get('/users/:id', userController.getUserById);
 
 app.get('/account', passportConfig.isAuthenticated, userController.getAccount);
 app.post('/account/profile', passportConfig.isAuthenticated, userController.postUpdateProfile);
@@ -171,6 +171,10 @@ app.get('/hackathons/:id/visual', hackathonController.visual);
 
 
 app.get('/search', hackathonController.search);
+
+app.get('/preferences', userController.getPreferences);
+app.post('/preferences', userController.postPreferences);
+
 
 //---------test----------------
 app.get('/test/init', hackathonController.testInit);

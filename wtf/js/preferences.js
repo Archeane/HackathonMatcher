@@ -1,12 +1,19 @@
+$("body").bind("ajaxSend", function(elm, xhr, s){
+   if (s.type == "POST") {
+      xhr.setRequestHeader('X-CSRF-Token', csrf_token);
+   }
+});
+
 jQuery(document).ready(function(){
-     $(document).on('click', '.add', function () {
-		 if($(this).prev().val() < 10){
-			 $(this).prev().val(+$(this).prev().val() + 1);
-		 }
-	  });
-	  $(document).on('click', '.sub', function () {
-		  if ($(this).next().val() > 0) $(this).next().val(+$(this).next().val() - 1);
-	  });
+	
+	$(document).on('click', '.add', function () {
+	 if($(this).prev().val() < 10){
+		 $(this).prev().val(+$(this).prev().val() + 1);
+	 }
+	});
+	$(document).on('click', '.sub', function () {
+	  if ($(this).next().val() > 0) $(this).next().val(+$(this).next().val() - 1);
+	});
 	
 	createModals([['interests',['AWS', 'S3', 'Nodejs']]]);
 	fillPreferences([['interests',['Node', 'ML', 'AI']],['languages',['Java', 'Jquery']]])
@@ -21,12 +28,73 @@ jQuery(document).ready(function(){
 	});
 	
 	$('.submit').on('click', function(){
+		var interests = [];
+		$('.interests :input').each(function(){
+			var arr = [];
+			arr.push($(this).attr('name'));
+			arr.push($(this).val());
+			interests.push(arr);
+		});
+		
+		var languages = [];
+		$('.languages :input').each(function(){
+			var arr = [];
+			arr.push($(this).attr('name'));
+			arr.push($(this).val());
+			languages.push(arr);
+		});
+		
+		var technologies = [];
+		$('.technologies :input').each(function(){
+			var arr = [];
+			arr.push($(this).attr('name'));
+			arr.push($(this).val());
+			technologies.push(arr);
+		});
+		
+		var fields = [];
+		$('.fields :input').each(function(){
+			var arr = [];
+			arr.push($(this).attr('name'));
+			arr.push($(this).val());
+			fields.push(arr);
+		});
+		
+		console.log(interests,languages,technologies,fields);
 		
 		var interestScore = $('input[name=similiarinterersts]:checked').val(); 
-		var languagesScroe = $('input[name=similiarlanguages]:checked').val(); 
+		var languagesScore = $('input[name=similiarlanguages]:checked').val(); 
 		var techScore = $('input[name=similiartechnologies]:checked').val(); 
 		var fieldsScore = $('input[name=similiarfields]:checked').val(); 
 		
+		//TODO: more secure if condition	
+		//if(interestScore != undefined && languagesScore != undefined && techScore != undefined && fieldsScore != undefined){
+			console.log(interestScore, languagesScore, techScore, fieldsScore);
+			$.ajax({
+				url: "/preferences",
+				type: "POST",
+				dataType: "json",
+				data: {
+					CSRF: csrf_token,
+					interests: interests,
+					interestScore: interestScore
+				},
+				cache: false,
+				timeout: 5000,
+				complete: function () {
+					console.log('process complete');
+				},
+				success: function (data) {
+					console.log(data);
+					console.log('process sucess');
+				},
+				error: function () {
+					console.log('process error');
+				},
+			});
+			
+			
+		//}
 	})
 });
 
@@ -37,7 +105,7 @@ function createPrefElement(preference){
 	pref += '<div class="col-md-8" style="margin-left: 10"><span>'+preference+'</span></div>';
 	pref += '<div class="plusminus">';
 	pref += '<i class="sub fa fa-minus"></i>';
-	pref += '<input disabled type="number" value="0" class="field" />';
+	pref += '<input disabled type="number" value="0" class="field" name="'+preference+'" />';
 	pref += '<i class="add fa fa-plus"></i>';
 	pref += '</div>';
 	pref += '</div>';
@@ -59,7 +127,7 @@ function fillPreferences(data){
 function createModals(data){
 	for(i = 0; i < data.length; i++){
 		var container = document.querySelector('#modal'+data[i][0]);
-		console.log(container);
+		//console.log(container);
 		container = container.querySelector('.modal-body');
 		var content = '';
 		for(j = 0; j < data[i][1].length; j++){
