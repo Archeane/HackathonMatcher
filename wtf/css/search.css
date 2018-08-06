@@ -1,0 +1,178 @@
+.bold{
+	font-weight: bold;
+}
+
+.center{
+	text-align: center;
+}
+
+a{
+	text-decoration: none;
+	color:dodgerblue;
+}
+
+a:hover{
+	text-decoration: none;
+	color:dodgerblue;
+}
+
+.normal{
+	font-weight: 100;
+}
+
+body {
+	padding-top: 76px;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	letter-spacing: 0.0625em;
+	display: block;
+	margin: 8px;
+	letter-spacing: 0.0625em;
+}
+
+body {
+	color: #111111;
+	background: #ffffff;
+	font-size: 16px;
+	font-family: 'Open Sans', sans-serif;
+	line-height: 1.6em;
+	-webkit-text-size-adjust: 100%;
+	-ms-text-size-adjust: 100%;
+}
+
+h3 {
+	display: block;
+	font-size: 1.17em;
+	-webkit-margin-before: 1em;
+	-webkit-margin-after: 1em;
+	-webkit-margin-start: 0px;
+	-webkit-margin-end: 0px;
+}
+
+.collectionfilters{
+}
+
+.searchcontent{
+	margin-left: 5em;
+	width: 75%;
+}
+
+.profile-container{
+	display: inline-block;
+	border-bottom: solid 1px #CCD1D1  ;
+	padding: 1em;
+}
+
+.pfpcontainer{
+	height: 10%;
+    width: 20%;
+}
+
+.pfpcontainer img{
+	width: 100%;
+	height: auto;
+	border-radius:50%;
+	box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+}
+
+.profile-details{
+	
+}
+
+.profile-details .row a{
+	margin-left: 1em;
+	height:20px;
+	font-weight: 100;
+}
+
+.profile-details .row {
+	padding-left: 2em;
+	margin-top: -0.5em;
+}
+
+.social-icons{
+	padding-top: 1em;
+}
+
+.collectionfilters h3,
+#content.lightning .collectionfilters h3 {
+	position: relative;
+	margin: 14px 0 20px 0;
+	font: 0.875em "VisbyCFExtraBold", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	text-transform: uppercase;
+	cursor: pointer;
+	font-weight: bold;
+}
+
+.collectionfilters .filtergroup,
+#content.lightning .collectionfilters .filtergroup {
+	margin-top: 15px;
+	font: 1em "VisbyCFDemiBold", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+* {
+	margin: 0;
+}
+
+.collectionfilters .filtergroup h4,
+#content.lightning .collectionfilters .filtergroup h4 {
+	font: 0.875em "VisbyCFExtraBold", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	padding: 20px 0 7px 0;
+	border-top: 1px solid #e8e8e8;
+	position: relative;
+	cursor: pointer;
+	text-transform: uppercase;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+
+.collectionfilters h3 img,
+#content.lightning .collectionfilters h3 img {
+	margin-right: 10px;
+	width: 15px;
+}
+
+img {
+	max-width: 100%;
+	border: 0;
+}
+
+.collectionfilters .filtergroup .filteroption,
+#content.lightning .collectionfilters .filtergroup .filteroption {
+	font: 0.75em "VisbyCFDemiBold", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	color: #333;
+	padding: 5px 0 5px 20px;
+	cursor: pointer;
+	text-transform: uppercase;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	transition: all 0.2s;
+}
+
+.collectionfilters,
+#content.lightning .collectionfilters {
+	width: 100%;
+	float: none;
+	padding: 0 20px;
+}
+
+@media (max-width: 1024px) .hidemobile {
+	display: none !important;
+}
+
+
+.dropdown-menu span{
+	font-size:2em;
+	padding-left:0.5em;
+	padding-right: 0em;
+}

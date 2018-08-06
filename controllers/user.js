@@ -31,6 +31,15 @@ mailer.transport.sendMail({from: 'jennyxu1029@gmail.com',
 
 const randomBytesAsync = promisify(crypto.randomBytes);
 
+exports.getCurrentUser = (req,res) => {
+	var data = '{"data":"hello"}';
+	var json = JSON.parse(data);
+	console.log(json);
+	res.send(json);
+};
+
+
+
 //----------LOGIN--------------
 exports.getLogin = (req, res) => {
 	if (req.user) {
@@ -351,15 +360,37 @@ exports.postUpdateProfile = (req, res, next) => {
 
 
 exports.getPreferences = (req, res) => {
-	console.log('??????');
-	console.log(req.user);
 	res.render('account/preferences', {
 		title: 'Preferences', dashboardUser: req.user, js:'preferences.js', css:'preferences.css'
 	});
 };
 
 exports.postPreferences = (req,res) => {
-	console.log(req.body);
+	var interests = req.body.interests;
+	var languages = req.body.languages;
+	var technologies = req.body.technologies;
+	var fields = req.body.fields;
+	var interestScore = req.body.interestScore;
+	var languageScore =req.body.languageScore;
+	var techScore = req.body.techScore;
+	var fieldScore = req.body.fieldsScore;
+
+	console.log("\x1b[1m", req.body);
+	//var email = req.user.email;
+	var email = 'kaleigh@gmail.com';
+	User.updateOne({'email': email}, {$set: {
+		'preferences.interests': interests,
+		'preferences.languages' : languages,
+		'preferences.technologies': technologies,
+		'preferences.fields': fields,
+		'careScores.interests' : interestScore,
+		'careScores.technologies': techScore,
+		'careScores.fields':fieldScore,
+		'careScores.languages':languageScore
+	}}, function(err, user){
+		if(err) throw err;
+		console.log("\x1b[35m", user);
+	});
 };
 
 

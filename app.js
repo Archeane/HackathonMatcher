@@ -130,11 +130,12 @@ app.use(express.static(path.join(__dirname, 'wtf')));//, { maxAge: 31557600000 }
 //app.use(busboy);
 
 
-
+app.get('/currentuser', userController.getCurrentUser);
 /**
  * Primary app routes.
  */
 app.get('/', homeController.index);
+app.get('/feed', homeController.landing);
 app.get('/login', userController.getLogin);
 app.post('/login', userController.postLogin);
 app.get('/logout', userController.logout);
@@ -171,6 +172,7 @@ app.get('/hackathons/:id/visual', hackathonController.visual);
 
 
 app.get('/search', hackathonController.search);
+app.get('/search/results', homeController.searchResult);
 
 app.get('/preferences', userController.getPreferences);
 app.post('/preferences', userController.postPreferences);

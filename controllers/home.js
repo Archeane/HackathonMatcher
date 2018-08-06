@@ -13,4 +13,16 @@ exports.index = (req, res) => {
   
 };
 
+exports.landing = (req, res) =>{
+	res.render('landing', {
+		title: 'Home'
+	});
+};
+
+exports.searchResult = (req, res) => {
+	res.render('search', {
+		title: 'Results'
+	});
+};
+
 

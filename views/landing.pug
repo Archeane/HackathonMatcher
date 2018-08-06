@@ -1,0 +1,15 @@
+extends layout
+
+block append head
+	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+	link(rel="stylesheet" href="/css/landing.css")
+
+block content
+	header.masthead.d-flex
+		.container.text-center.my-auto
+			h1.mb-1 Get Started
+			.mg-top-sm
+				a.btn.btn-primary.mg-1.btn-xl(href='#about') Find a Hackathon
+				a.btn.btn-primary.mg-1.btn-xl(href='#about') See all Hackathons
+				a.btn.btn-primary.mg-1.btn-xl(href='#about') See all Hackers
+		.overlay

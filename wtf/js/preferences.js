@@ -1,8 +1,7 @@
-$("body").bind("ajaxSend", function(elm, xhr, s){
-   if (s.type == "POST") {
-      xhr.setRequestHeader('X-CSRF-Token', csrf_token);
-   }
-});
+/*
+TODO: Attach CSRF Token on ajax post
+ 	  duplicate preferences
+ */
 
 jQuery(document).ready(function(){
 	
@@ -16,7 +15,8 @@ jQuery(document).ready(function(){
 	});
 	
 	createModals([['interests',['AWS', 'S3', 'Nodejs']]]);
-	fillPreferences([['interests',['Node', 'ML', 'AI']],['languages',['Java', 'Jquery']]])
+	//TODO: debug this function for duplicae preferences. This function runs twice for some reason
+	fillPreferences([['interests',['Node', 'ML', 'AI']]]);
 	var modalButton = $('.modal-add');
 	modalButton.on('click', function(){
 		var interest = $(this).parent().find('span').text();
@@ -60,8 +60,6 @@ jQuery(document).ready(function(){
 			fields.push(arr);
 		});
 		
-		console.log(interests,languages,technologies,fields);
-		
 		var interestScore = $('input[name=similiarinterersts]:checked').val(); 
 		var languagesScore = $('input[name=similiarlanguages]:checked').val(); 
 		var techScore = $('input[name=similiartechnologies]:checked').val(); 
@@ -69,7 +67,7 @@ jQuery(document).ready(function(){
 		
 		//TODO: more secure if condition	
 		//if(interestScore != undefined && languagesScore != undefined && techScore != undefined && fieldsScore != undefined){
-			console.log(interestScore, languagesScore, techScore, fieldsScore);
+			
 			$.ajax({
 				url: "/preferences",
 				type: "POST",
@@ -77,7 +75,13 @@ jQuery(document).ready(function(){
 				data: {
 					CSRF: csrf_token,
 					interests: interests,
-					interestScore: interestScore
+					interestScore: interestScore,
+					languages: languages,
+					languageScore: languagesScore,
+					technologies : technologies,
+					techScore: techScore,
+					fields: fields,
+					fieldsScore : fieldsScore
 				},
 				cache: false,
 				timeout: 5000,
@@ -95,7 +99,7 @@ jQuery(document).ready(function(){
 			
 			
 		//}
-	})
+	});
 });
 
 
@@ -109,12 +113,16 @@ function createPrefElement(preference){
 	pref += '<i class="add fa fa-plus"></i>';
 	pref += '</div>';
 	pref += '</div>';
+	console.log(preference);
 	return pref;
 }
 
 function fillPreferences(data){
+	console.log(data);
 	for(i = 0; i < data.length; i++){
 		var container = document.querySelector("."+data[i][0]);
+		console.log(i);
+		console.log(container);
 		var content = '';
 		for(j = 0; j < data[i][1].length; j++){
 			var pref = createPrefElement(data[i][1][j]);
@@ -122,6 +130,7 @@ function fillPreferences(data){
 		}
 		container.innerHTML += content;
 	}
+	console.log(container);
 }
 
 function createModals(data){
