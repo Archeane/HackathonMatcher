@@ -97,7 +97,7 @@ app.use(flash());
 app.use((req, res, next) => {
   if (req.path === '/api/upload') {
     next();
-  }else if(req.path === '/preferences'){
+  }else if(req.path === '/search'){
     next();
   } else {
     //csrf();
@@ -130,52 +130,79 @@ app.use(express.static(path.join(__dirname, 'wtf')));//, { maxAge: 31557600000 }
 //app.use(busboy);
 
 
-app.get('/currentuser', userController.getCurrentUser);
+
 /**
- * Primary app routes.
+ * Landing
  */
 app.get('/', homeController.index);
-app.get('/feed', homeController.landing);
-app.get('/login', userController.getLogin);
+app.post('/', userController.postIndex);
 app.post('/login', userController.postLogin);
-app.get('/logout', userController.logout);
 app.get('/forgot', userController.getForgot);
 app.post('/forgot', userController.postForgot);
+
+/*
+  Sign up
+ */
+app.get('/emailVerification', userController.getVerifyEmail);
+app.post('/emailVerification', userController.postVerifyEmail);
+app.get('/signup', userController.getSignup);
+app.post('/signup', userController.postSignup);
+/*
+  Search
+ */
+app.post('/search', homeController.postSearch);
+/*TEST ROUTE*/
+app.get('/search', homeController.getSearch);
+//app.get('/search/results', homeController.searchResult);
+/*
+  Navbar
+ */
+app.get('/logout', userController.logout);
+app.get('/users/:id', userController.getUserById);
+app.get('/home', homeController.getHome);
+app.get('/account', passportConfig.isAuthenticated, userController.getAccount);
+/*
+  Dashboard
+ */
+app.post('/account/profile', passportConfig.isAuthenticated, userController.postUpdateProfile);
+app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);
+app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/reset/:token', userController.getReset);
 app.post('/reset/:token', userController.postReset);
-app.get('/verify', userController.getVerifyEmail);
-app.post('/verify', userController.postVerifyEmail);
+/*
+  Hackathons
+ */
+app.get('/hackathons/:id/visual', hackathonController.visual);
+app.get('/preferences', userController.getPreferences);
+app.post('/preferences', userController.postPreferences);
 
-app.get('/signup', userController.getSignup);
+/*============================UNUSED LINKS======================================*/
+/*
+  Home
+ */
+//app.get('/hackathons', hackathonController.getHackathonList);
+app.get('/currentuser', userController.getCurrentUser);
+app.get('/usersearch', userController.searchUser);
+
+
+
 app.get('/account', userController.getAccount);
-app.post('/home', userController.postHome);
 
 //app.get('/signup2', userController.getSignup);
-app.post('/signup', userController.postSignup);
 
 app.get('/contact', contactController.getContact);
 app.post('/contact', contactController.postContact);
 
-app.get('/users/:id', userController.getUserById);
 
-app.get('/account', passportConfig.isAuthenticated, userController.getAccount);
-app.post('/account/profile', passportConfig.isAuthenticated, userController.postUpdateProfile);
-app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);
-app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
 
 //----------hackathons----------
-app.get('/hackathons', hackathonController.getHackathonList);
 app.get('/hackathons/:id', hackathonController.getHackathonById);
-app.get('/hackathons/:id/visual', hackathonController.visual);
 //app.post('/test', hackathonController.updateVisual)
 
 
-app.get('/search', hackathonController.search);
-app.get('/search/results', homeController.searchResult);
+//app.get('/search', hackathonController.search);
 
-app.get('/preferences', userController.getPreferences);
-app.post('/preferences', userController.postPreferences);
 
 
 //---------test----------------
@@ -187,6 +214,8 @@ app.get('/test/init', hackathonController.testInit);
 var multipart = require('connect-multiparty');
 var multipartMiddleware = multipart();
 //app.post('/api/upload', multipartMiddleware, apiController.postFileUpload);
+
+
 
 app.get('/api', apiController.getApi);
 app.get('/api/lastfm', apiController.getLastfm);

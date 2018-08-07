@@ -7,7 +7,7 @@
     span.navbar-toggler-icon
   .collapse.navbar-collapse
     ul.nav.navbar-nav
-      if user
+      if !user
         li.active.nav-item
           .search-container
             button.search
@@ -60,6 +60,35 @@
             li.divider.dropdown-item
             li.dropdown-item
               a(href='/logout') Logout
+
+script.
+  console.log('in header script');
+  var movies = new Bloodhound({
+      datumTokenizer: function (datum) {
+          return Bloodhound.tokenizers.whitespace(datum.value);
+      },
+      queryTokenizer: Bloodhound.tokenizers.whitespace,
+      remote: {
+          url: '/search?keyword=%QUERY&searchtype=home&type=user',
+          filter: function (movies) {
+              console.log(movies);
+              return $.map(movies, function (movie) {
+                  return {
+                      value: movie.name
+                  };
+              });
+          }
+      }
+  });
+
+  // Initialize the Bloodhound suggestion engine
+  movies.initialize();
+
+  // Instantiate the Typeahead UI
+  $('.typeahead').typeahead(null, {
+      displayKey: 'value',
+      source: movies.ttAdapter()
+  });
 
 
 

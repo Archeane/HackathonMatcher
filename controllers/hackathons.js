@@ -1,6 +1,6 @@
 var spawn = require("child_process").spawn;
 var convert = require('mongoose_schema-json');
-var MongoClient = require('mongodb').MongoClient
+var MongoClient = require('mongodb').MongoClient;
 const async = require('async');
 
 var loggedinUser;

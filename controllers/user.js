@@ -8,6 +8,17 @@ const User = require('../models/User');
 const randomstring = require('randomstring');
 const fs = require('fs');
 
+/*
+	Gets the user based on url param
+	
+ */
+exports.getUser = (req, res) => {
+
+};
+
+
+
+
 
 //const mailer = require('../misc/mailer');
 //mailer.sendMail('jennyxu1029@gmail.com','jennyxu8448@gmail.com','Please work','please work');
@@ -32,11 +43,20 @@ mailer.transport.sendMail({from: 'jennyxu1029@gmail.com',
 const randomBytesAsync = promisify(crypto.randomBytes);
 
 exports.getCurrentUser = (req,res) => {
-	var data = '{"data":"hello"}';
-	var json = JSON.parse(data);
-	console.log(json);
-	res.send(json);
+	User.findOne({'email': 'kaleigh@gmail.com'}, function(err, user){
+		if (err) throw err;
+		//console.log(JSON.stringify(user));
+		//var a = JSON.stringify(user)
+		//var json = JSON.parse(a);
+		
+		//console.log(json);
+		res.send(user);
+	});
 };
+
+exports.searchUser = (req,res) =>{
+	console.log(req.query);
+}
 
 
 
@@ -184,7 +204,7 @@ exports.postSignup = async (req, res, next) => {
 
 }
 
-exports.postHome = (req, res, next) => {
+exports.postIndex = (req, res, next) => {
 	req.assert('email', 'Email is not valid').isEmail();
 	req.assert('', 'Password must be at least 4 characters long').len(4);
 	req.assert('confirmpassword', 'Passwords do not match').equals(req.body.password);
