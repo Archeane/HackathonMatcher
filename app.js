@@ -165,6 +165,7 @@ app.get('/account', passportConfig.isAuthenticated, userController.getAccount);
 /*
   Dashboard
  */
+//TODO: authenticatation for logged in user post requestes
 app.post('/account/profile', passportConfig.isAuthenticated, userController.postUpdateProfile);
 app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);

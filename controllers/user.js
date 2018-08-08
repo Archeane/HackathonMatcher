@@ -2,11 +2,11 @@ const {
 	promisify
 } = require('util');
 const crypto = require('crypto');
-const nodemailer = require('nodemailer');
 const passport = require('passport');
 const User = require('../models/User');
 const randomstring = require('randomstring');
 const fs = require('fs');
+
 
 /*
 	Gets the user based on url param
@@ -15,6 +15,46 @@ const fs = require('fs');
 exports.getUser = (req, res) => {
 
 };
+
+
+const nodemailer = require('nodemailer');
+var xoauth2  = require('xoauth2');
+
+
+var smtpTransport = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    xoauth2 : xoauth2.createXOAuth2Generator({
+      user: "jennyxu8448@gmail.com", // Your gmail address.
+                                            // Not @developer.gserviceaccount.com
+      clientId: "415462232493-qqaf0i6o2fqhthjpifoi4asloth7ibc3.apps.googleusercontent.com",
+      clientSecret: "vx3ydUec5jjor26EY-KWBzJj",
+      refreshToken: "1/q6ypV50zDTvRLRV9Bw-j81Pqpw_2gJoByOs2P-mfXDQ",
+      accessToken: "ya29.GlvzBe1T59pqquWcMuy5Mz-T0QvNG-zhsAMoYumDYWCJxZOd6Izd5ZN4YMHDoceOCQpI8v1OiGALhSxnoQymmhi8G942zpbINJBmM1U1Fl62sAZMlwFHFmslz-FB"
+    })
+  }
+});
+
+var mailOptions = {
+  from: "jennyxu8448@gmail.com",
+  to: "jennyxu1029@gmail.com",
+  subject: "Hello",
+  generateTextFromHTML: true,
+  html: "<b>Hello world</b>"
+};
+
+smtpTransport.sendMail(mailOptions, function(error, response) {
+  if (error) {
+    console.log(error);
+  } else {
+  	console.log('email sent success!');
+    console.log(response);
+  }
+  smtpTransport.close();
+});
+
+
+
 
 /*
 const mailer = require('../misc/mailer');
@@ -36,13 +76,31 @@ mailer.transport.sendMail({from: 'jennyxu1029@gmail.com',
 
 
 //mailer.sendEmail('jennyxu1029@gmail.com', 'jennyxu8448@gmail.com', "Please verify your email", "yay");
+
+var transporter = nodemailer.createTransport({
+service: 'gmail',
+auth: {
+user: 'jennyxu1029@gmail.com',
+pass: 'xu1029!~'
+}
+}); 
+
+var mailOptions = {
+from: 'jennyxu1029@gmail.com',
+to: 'jennyxu8448@gmail.com',
+subject: 'Sending Email using Node.js',
+text: '<p>Thanks for registering with Hackermatcher!</p><p>Please click this link to confirm your email:<a></a></p>'
+};
+
+//console.log(transporter);
+transporter.sendMail(mailOptions, function(error, info){
+if (error) {
+console.log("\x1b[31m",error);
+} else {
+console.log("\x1b[32m", 'Email sent: ' + info.response);
+}
+});
 */
-
-
-
-
-
-
 
 const randomBytesAsync = promisify(crypto.randomBytes);
 
@@ -104,8 +162,6 @@ exports.postIndex = (req, res, next) => {
 			//const html = "Hi there,<br />Thank you for registering!<br /><br />Please verify your email by typing the following token:<br />Token: ${secretToken} < br/> On the following page: <a href='http://localhost:3000/verify'> link</a>";
 			//mailer.sendEmail('jennyxu1029@gmail.com', user.email, "Please verify your email", test);
 			
-			var nodemailer = require('nodemailer');
-
 			var transporter = nodemailer.createTransport({
 			  service: 'gmail',
 			  auth: {
@@ -118,14 +174,15 @@ exports.postIndex = (req, res, next) => {
 			  from: 'jennyxu1029@gmail.com',
 			  to: 'jennyxu8448@gmail.com',
 			  subject: 'Sending Email using Node.js',
-			  html: '<p>Thanks for registering with Hackermatcher!</p><p>Please click this link to confirm your email:<a>'+confirmurl+'</a></p>'
+			  text: '<p>Thanks for registering with Hackermatcher!</p><p>Please click this link to confirm your email:<a>'+confirmurl+'</a></p>'
 			};
 
+			console.log(transporter);
 			transporter.sendMail(mailOptions, function(error, info){
 			  if (error) {
-			    console.log(error);
+			    console.log("\x1b[31m",error);
 			  } else {
-			    console.log('Email sent: ' + info.response);
+			    console.log("\x1b[32m", 'Email sent: ' + info.response);
 			  }
 			});
 
@@ -155,7 +212,7 @@ exports.verifyemail = (req, res) => {
 	User.findOne({'emailSecretToken' : secretToken}, function(err, user){
 		if(err) throw err;
 		if(!user){
-			console.log('no user found');
+			throw new Error("User not found");
 		}
 		user.emailActive = true;
 		user.emailSecretToken = '';
@@ -184,19 +241,10 @@ exports.getVerifyEmail = (req, res) =>{
 };
 
 //----------LOGIN--------------
-exports.getLogin = (req, res) => {
-	if (req.user) {
-		return res.redirect('/');
-	}
-	res.render('account/login', {
-		title: 'Login'
-	});
-};
-
 exports.postLogin = (req, res, next) => {
-	req.assert('login-email', 'Email is not valid').isEmail();
-	req.assert('login-password', 'Password cannot be blank').notEmpty();
-	req.sanitize('login-email').normalizeEmail({
+	req.assert('email', 'Email is not valid').isEmail();
+	req.assert('password', 'Password cannot be blank').notEmpty();
+	req.sanitize('email').normalizeEmail({
 		gmail_remove_dots: false
 	});
 
@@ -226,7 +274,7 @@ exports.postLogin = (req, res, next) => {
 				msg: 'Success! You are logged in.'
 			});
 
-			res.render('account/account');
+			res.render('account/signup');
 
 			//TODO: What is this?
       //res.redirect(req.session.returnTo || '/');
@@ -244,11 +292,6 @@ exports.logout = (req, res) => {
 
 //---------SIGNUP-----------
 exports.getSignup = (req, res) => {
-	//NOTE: take comment out
-	/*
-	if (req.user) {
-		return res.redirect('/');
-	}*/
 	res.render('account/signup',{
 		"title":"Signup", "css":["signup.css"], "js":["signup.js"]
 	});

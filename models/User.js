@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
 	linkedin: String,
 	tokens: Array,
 	
-	
+	/*
 	school: String,
 	major: String,
 	graduationYear: String,
@@ -53,7 +53,7 @@ const userSchema = new mongoose.Schema({
 		technologies: Number,
 		hobbies: Number
 	},
-	matches: Array
+	matches: Array*/
 }, {
 	timestamps: true
 });
