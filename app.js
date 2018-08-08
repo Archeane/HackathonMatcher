@@ -139,6 +139,7 @@ app.post('/', userController.postIndex);
 app.post('/login', userController.postLogin);
 app.get('/forgot', userController.getForgot);
 app.post('/forgot', userController.postForgot);
+app.get('/verifyemail', userController.verifyemail);
 
 /*
   Sign up
@@ -182,7 +183,7 @@ app.post('/preferences', userController.postPreferences);
  */
 //app.get('/hackathons', hackathonController.getHackathonList);
 app.get('/currentuser', userController.getCurrentUser);
-app.get('/usersearch', userController.searchUser);
+//app.get('/usersearch', userController.searchUser);
 
 
 

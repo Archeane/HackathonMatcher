@@ -16,13 +16,10 @@ exports.getUser = (req, res) => {
 
 };
 
-
-
-
-
-//const mailer = require('../misc/mailer');
-//mailer.sendMail('jennyxu1029@gmail.com','jennyxu8448@gmail.com','Please work','please work');
 /*
+const mailer = require('../misc/mailer');
+mailer.sendMail('jennyxu1029@gmail.com','jennyxu8448@gmail.com','Please work','<p>please work</p>');
+
 mailer.transport.sendMail({from: 'jennyxu1029@gmail.com',
   to: 'jennyxu8448@gmail.com', // An array if you have multiple recipients.
   subject: 'Hey you, awesome!',
@@ -36,9 +33,16 @@ mailer.transport.sendMail({from: 'jennyxu1029@gmail.com',
     console.log('Response: ' + info);
   }
 });
-*/
+
 
 //mailer.sendEmail('jennyxu1029@gmail.com', 'jennyxu8448@gmail.com', "Please verify your email", "yay");
+*/
+
+
+
+
+
+
 
 const randomBytesAsync = promisify(crypto.randomBytes);
 
@@ -54,11 +58,130 @@ exports.getCurrentUser = (req,res) => {
 	});
 };
 
-exports.searchUser = (req,res) =>{
-	console.log(req.query);
-}
 
+//---------HOME----------------
+exports.postIndex = (req, res, next) => {
+	req.assert('email', 'Email is not valid').isEmail();
+	req.assert('', 'Password must be at least 4 characters long').len(4);
+	req.assert('confirmpassword', 'Passwords do not match').equals(req.body.password);
+	req.sanitize('email').normalizeEmail({
+		gmail_remove_dots: false
+	});
+	const errors = req.validationErrors();
+	if (errors) {
+		req.flash('errors', errors);
+		console.log(errors);
+		return res.redirect('/signup');
+	}
 
+	const secretToken = randomstring.generate();
+	var confirmurl = 'http://localhost:8080/verifyemail?token='+secretToken;
+	const user = new User({
+		name: req.body.firstname + req.body.lastname,
+		email: req.body.email,
+		password: req.body.password,
+		emailSecretToken: secretToken,
+		emailActive: false,
+	});
+
+	User.findOne({
+		email: req.body.email
+	}, (err, existingUser) => {
+		if (err) {
+			return next(err);
+		}
+		if (existingUser) {
+			req.flash('errors', {
+				msg: 'Account with that email address already exists.'
+			});
+			return res.redirect('/signup');
+		}
+		user.save((err) => {
+			if (err) {
+				return next(err);
+			}
+			
+			//const html = "Hi there,<br />Thank you for registering!<br /><br />Please verify your email by typing the following token:<br />Token: ${secretToken} < br/> On the following page: <a href='http://localhost:3000/verify'> link</a>";
+			//mailer.sendEmail('jennyxu1029@gmail.com', user.email, "Please verify your email", test);
+			
+			var nodemailer = require('nodemailer');
+
+			var transporter = nodemailer.createTransport({
+			  service: 'gmail',
+			  auth: {
+			    user: 'jennyxu1029@gmail.com',
+			    pass: 'xu1029!~'
+			  }
+			});
+
+			var mailOptions = {
+			  from: 'jennyxu1029@gmail.com',
+			  to: 'jennyxu8448@gmail.com',
+			  subject: 'Sending Email using Node.js',
+			  html: '<p>Thanks for registering with Hackermatcher!</p><p>Please click this link to confirm your email:<a>'+confirmurl+'</a></p>'
+			};
+
+			transporter.sendMail(mailOptions, function(error, info){
+			  if (error) {
+			    console.log(error);
+			  } else {
+			    console.log('Email sent: ' + info.response);
+			  }
+			});
+
+			res.render('account/verifyemail',{
+				title: 'Verify Email'
+			});
+
+/*
+			req.logIn(user, (err) => {
+				if (err) {
+					return next(err);
+				}
+				res.render('account/signup',{
+				"title":"Signup", "css":["signup.css"], "js":["signup.js"]
+				});
+			});
+			*/
+
+		});
+	});
+};
+
+exports.verifyemail = (req, res) => {
+	console.log('in tester');
+	var secretToken = req.query.token;
+	console.log(secretToken);
+	User.findOne({'emailSecretToken' : secretToken}, function(err, user){
+		if(err) throw err;
+		if(!user){
+			console.log('no user found');
+		}
+		user.emailActive = true;
+		user.emailSecretToken = '';
+		user.save((err) => {
+			if (err) {
+				return next(err);
+			}
+			console.log('You email is verified, you may now log in');
+			
+		});
+	});
+};
+
+exports.getVerifyEmail = (req, res) =>{
+	console.log('in getVerifyEmail');
+	User.findOne({'emailSecretToken' : secretToken}, function(err, user){
+		if(err) throw err;
+		if(!user){
+			req.flash('error', 'no user found');
+		}
+		user.emailActive = true;
+		user.emailSecretToken = '';
+		req.flash('success', 'You email is verified, you may now log in');
+	});
+	
+};
 
 //----------LOGIN--------------
 exports.getLogin = (req, res) => {
@@ -204,68 +327,7 @@ exports.postSignup = async (req, res, next) => {
 
 }
 
-exports.postIndex = (req, res, next) => {
-	req.assert('email', 'Email is not valid').isEmail();
-	req.assert('', 'Password must be at least 4 characters long').len(4);
-	req.assert('confirmpassword', 'Passwords do not match').equals(req.body.password);
-	req.sanitize('email').normalizeEmail({
-		gmail_remove_dots: false
-	});
 
-	const errors = req.validationErrors();
-
-	if (errors) {
-		req.flash('errors', errors);
-		console.log(errors);
-		return res.redirect('/signup');
-	}
-
-	const secretToken = randomstring.generate();
-	const user = new User({
-		name: req.body.firstname + req.body.lastname,
-		email: req.body.email,
-		password: req.body.password,
-		emailSecretToken: secretToken,
-		emailActive: false,
-	});
-
-	User.findOne({
-		email: req.body.email
-	}, (err, existingUser) => {
-		if (err) {
-			return next(err);
-		}
-		if (existingUser) {
-			req.flash('errors', {
-				msg: 'Account with that email address already exists.'
-			});
-			return res.redirect('/signup');
-		}
-		user.save((err) => {
-			if (err) {
-				return next(err);
-			}
-			
-			/*
-			/TODO: send email/
-
-			const html = "Hi there,<br />Thank you for registering!<br /><br />Please verify your email by typing the following token:<br />Token: ${secretToken} < br/> On the following page: <a href='http://localhost:3000/verify'> link</a>";
-			mailer.sendEmail('jennyxu1029@gmail.com', user.email, "Please verify your email", test);
-			*/
-/*
-			req.logIn(user, (err) => {
-				if (err) {
-					return next(err);
-				}
-				res.render('account/signup',{
-				"title":"Signup", "css":["signup.css"], "js":["signup.js"]
-				});
-			});
-			*/
-
-		});
-	});
-};
 
 exports.getVerifyEmail = (req, res, next) => {
 	res.render('account/verifyemail');

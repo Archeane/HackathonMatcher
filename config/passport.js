@@ -28,6 +28,11 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, don
     if (!user) {
       return done(null, false, { msg: `Email ${email} not found.` });
     }
+
+    if(!user.emailActive){
+     return done(null, false, { msg: ` ${email} is not verified, check your inbox to verify your email.` }); 
+    }
+
     user.comparePassword(password, (err, isMatch) => {
       if (err) { return done(err); }
       if (isMatch) {

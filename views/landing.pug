@@ -1,15 +1,52 @@
 extends layout
 
 block append head
-	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
-	link(rel="stylesheet" href="/css/landing.css")
+  link(rel="stylesheet", href="/css/landing.css")
 
 block content
-	header.masthead.d-flex
-		.container.text-center.my-auto
-			h1.mb-1 Get Started
-			.mg-top-sm
-				a.btn.btn-primary.mg-1.btn-xl(href='#about') Find a Hackathon
-				a.btn.btn-primary.mg-1.btn-xl(href='#about') See all Hackathons
-				a.btn.btn-primary.mg-1.btn-xl(href='#about') See all Hackers
-		.overlay
+  .container
+    div#register-box
+      h2.title Be great at what you do 
+      h3.subtitle Get started - it is free
+
+      div.left
+        form(action='/', method='POST')
+          input(type='hidden', name='_csrf', value=_csrf)
+          .form-group
+            input.form-control(type="text", name="firstname", id='reg-firstname',placeholder="First Name",required)
+          .form-group
+            input.form-control(type="text", name="lastname", id='reg-lastname',placeholder="Last Name",required)
+          .form-group
+            input.form-control(type="text", name="email", id='reg-email',placeholder="Email",required)
+          .form-group
+            input.form-control(type="password", name="password", id='reg-password',placeholder="Password",required)
+          .form-group
+            input.form-control(type="password", name="confirmpassword", id='reg-conformpassword',placeholder="Confirm Password",required)
+          .form-group.offset-sm-3.col-md-7.pl-2
+            button.btn.btn-success(type='submit')
+              i.fas.fa-user-plus.fa-sm
+              | Signup
+
+      div.right
+        span.loginwith Sign in with...
+        .form-group
+          .offset-sm-3.col-md-7.pl-2
+            a.btn.btn-block.btn-facebook.btn-social(href='/auth/facebook')
+              i.fab.fa-facebook-f.fa-sm
+              | Facebook
+            a.btn.btn-block.btn-google.btn-social(href='/auth/google')
+              i.fab.fa-google-plus-g.fa-xs
+              | Google
+            a.btn.btn-block.btn-github.btn-social(href='/auth/github')
+              i.fab.fa-github.fa-sm
+              | GitHub
+            a.btn.btn-block.btn-linkedin.btn-social(href='/auth/linkedin')
+              i.fab.fa-linkedin-in.fa-sm
+              | LinkedIn
+            a.btn.btn-block.btn-instagram.btn-social(href='/auth/instagram')
+              i.fab.fa-instagram.fa-sm
+              | Instagram
+
+
+      div.or OR
+

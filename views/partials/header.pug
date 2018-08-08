@@ -7,7 +7,7 @@
     span.navbar-toggler-icon
   .collapse.navbar-collapse
     ul.nav.navbar-nav
-      if !user
+      if user
         li.active.nav-item
           .search-container
             button.search
@@ -22,13 +22,13 @@
         form(method='POST', action="/login")
           input(type='hidden', name='_csrf', value=_csrf)
           .row.nav-item
-            .col-md-1
+            .col-md-auto
               label(for="login-email" class="pull-left") 
                 | Email
-            .col-md-3
+            .col-md-auto
               .form-group
                 input(type="text" placeholder="Your Email" name="login-email" class="pull-right", autofocus, required)
-            .col-md-1
+            .col-md-auto
             .col-md-auto
               label(for="login-password") 
                 | Password
