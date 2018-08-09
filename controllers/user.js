@@ -264,6 +264,55 @@ exports.saveToS3 = (req,res,next) =>{
 	});
 };
 
+function sendUploadToGCS (req, res, next) {
+  if (!req.file) {
+    return next();
+  }
+
+  const gcsname = Date.now() + req.file.originalname;
+  const file = bucket.file(gcsname);
+
+  const stream = file.createWriteStream({
+    metadata: {
+      contentType: req.file.mimetype
+    },
+    resumable: false
+  });
+
+  stream.on('error', (err) => {
+    req.file.cloudStorageError = err;
+    next(err);
+  });
+
+  stream.on('finish', () => {
+    req.file.cloudStorageObject = gcsname;
+    file.makePublic().then(() => {
+      req.file.cloudStoragePublicUrl = getPublicUrl(gcsname);
+      next();
+    });
+  });
+
+  stream.end(req.file.buffer);
+}
+
+function getPublicUrl (filename) {
+  return `https://storage.googleapis.com/hackermatcher/${filename}`;
+}
+
+exports.postPFPUpload = (req, res, next) =>{
+	let data = req.body;
+    if (req.file && req.file.cloudStoragePublicUrl) {
+      data.imageUrl = req.file.cloudStoragePublicUrl;
+    }
+    getModel().create(data, (err, savedData) => {
+      if (err) {
+        next(err);
+        return;
+      }
+      res.redirect(`${req.baseUrl}/${savedData.id}`);
+    });
+};
+
 exports.postSignup = async (req, res, next) => {
 	console.log(req.body);
 	User.findOne({

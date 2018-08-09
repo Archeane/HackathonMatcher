@@ -236,6 +236,7 @@ $('#msform').on('keyup keypress', function (e) {
 
 
 $(".next").click(function () {
+	console.log('next is clicked!');
 	/*
 	if (!($('#reg-school').val() && $('#reg-major').val()) || $('#reg-graduationYear').val() == "null" || $('#reg-educationLevel').val() == "null") {
 		$('#reg-error').text('Please fill in all required fields');

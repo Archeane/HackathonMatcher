@@ -147,7 +147,7 @@ block content
 			<input type="submit" name="submit" class="submit action-button" value="Submit" />
 		</fieldset>
 
-	form(method='POST' action='/api/upload', enctype='multipart/form-data', class="uploadForm")
+	form(method='POST' action='/uploadpfp', enctype='multipart/form-data', class="uploadForm")
 		input(type='hidden', name='_csrf', value=_csrf)
 		.label Upload Profile Image
 		input(type="file", name="myFile", id="hello")

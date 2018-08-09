@@ -20,9 +20,7 @@ const expressStatusMonitor = require('express-status-monitor');
 const sass = require('node-sass-middleware');
 const multer = require('multer');
 const csrf = require('csurf');
-
-const upload = multer({ dest: path.join(__dirname, 'uploads') });
-const busboy = require('connect-busboy');
+const upload = multer({ dest: path.join(__dirname, 'uploads')});
 
 
 /**
@@ -95,7 +93,7 @@ app.use(flash());
 //app.use(csrf());
 
 app.use((req, res, next) => {
-  if (req.path === '/api/upload') {
+  if (req.path === '/uploadpfp') {
     next();
   }else if(req.path === '/search'){
     next();
@@ -148,6 +146,112 @@ app.get('/emailVerification', userController.getVerifyEmail);
 //app.post('/emailVerification', userController.postVerifyEmail);
 app.get('/signup', userController.getSignup);
 app.post('/signup', userController.postSignup);
+//Test upload pfp route
+
+var GoogleCloudStorage = require('@google-cloud/storage');
+var storage = new GoogleCloudStorage({
+  projectId: 'hackermatcher-211718',
+  keyFilename: 'googlecloundserviceacc.json'
+});
+var BUCKET_NAME = 'hackermatcher';
+// https://googlecloudplatform.github.io/google-cloud-node/#/docs/google-cloud/0.39.0/storage/bucket
+var myBucket = storage.bucket(BUCKET_NAME);
+
+const fs = require('fs');
+function getModel () {
+  return require(`./model-${require('config/gclound.js').get('DATA_BACKEND')}`);
+}
+app.post('/uploadpfp', upload.single('myFile'), (req,res,next)=>{
+  //var file = req.file;
+  //var fileName = req.file.path;
+/*
+  const gcsname = Date.now() + req.file.originalname;
+  const file = myBucket.file(gcsname);
+
+  const stream = file.createWriteStream({
+    metadata: {
+      contentType: req.file.mimetype
+    },
+    resumable: false
+  });
+
+  stream.on('error', (err) => {
+    req.file.cloudStorageError = err;
+    console.log(err);
+    next(err);
+  });
+
+  stream.on('finish', () => {
+    req.file.cloudStorageObject = gcsname;
+    file.makePublic().then(() => {
+      req.file.cloudStoragePublicUrl = getPublicUrl(gcsname);
+      console.log(req.file.cloudStoragePublicUrl)
+      next();
+    });
+  });
+
+  stream.end(req.file.buffer);
+
+  let data = req.body;
+
+  // Was an image uploaded? If so, we'll use its public URL
+  // in cloud storage.
+  if (req.file && req.file.cloudStoragePublicUrl) {
+    data.imageUrl = req.file.cloudStoragePublicUrl;
+  }
+
+  // Save the data to the database.
+  getModel().create(data, (err, savedData) => {
+    if (err) {
+      next(err);
+      return;
+    }
+    console.log('redirecting!!');
+    res.redirect(`${req.baseUrl}/${savedData.id}`);
+  });
+*/
+
+var localReadStream = fs.createReadStream(req.file.path);
+const gcsname = Date.now() + req.file.originalname;
+//const remoteWriteStream = myBucket.file(gcsname).createWriteStream();
+var image = myBucket.file(gcsname);
+localReadStream.pipe(image.createWriteStream({
+    metadata: {
+      contentType: 'image/jpeg',
+      metadata: {
+        custom: 'metadata'
+      }
+    }
+})).on('error', function(err) {console.log(err);})
+  .on('finish', function() {
+    console.log('upload finished!');
+    myBucket.file(gcsname).makePublic().then(() =>{
+      res.send('<img src="'+getPublicUrl(gcsname)+'" />');
+    });
+  });
+/*
+  fs.readFile(fileName, (err, data) => {
+    myBucket.upload(fileName, { public: true }).then(() => {
+      console.log(`${fileName} uploaded to ${BUCKET_NAME}`);
+
+      var uploaded = myBucket.file(fileName);
+      console.log(uploaded);
+      res.send(uploaded);
+
+    });
+  });
+*/
+});
+
+
+  
+
+var getPublicUrl = file_name => {
+  return `https://storage.googleapis.com/${BUCKET_NAME}/${file_name}`
+}
+
+
+
 /*
   Search
  */
