@@ -26,8 +26,10 @@ exports.getContact = (req, res) => {
  * Send a contact form via Nodemailer.
  */
 exports.postContact = (req, res) => {
+  console.log(req.body);
   let fromName;
   let fromEmail;
+  /*
   if (!req.user) {
     req.assert('name', 'Name cannot be blank').notEmpty();
     req.assert('email', 'Email is not valid').isEmail();
@@ -37,20 +39,21 @@ exports.postContact = (req, res) => {
   const errors = req.validationErrors();
 
   if (errors) {
+    console.log(errors);
     req.flash('errors', errors);
     return res.redirect('/contact');
   }
-
+  */
   if (!req.user) {
     fromName = req.body.name;
     fromEmail = req.body.email;
+
   } else {
     fromName = req.user.profile.name || '';
     fromEmail = req.user.email;
   }
-
   const mailOptions = {
-    to: 'your@email.com',
+    to: 'jennyxu8448@gmail.com',
     from: `${fromName} <${fromEmail}>`,
     subject: 'Contact Form | Hackathon Starter',
     text: req.body.message

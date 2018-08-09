@@ -29,6 +29,7 @@ const { Venues, Users } = require('node-foursquare')({
 
 exports.testUpload = (req,res, next) =>{
   console.log("???");
+  /*
   var file = req.files.file;
   console.log(file);
   fs.readFile(file.path, function(err,data){
@@ -58,7 +59,7 @@ exports.testUpload = (req,res, next) =>{
             }
         });
     });
-  });
+  });*/
 };
 
 /**

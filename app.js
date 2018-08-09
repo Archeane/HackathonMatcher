@@ -145,7 +145,7 @@ app.get('/verifyemail', userController.verifyemail);
   Sign up
  */
 app.get('/emailVerification', userController.getVerifyEmail);
-app.post('/emailVerification', userController.postVerifyEmail);
+//app.post('/emailVerification', userController.postVerifyEmail);
 app.get('/signup', userController.getSignup);
 app.post('/signup', userController.postSignup);
 /*
@@ -161,14 +161,15 @@ app.get('/search', homeController.getSearch);
 app.get('/logout', userController.logout);
 app.get('/users/:id', userController.getUserById);
 app.get('/home', homeController.getHome);
-app.get('/account', passportConfig.isAuthenticated, userController.getAccount);
+//app.get('/account', passportConfig.isAuthenticated, userController.getAccount);
 /*
   Dashboard
  */
 //TODO: authenticatation for logged in user post requestes
-app.post('/account/profile', passportConfig.isAuthenticated, userController.postUpdateProfile);
-app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);
-app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
+app.get('/account/dashboard', )
+app.post('/users/:id', passportConfig.isAuthenticated, userController.postUpdateProfile);
+//app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);
+//app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/reset/:token', userController.getReset);
 app.post('/reset/:token', userController.postReset);
 /*
@@ -183,7 +184,6 @@ app.post('/preferences', userController.postPreferences);
   Home
  */
 //app.get('/hackathons', hackathonController.getHackathonList);
-app.get('/currentuser', userController.getCurrentUser);
 //app.get('/usersearch', userController.searchUser);
 
 

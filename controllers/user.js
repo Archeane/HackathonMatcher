@@ -5,117 +5,9 @@ const crypto = require('crypto');
 const passport = require('passport');
 const User = require('../models/User');
 const randomstring = require('randomstring');
-const fs = require('fs');
-
-
-/*
-	Gets the user based on url param
-	
- */
-exports.getUser = (req, res) => {
-
-};
-
-
-const nodemailer = require('nodemailer');
-var xoauth2  = require('xoauth2');
-
-
-var smtpTransport = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    xoauth2 : xoauth2.createXOAuth2Generator({
-      user: "jennyxu8448@gmail.com", // Your gmail address.
-                                            // Not @developer.gserviceaccount.com
-      clientId: "415462232493-qqaf0i6o2fqhthjpifoi4asloth7ibc3.apps.googleusercontent.com",
-      clientSecret: "vx3ydUec5jjor26EY-KWBzJj",
-      refreshToken: "1/q6ypV50zDTvRLRV9Bw-j81Pqpw_2gJoByOs2P-mfXDQ",
-      accessToken: "ya29.GlvzBe1T59pqquWcMuy5Mz-T0QvNG-zhsAMoYumDYWCJxZOd6Izd5ZN4YMHDoceOCQpI8v1OiGALhSxnoQymmhi8G942zpbINJBmM1U1Fl62sAZMlwFHFmslz-FB"
-    })
-  }
-});
-
-var mailOptions = {
-  from: "jennyxu8448@gmail.com",
-  to: "jennyxu1029@gmail.com",
-  subject: "Hello",
-  generateTextFromHTML: true,
-  html: "<b>Hello world</b>"
-};
-
-smtpTransport.sendMail(mailOptions, function(error, response) {
-  if (error) {
-    console.log(error);
-  } else {
-  	console.log('email sent success!');
-    console.log(response);
-  }
-  smtpTransport.close();
-});
-
-
-
-
-/*
-const mailer = require('../misc/mailer');
-mailer.sendMail('jennyxu1029@gmail.com','jennyxu8448@gmail.com','Please work','<p>please work</p>');
-
-mailer.transport.sendMail({from: 'jennyxu1029@gmail.com',
-  to: 'jennyxu8448@gmail.com', // An array if you have multiple recipients.
-  subject: 'Hey you, awesome!',
-  text: 'Mailgun rocks, pow pow!',
-}, function (err, info) {
-  console.log('HI');
-  if (err) {
-    console.log('Error: ' + err);
-  }
-  else {
-    console.log('Response: ' + info);
-  }
-});
-
-
-//mailer.sendEmail('jennyxu1029@gmail.com', 'jennyxu8448@gmail.com', "Please verify your email", "yay");
-
-var transporter = nodemailer.createTransport({
-service: 'gmail',
-auth: {
-user: 'jennyxu1029@gmail.com',
-pass: 'xu1029!~'
-}
-}); 
-
-var mailOptions = {
-from: 'jennyxu1029@gmail.com',
-to: 'jennyxu8448@gmail.com',
-subject: 'Sending Email using Node.js',
-text: '<p>Thanks for registering with Hackermatcher!</p><p>Please click this link to confirm your email:<a></a></p>'
-};
-
-//console.log(transporter);
-transporter.sendMail(mailOptions, function(error, info){
-if (error) {
-console.log("\x1b[31m",error);
-} else {
-console.log("\x1b[32m", 'Email sent: ' + info.response);
-}
-});
-*/
-
 const randomBytesAsync = promisify(crypto.randomBytes);
-
-exports.getCurrentUser = (req,res) => {
-	User.findOne({'email': 'kaleigh@gmail.com'}, function(err, user){
-		if (err) throw err;
-		//console.log(JSON.stringify(user));
-		//var a = JSON.stringify(user)
-		//var json = JSON.parse(a);
-		
-		//console.log(json);
-		res.send(user);
-	});
-};
-
+const fs = require('fs');
+const nodemailer = require('nodemailer');
 
 //---------HOME----------------
 exports.postIndex = (req, res, next) => {
@@ -135,7 +27,8 @@ exports.postIndex = (req, res, next) => {
 	const secretToken = randomstring.generate();
 	var confirmurl = 'http://localhost:8080/verifyemail?token='+secretToken;
 	const user = new User({
-		name: req.body.firstname + req.body.lastname,
+		firstname: req.body.firstname,
+		lastname:req.body.lastname,
 		email: req.body.email,
 		password: req.body.password,
 		emailSecretToken: secretToken,
@@ -165,24 +58,23 @@ exports.postIndex = (req, res, next) => {
 			var transporter = nodemailer.createTransport({
 			  service: 'gmail',
 			  auth: {
-			    user: 'jennyxu1029@gmail.com',
+			    user: 'jennyxu8448@gmail.com',
 			    pass: 'xu1029!~'
 			  }
 			});
 
 			var mailOptions = {
-			  from: 'jennyxu1029@gmail.com',
-			  to: 'jennyxu8448@gmail.com',
+			  from: 'jennyxu8448@gmail.com',
+			  to: req.body.email,
 			  subject: 'Sending Email using Node.js',
 			  text: '<p>Thanks for registering with Hackermatcher!</p><p>Please click this link to confirm your email:<a>'+confirmurl+'</a></p>'
 			};
 
-			console.log(transporter);
 			transporter.sendMail(mailOptions, function(error, info){
 			  if (error) {
 			    console.log("\x1b[31m",error);
 			  } else {
-			    console.log("\x1b[32m", 'Email sent: ' + info.response);
+			    console.log("\x1b[32m", 'Email sent: ' + info);
 			  }
 			});
 
@@ -205,7 +97,7 @@ exports.postIndex = (req, res, next) => {
 	});
 };
 
-exports.verifyemail = (req, res) => {
+exports.verifyemail = async (req, res) => {
 	console.log('in tester');
 	var secretToken = req.query.token;
 	console.log(secretToken);
@@ -216,12 +108,29 @@ exports.verifyemail = (req, res) => {
 		}
 		user.emailActive = true;
 		user.emailSecretToken = '';
+		
+		var userId = user.firstname+'.'+user.lastname;
+		var duplicateID = true;
+		var count = 0;
+		//TODO: async loop for assigning id to user
+		User.findOne({'id': userId}, function(err, person){
+			if(err) throw err;
+			if(!person){
+				duplicateID = false;
+				user.id = userId;
+				console.log('setting userid success');
+			}else{
+				count++;
+				userId = user.firstname+'.' + user.lastname + '.' + count;
+			}
+		});
+		
 		user.save((err) => {
 			if (err) {
 				return next(err);
 			}
 			console.log('You email is verified, you may now log in');
-			
+			res.redirect('/');
 		});
 	});
 };
@@ -239,6 +148,34 @@ exports.getVerifyEmail = (req, res) =>{
 	});
 	
 };
+exports.postVerifyEmail = async (req, res, next) => {
+	try {
+		const {
+			secretToken
+		} = req.body;
+		console.log(secretToken);
+
+		//find the account that matches the secret token
+		const user = await User.findOne({
+			'emailSecretToken': secretToken
+		});
+		console.log(user);
+		if (!user) {
+			console.log('no user is found');
+			req.flash('error. no user found for that secret token');
+			res.redirect('/verify');
+			return;
+		}
+		user.emailActive = true;
+		user.emailSecretToken = '';
+		await user.save();
+
+		req.flash('Verification succeeded. You may login now.');
+		res.redirect('/login');
+	} catch (error) {
+		next(error);
+	}
+}
 
 //----------LOGIN--------------
 exports.postLogin = (req, res, next) => {
@@ -293,7 +230,7 @@ exports.logout = (req, res) => {
 //---------SIGNUP-----------
 exports.getSignup = (req, res) => {
 	res.render('account/signup',{
-		"title":"Signup", "css":["signup.css"], "js":["signup.js"]
+		"title":"Signup"
 	});
 }
 
@@ -330,7 +267,7 @@ exports.saveToS3 = (req,res,next) =>{
 exports.postSignup = async (req, res, next) => {
 	console.log(req.body);
 	User.findOne({
-		email: req.body.email || 'jenny@gmail.com'
+		email: req.user.email
 	}, (err, user) => {
 		if (err) {
 			return next(err);
@@ -365,67 +302,32 @@ exports.postSignup = async (req, res, next) => {
 				title: 'Dashboard', css: 'profile.css', js: 'profile.js'
 			});
 		});
-
 	});
-
 }
 
 
 
-exports.getVerifyEmail = (req, res, next) => {
-	res.render('account/verifyemail');
-}
-exports.postVerifyEmail = async (req, res, next) => {
-	try {
-		const {
-			secretToken
-		} = req.body;
-		console.log(secretToken);
 
-		//find the account that matches the secret token
-		const user = await User.findOne({
-			'emailSecretToken': secretToken
-		});
-		console.log(user);
-		if (!user) {
-			console.log('no user is found');
-			req.flash('error. no user found for that secret token');
-			res.redirect('/verify');
-			return;
-		}
-		user.emailActive = true;
-		user.emailSecretToken = '';
-		await user.save();
-
-		req.flash('Verification succeeded. You may login now.');
-		res.redirect('/login');
-	} catch (error) {
-		next(error);
-	}
-}
 
 //---------dashboard--------------
 exports.getUserById = (req, res) => {
 	console.log('in getUserById');
-	/*
-	if(id == ''){
-		if(req.user){
-			//id = req.user.id;
-			//res.send(id);
-			//throw new Error('_id field cannot be obtained');
-		}else{
-			res.send('404 User ID Not found');
-		}
-	}
-	*/
-	User.findOne({email: req.params.id}, (err, user, next) => {
-		if (err) {
-			return next(err);
-		}
+	var id = req.params.id;
+	if(id === req.user.email){
+		console.log('current user!');
 		res.render('account/dashboard', {
-			title: 'Account Management', dashboardUser: user,  js: 'profile.js'
+			title: 'Account Management', dashboardUser: req.user, settingsEnabled: true
 		});
-	});
+	}else{
+		User.findOne({email: req.params.id}, (err, user, next) => {
+			if (err) {
+				return next(err);
+			}
+			res.render('account/dashboard', {
+				title: 'Account Management', dashboardUser: user, settingsEnabled: false
+			});
+		});
+	}
 	/*
 	User.findById(id, (err, user, next) => {
 		if (err) {
@@ -437,6 +339,7 @@ exports.getUserById = (req, res) => {
 	});
 	*/
 };
+
 exports.getAccount = (req, res) => {
 	console.log('in getAccount');
 	res.render('account/dashboard', {

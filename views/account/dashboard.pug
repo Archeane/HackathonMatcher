@@ -2,6 +2,7 @@ extends ../layout
 
 block append head
 	link(href="/css/profile.css", rel="stylesheet", type="text/css")
+	script(src="/js/profile.js")
 
 block content
 	.preloader
@@ -15,9 +16,8 @@ block content
 				.col-md-12.col-sm-12
 					img.img-responsive.img-circle.tm-border(src='/images/tm-easy-profile.jpg', alt='templatemo easy profile')
 					hr
-					i.fa.fa-users
-					if user
-						i.fa.fa-user-edit
+					#settingsicon
+						i.fa.fa-users
 					h3#email
 
 
@@ -94,5 +94,6 @@ block content
 
 	script.
 		var User = !{JSON.stringify(dashboardUser)};
+		var settingsEnabled = !{settingsEnabled};
 	
 

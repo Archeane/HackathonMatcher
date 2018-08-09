@@ -3,6 +3,7 @@ extends ../layout
 block append head
 	link(href="/css/layout.css", rel="stylesheet", type="text/css" )
 	link(href="/css/signup.css", rel="stylesheet", type="text/css" )
+	script(src="/js/signup.js")
 
 block content
 	form(id='msform', method='POST' action='/signup', class="registerForm")
@@ -147,6 +148,7 @@ block content
 		</fieldset>
 
 	form(method='POST' action='/api/upload', enctype='multipart/form-data', class="uploadForm")
+		input(type='hidden', name='_csrf', value=_csrf)
 		.label Upload Profile Image
 		input(type="file", name="myFile", id="hello")
 		img#img-upload(height='300;', width='300;')

@@ -14,10 +14,15 @@ $(function () {
 		});
 	});
 
+	if(settingsEnabled){
+		document.querySelector("#settingsicon").innerHTML += '<i class="fa fa-cog ></i>';
+	}
+
 	var email = document.querySelector("#email");
 	email.innerHTML += User.email;
-
-	var Userabout = [User.name, User.major, User.school, User.educationLevel, User.graduationYear, User.facebook, User.phone, User.instagram, User.github, User.linkedin, User.website];
+	console.log(User);
+	var name = User.firstname + ' ' + User.lastname;
+	var Userabout = [name, User.major, User.school, User.educationLevel, User.graduationYear, User.facebook, User.phone, User.instagram, User.github, User.linkedin, User.website];
 	var UserLan = User.preferences.languages;
 	var UserFamiliar = User.preferences.technologies;
 	var UserInterest = User.preferences.interests;
