@@ -3,6 +3,16 @@ var current_fs, next_fs, previous_fs; //fieldsets
 var left, opacity, scale; //fieldset properties which we will animate
 var animating; //flag to prevent quick multi-click glitches
 
+$('#msform').on('keyup keypress', function (e) {
+	var keyCode = e.keyCode || e.which;
+	if (keyCode === 13) {
+		e.preventDefault();
+		return false;
+	}
+});
+
+
+
 $(document).ready(function () {
 	$('#reg-error').hide();
 
@@ -142,18 +152,6 @@ $(document).ready(function () {
 		});
 		*/
 	});
-/*
-	$('#reg-school').on('input', function (e) {
-		var input = $(e.target);
-		if (input.val().length < 3) {
-			input.attr('list', '');
-		} else {
-			input.attr('list', dataList);
-		}
-	})
-*/
-
-
 	var majors = [];
 	$.getJSON("/assets/majors.json", function (data) {
 		for (i = 0; i < data.length; i++) {
@@ -220,21 +218,12 @@ $(document).ready(function () {
 			container.innerHTML = '';
 		}
 	 });
+
+
+	 console.log('finished populating!');
 });
 
-
-//user information
 var user = {};
-
-$('#msform').on('keyup keypress', function (e) {
-	var keyCode = e.keyCode || e.which;
-	if (keyCode === 13) {
-		e.preventDefault();
-		return false;
-	}
-});
-
-
 $(".next").click(function () {
 	console.log('next is clicked!');
 	/*

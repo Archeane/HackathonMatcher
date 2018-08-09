@@ -8,6 +8,20 @@ const randomstring = require('randomstring');
 const randomBytesAsync = promisify(crypto.randomBytes);
 const fs = require('fs');
 const nodemailer = require('nodemailer');
+var GoogleCloudStorage = require('@google-cloud/storage');
+var storage = new GoogleCloudStorage({
+  projectId: process.env.GOOGLE_CLOUD_STORAGE_PROJECT_ID,
+  keyFilename: process.env.GOOGLE_CLOUD_STORAGE_KEYFILE_NAME
+});
+var myBucket = storage.bucket(process.env.GOOGLE_CLOUD_BUCKET_NAME);
+
+
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3({
+    accessKeyId: 'AKIAJTVQG35QJUSGGKKA',
+    secretAccessKey: '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'
+});
+
 
 //---------HOME----------------
 exports.postIndex = (req, res, next) => {
@@ -47,37 +61,43 @@ exports.postIndex = (req, res, next) => {
 			});
 			return res.redirect('/signup');
 		}
+		var transporter = nodemailer.createTransport({
+			debug: false,
+		    requireTLS: true,
+		    port: 25,
+		    secureConnection: false,
+		    service: 'gmail',
+			auth: {
+				user: 'jennyxu8448@gmail.com',
+				pass: 'xu1029!~'
+			},
+		    tls: {
+		        ciphers:'SSLv3',
+		        rejectUnauthorized: false
+		    }
+		  
+		});
+
+		var mailOptions = {
+		  from: 'jennyxu8448@gmail.com',
+		  to: req.body.email,
+		  subject: 'Sending Email using Node.js',
+		  text: '<p>Thanks for registering with Hackermatcher!</p><p>Please click this link to confirm your email:<a>'+confirmurl+'</a></p>'
+		};
+
+		transporter.sendMail(mailOptions, function(error, info){
+		  if (error) {
+		    console.log("\x1b[31m",error);
+		  } else {
+		    console.log("\x1b[32m", 'Email sent: ' + info);
+		  }
+		});
+
 		user.save((err) => {
 			if (err) {
 				return next(err);
 			}
 			
-			//const html = "Hi there,<br />Thank you for registering!<br /><br />Please verify your email by typing the following token:<br />Token: ${secretToken} < br/> On the following page: <a href='http://localhost:3000/verify'> link</a>";
-			//mailer.sendEmail('jennyxu1029@gmail.com', user.email, "Please verify your email", test);
-			
-			var transporter = nodemailer.createTransport({
-			  service: 'gmail',
-			  auth: {
-			    user: 'jennyxu8448@gmail.com',
-			    pass: 'xu1029!~'
-			  }
-			});
-
-			var mailOptions = {
-			  from: 'jennyxu8448@gmail.com',
-			  to: req.body.email,
-			  subject: 'Sending Email using Node.js',
-			  text: '<p>Thanks for registering with Hackermatcher!</p><p>Please click this link to confirm your email:<a>'+confirmurl+'</a></p>'
-			};
-
-			transporter.sendMail(mailOptions, function(error, info){
-			  if (error) {
-			    console.log("\x1b[31m",error);
-			  } else {
-			    console.log("\x1b[32m", 'Email sent: ' + info);
-			  }
-			});
-
 			res.render('account/verifyemail',{
 				title: 'Verify Email'
 			});
@@ -117,21 +137,28 @@ exports.verifyemail = async (req, res) => {
 			if(err) throw err;
 			if(!person){
 				duplicateID = false;
-				user.id = userId;
+				user.urlId = userId;
 				console.log('setting userid success');
+				user.save((err) => {
+					if (err) {
+						return next(err);
+					}
+					console.log('You email is verified, you may now log in');
+					req.logIn(user, (err) => {
+						if (err) {
+							return next(err);
+						}
+					
+						res.render('account/signup');
+					});
+				});
 			}else{
 				count++;
 				userId = user.firstname+'.' + user.lastname + '.' + count;
 			}
 		});
 		
-		user.save((err) => {
-			if (err) {
-				return next(err);
-			}
-			console.log('You email is verified, you may now log in');
-			res.redirect('/');
-		});
+		
 	});
 };
 
@@ -234,17 +261,29 @@ exports.getSignup = (req, res) => {
 	});
 }
 
+exports.postPFPUpload = (req, res, next) =>{
+	var localReadStream = fs.createReadStream(req.file.path);
+	const gcsname = Date.now() + req.file.originalname;
+	var image = myBucket.file(gcsname);
+	localReadStream.pipe(image.createWriteStream({
+	    metadata: {
+	      contentType: 'image/jpeg',
+	      metadata: {
+	        custom: 'metadata'
+	      }
+	    }
+	})).on('error', function(err) {console.log(err);})
+	  .on('finish', function() {
+	    console.log('upload finished!');
+	    myBucket.file(gcsname).makePublic().then(() =>{
+	      console.log('upload to gcloud success!');
+	    });
+	  });
+};
 
-const AWS = require('aws-sdk');
-
-const BUCKET_NAME = 'hackermatcher';
-const IAM_USER_KEY = 'AKIAJTVQG35QJUSGGKKA';
-const IAM_USER_SECRET = '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';
-
-const s3 = new AWS.S3({
-    accessKeyId: 'AKIAJTVQG35QJUSGGKKA',
-    secretAccessKey: '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'
-});
+var getPublicUrl = file_name => {
+  return `https://storage.googleapis.com/${process.env.GOOGLE_CLOUD_BUCKET_NAME}/${file_name}`
+}
 
 exports.saveToS3 = (req,res,next) =>{
 	var file = req.file;
@@ -264,53 +303,25 @@ exports.saveToS3 = (req,res,next) =>{
 	});
 };
 
-function sendUploadToGCS (req, res, next) {
-  if (!req.file) {
-    return next();
-  }
-
-  const gcsname = Date.now() + req.file.originalname;
-  const file = bucket.file(gcsname);
-
-  const stream = file.createWriteStream({
-    metadata: {
-      contentType: req.file.mimetype
-    },
-    resumable: false
-  });
-
-  stream.on('error', (err) => {
-    req.file.cloudStorageError = err;
-    next(err);
-  });
-
-  stream.on('finish', () => {
-    req.file.cloudStorageObject = gcsname;
-    file.makePublic().then(() => {
-      req.file.cloudStoragePublicUrl = getPublicUrl(gcsname);
-      next();
-    });
-  });
-
-  stream.end(req.file.buffer);
-}
-
-function getPublicUrl (filename) {
-  return `https://storage.googleapis.com/hackermatcher/${filename}`;
-}
-
-exports.postPFPUpload = (req, res, next) =>{
-	let data = req.body;
-    if (req.file && req.file.cloudStoragePublicUrl) {
-      data.imageUrl = req.file.cloudStoragePublicUrl;
-    }
-    getModel().create(data, (err, savedData) => {
-      if (err) {
-        next(err);
-        return;
-      }
-      res.redirect(`${req.baseUrl}/${savedData.id}`);
-    });
+var uploadToGCloud = async(file) => {
+	var localReadStream = fs.createReadStream(file.path);
+	const gcsname = Date.now() + file.originalname;
+	var image = myBucket.file(gcsname);
+	localReadStream.pipe(image.createWriteStream({
+	    metadata: {
+	      contentType: 'image/jpeg',
+	      metadata: {
+	        custom: 'metadata'
+	      }
+	    }
+	})).on('error', function(err) {console.log(err);})
+	  .on('finish', function() {
+	    console.log('upload finished!');
+	    myBucket.file(gcsname).makePublic().then(() =>{
+	      console.log('upload to gcloud success!');
+	      
+	    });
+	  });
 };
 
 exports.postSignup = async (req, res, next) => {
@@ -343,14 +354,47 @@ exports.postSignup = async (req, res, next) => {
 		user.linkedin = req.body.linkedin || '';
 		user.github = req.body.github || '';
 
-		user.save((err) => {
-			if (err) {
-				return next(err);
-			}
-			res.render('account/profile', {
-				title: 'Dashboard', css: 'profile.css', js: 'profile.js'
+		const file = req.file;
+		if(file){
+			var localReadStream = fs.createReadStream(file.path);
+			const gcsname = Date.now() + file.originalname;
+			var image = myBucket.file(gcsname);
+			localReadStream.pipe(image.createWriteStream({
+			    metadata: {
+			      contentType: 'image/jpeg',
+			      metadata: {
+			        custom: 'metadata'
+			      }
+			    }
+			})).on('error', function(err) {console.log(err);})
+			.on('finish', function() {
+			    myBucket.file(gcsname).makePublic().then(() =>{
+					console.log('upload to gcloud success!');
+					user.profileimg = getPublicUrl(gcsname);
+
+					user.save((err) => {
+						if (err) {
+							return next(err);
+						}
+						res.render('account/profile', {
+							title: 'Dashboard', css: 'profile.css', js: 'profile.js'
+						});
+					});
+			    });
+			  });
+		}else{
+			user.save((err) => {
+				if (err) {
+					return next(err);
+				}
+				res.render('account/profile', {
+					title: 'Dashboard', css: 'profile.css', js: 'profile.js'
+				});
 			});
-		});
+		}
+
+
+		
 	});
 }
 

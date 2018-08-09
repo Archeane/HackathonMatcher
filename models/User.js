@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema({
 	firstname: String,
 	lastname: String,
-	id: String,
+	urlId: String,
 	index: Number,
 	gender: String,
 	email: {
@@ -27,15 +27,13 @@ const userSchema = new mongoose.Schema({
 	linkedin: String,
 	tokens: Array,
 	
-	/*
 	school: String,
 	major: String,
 	graduationYear: String,
 	educationLevel: String,
 	location: String,
 	website: String,
-	profileimg: 
-      { data: Buffer, contentType: String },		
+	profileimg: String,		
 
 	numOfHackathons: Number,
 	hackathons: Array,
@@ -54,7 +52,7 @@ const userSchema = new mongoose.Schema({
 		technologies: Number,
 		hobbies: Number
 	},
-	matches: Array*/
+	matches: Array
 }, {
 	timestamps: true
 });

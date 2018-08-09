@@ -3,11 +3,9 @@ extends ../layout
 block append head
 	link(href="/css/layout.css", rel="stylesheet", type="text/css" )
 	link(href="/css/signup.css", rel="stylesheet", type="text/css" )
-	script(src="/js/signup.js")
 
 block content
-	form(id='msform', method='POST' action='/signup', class="registerForm")
-		input(type='hidden', name='_csrf', value=_csrf)
+	form(id='msform', method='POST' action='/signup?_csrf='+_csrf, class="registerForm", enctype='multipart/form-data')
 		<ul id="progressbar">
 			<li class="active">Demographic Information</li>
 			<li>Personal Details</li>
@@ -56,7 +54,7 @@ block content
 			</select>
 			<div id="selectHackathons">
 			</div>
-
+			<button class = "next" />NEXT</button>
 			<input type="button" name="next" class="next action-button" value="Next" id="next1" />
 		</fieldset>
 		<fieldset id="fieldset2">
@@ -90,9 +88,9 @@ block content
 			<h2 class="fs-title">Social Profile</h2>
 			<h3 class="fs-subtitle">Help others know you better</h3>
 			<div>
-				<label>Upload Profile Image</label>
-				<input type="file" id="imgInp" >
-				<img id='img-upload' height="300;" width="300;" name="pfp"/>
+				.label Upload Profile Image
+				input(type="file", name="myFile", id="imgInp")
+				img#img-upload(height='300;', width='300;')
 			</div>
 			<div style="padding-top:15px;">
 				<div class="row">
@@ -147,10 +145,14 @@ block content
 			<input type="submit" name="submit" class="submit action-button" value="Submit" />
 		</fieldset>
 
-	form(method='POST' action='/uploadpfp', enctype='multipart/form-data', class="uploadForm")
+		form(method='POST' action='/uploadpfp', enctype='multipart/form-data', class="uploadForm")
 		input(type='hidden', name='_csrf', value=_csrf)
 		.label Upload Profile Image
 		input(type="file", name="myFile", id="hello")
 		img#img-upload(height='300;', width='300;')
 		input.submit.action-button(type='submit', class="upload", name='submit', value='Submit')
+
+	script(src="/js/signup.js")
+
+	
 
