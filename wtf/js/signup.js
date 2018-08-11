@@ -179,7 +179,7 @@ $(document).ready(function () {
 	 		for (i = 1; i <= Math.min($('#reg-hackathons').val(), 5); i++) {
 	 			var content = '';
 	 			content += '<div class="row">';
-	 			content += '<select placeholder="Year" class="hackYear" id="hack' + i + '">';
+	 			content += '<select placeholder="Year" class="hackYear" name="hackYear" id="hack' + i + '">';
 				content += '<option value="0">Year</option>'
 	 			content += '<option value="2014">2014</option>';
 	 			content += '<option value="2015">2015</option>';
@@ -225,7 +225,6 @@ $(document).ready(function () {
 
 var user = {};
 $(".next").click(function () {
-	console.log('next is clicked!');
 	/*
 	if (!($('#reg-school').val() && $('#reg-major').val()) || $('#reg-graduationYear').val() == "null" || $('#reg-educationLevel').val() == "null") {
 		$('#reg-error').text('Please fill in all required fields');
@@ -234,10 +233,10 @@ $(".next").click(function () {
 		$('#reg-error').hide();
 
 		//append data to user variable
-		user['school'] = $('#reg-school').val();
+		/*user['school'] = $('#reg-school').val();
 		user['major'] = $('#reg-major').val();
 		user['graduationYear'] = $('#reg-graduationYear').val();
-		user['educationLevel'] = $('#reg-educationLevel').val();
+		user['educationLevel'] = $('#reg-educationLevel').val();*/
 		user['numOfHackathons'] = $('#reg-hackathons').val();
 		if($('#reg-hackathons').val() > 0){
 			var hackathonArray = [];
@@ -254,8 +253,8 @@ $(".next").click(function () {
 					});
 				}
 			});
-			user['hackathons'] = [];
-			user['hackathons'].push(hackathonArray);
+			user['hackathonsArray'] = [];
+			user['hackathonsArray'].push(hackathonArray);
 		}
 		document.getElementById("user").value = user;
 		console.log(user);

@@ -171,15 +171,15 @@ app.get('/search', homeController.getSearch);
   Navbar
  */
 app.get('/logout', userController.logout);
-app.get('/users/:id', userController.getUserById);
-app.get('/home', homeController.getHome);
+app.get('/users/:id', userController.getProfile);
+//app.get('/home', homeController.getHome);
 //app.get('/account', passportConfig.isAuthenticated, userController.getAccount);
 /*
   Dashboard
  */
 //TODO: authenticatation for logged in user post requestes
 app.get('/account/dashboard', )
-app.post('/users/:id', passportConfig.isAuthenticated, userController.postUpdateProfile);
+app.post('/users/:id', passportConfig.isAuthenticated, userController.postProfile);
 //app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);
 //app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/reset/:token', userController.getReset);
@@ -188,6 +188,7 @@ app.post('/reset/:token', userController.postReset);
   Hackathons
  */
 app.get('/hackathons/:id/visual', hackathonController.visual);
+app.get('/hackathons', hackathonController.getHackathonList);
 app.get('/preferences', userController.getPreferences);
 app.post('/preferences', userController.postPreferences);
 
@@ -195,12 +196,8 @@ app.post('/preferences', userController.postPreferences);
 /*
   Home
  */
-//app.get('/hackathons', hackathonController.getHackathonList);
 //app.get('/usersearch', userController.searchUser);
 
-
-
-app.get('/account', userController.getAccount);
 
 //app.get('/signup2', userController.getSignup);
 

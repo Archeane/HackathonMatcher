@@ -2,98 +2,101 @@ extends ../layout
 
 block append head
 	link(href="/css/profile.css", rel="stylesheet", type="text/css")
-	script(src="/js/profile.js")
-
+	
 block content
 	.preloader
 		.sk-spinner.sk-spinner-wordpress
 			span.sk-inner-circle
 
-	
-	header
-		.container
+	form(method="POST")
+		input(type='hidden', name='_csrf', value=_csrf)
+		header
+			.container
+				.row
+					.col-md-12.col-sm-12
+						img#pfp.img-responsive.img-circle.tm-border(src='', alt='profile picture', height=300, width=300)
+						hr
+						#settingsicon
+							i.fa.fa-users.fa-lg
+							input(type="submit" value="Save Changes" class="settings")
+						h3#email
+
+
+		.section.container
 			.row
-				.col-md-12.col-sm-12
-					img.img-responsive.img-circle.tm-border(src='/images/tm-easy-profile.jpg', alt='templatemo easy profile')
-					hr
-					#settingsicon
-						i.fa.fa-users
-					h3#email
+				.col-md-6.col-sm-12
+					#about
+						h3.accent
+							| About
+						h6
+							| Jenny Xu
+						.content
+						.settings
+				.col-md-6.col-sm-12
+					#skills
+						h3.accent
+							| Top Languages
+							i.pull-right.fa.fa-cog
 
+		<section class="container">
+			<div class="row">
+				<div class="col-md-8 col-sm-12">
+					<div class="education">
+						<h2 class="accent">Technologies</h2>
+						<div class="row">
+							<div class='col-md-6' id="familiar">
+								<h4 class='bold'>Most Familiar</h4>
+								<div class="content">
 
-	.section.container
-		.row
-			.col-md-6.col-sm-12
-				#about
-					h3.accent
-						| About
-					h6
-						| Jenny Xu
-					.content
-					.settings
-			.col-md-6.col-sm-12
-				#skills
-					h3.accent
-						| Top Languages
-						i.pull-right.fa.fa-cog
+								</div>
+								<div class="settings">
 
-	<section class="container">
-		<div class="row">
-			<div class="col-md-8 col-sm-12">
-				<div class="education">
-					<h2 class="accent">Technologies</h2>
-					<div class="row">
-						<div class='col-md-6' id="familiar">
-							<h4 class='bold'>Most Familiar</h4>
-							<div class="content">
-
+								</div>
 							</div>
-							<div class="settings">
-
+							<div class='col-md-6' id="interested">
+								<h4 class='bold'>Most Interested</h4>
+								<div class="content"></div>
+								<div class="settings"></div>
 							</div>
 						</div>
-						<div class='col-md-6' id="interested">
-							<h4 class='bold'>Most Interested</h4>
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-12">
+					<div class="languages" id="fields">
+						<h2>Fields</h2>
+						<div class="content"></div>
+						<div class="settings"></div>
+
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="container">
+			<div class="row">
+				<div class="col-md-4 col-sm-12">
+					<div class="contact" id="hackathons">
+						<h2>Hackathons</h2>
+						<div class="content"></div>
+						<div class="settings"></div>
+					</div>
+				</div>
+				<div class="col-md-8 col-sm-12">
+					<div class="experience">
+						<h2>A Little More About Me...</h2>
+						<div class="experience-content" id="note">
 							<div class="content"></div>
 							<div class="settings"></div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="col-md-4 col-sm-12">
-				<div class="languages" id="fields">
-					<h2>Fields</h2>
-					<div class="content"></div>
-					<div class="settings"></div>
+		</section>
 
-				</div>
-			</div>
-		</div>
-	</section>
+		script.
+			var User = !{JSON.stringify(dashboardUser)};
+			var settingsEnabled = !{settingsEnabled};
 
-	<section class="container">
-		<div class="row">
-			<div class="col-md-4 col-sm-12">
-				<div class="contact" id="hackathons">
-					<h2>Hackathons</h2>
-					<div class="content"></div>
-					<div class="settings"></div>
-				</div>
-			</div>
-			<div class="col-md-8 col-sm-12">
-				<div class="experience">
-					<h2>A Little More About Me...</h2>
-					<div class="experience-content" id="note">
-						<div class="content"></div>
-						<div class="settings"></div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-
-	script.
-		var User = !{JSON.stringify(dashboardUser)};
-		var settingsEnabled = !{settingsEnabled};
+		script(src="/js/profile.js")
 	
 

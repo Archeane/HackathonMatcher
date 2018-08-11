@@ -1,5 +1,8 @@
 extends layout
 
+block append head
+	link(rel='stylesheet' href="/css/hackathon.css")
+
 block content 
 
 	.hackathon
@@ -24,24 +27,16 @@ block content
 		.bg-light.text-dark
 			.container
 				.row
-					button View All in List 
-					button View All in Visual
-					button Set Sorting Filters
+					a(href="/vis") View All in Visual
 				.hackers.center
 					h2 Attending Hackers
 					.row.attending-hackers
 						
-							
-							
-					
-
-			
-
-		
-
 	script.
 		var hackathon = !{JSON.stringify(foundHackathon)};
 		var matches = !{JSON.stringify(data)};
+
+	script(src="/js/hackathon.js")
 
 
 		

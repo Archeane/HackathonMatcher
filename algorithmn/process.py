@@ -2,26 +2,47 @@ from random import randint
 import sys
 import json 
 import pymongo
+import ast
 from pymongo import MongoClient
+
 
 client = MongoClient('mongodb://localhost:27017')
 db = client['test']
 
-currentHackathon = json.loads(sys.argv[1])
+currentHackathon = sys.argv[1]
 currentHacker = json.loads(sys.argv[2])
-
-
+#print(currentHacker)
+#print(currentHacker['email'])
+#k = json.load(currentHacker)
+#print(currentHacker)
+#print('printing from python!!', currentHacker)
+#print(currentHackathon)
 allHackers = []
+
 '''
-hackathon = db['hackathons'].find_one({'email': 'ome@zalhebu.tn'})
+hackathon = db['hackathons'].find_one({'urlId': 'hackalaska.bible.college'})
 for email in hackathon['hackers']:
     temp = db['users'].find_one({'email':email})
     allHackers.append(temp)
 '''
+#print(currentHackathon)
+'''
 for email in currentHackathon['hackers']:
     temp = db['users'].find_one({'email':email})
     allHackers.append(temp)
+'''
 
+
+startIndex = 0
+for index, char in enumerate(currentHackathon):
+    #print(char)
+    if char == ',':
+        email = currentHackathon[startIndex:index]
+        startIndex = index+1
+        temp = db['users'].find_one({'email':email})
+        allHackers.append(temp)
+
+#print(len(allHackers))
 
 def calculateInterestScore(hacker, carescore):
     interestsArr = hacker['preferences']['interests']
@@ -129,7 +150,6 @@ def calculateFieldScore(hacker, carescore):
     return newInterestArr
 
 
-
 # TODO: not good practice to modify the parameter
 def resetuser(hacker, interestcarescore, languagecarescore, techscore, fieldscore):
     newInterestArr = calculateInterestScore(hacker, interestcarescore)
@@ -173,7 +193,6 @@ def calculateSimiliarScore(currentHacker, compareHacker, interestsCare, language
     commonelements = findcommonelements(thisfields, otherfields)
     fieldsimiliar = commonelements[len(commonelements)-1] * fieldCare
 
-    #print(intsimiliar+langsimiliar)
     return intsimiliar+langsimiliar+techsimiliar+fieldsimiliar
 
 
@@ -199,17 +218,20 @@ def findcommonelements(arr1, arr2):
 
 
 def hackathonsimiliarscore(currentHacker, allHackers, carescores):
+    resetuser(currentHacker, carescores['interests'], carescores['languages'], carescores['technologies'], carescores['fields'])
     hackathonsimiliarscores = []
-    for hacker in allHackers:
-        if hacker != None:
+    for c,hacker in enumerate(allHackers):
+        if hacker != None and hacker['email'] != 'jennyxu1029@gmail.com':
             resetuser(hacker, carescores['interests'], carescores['languages'], carescores['technologies'], carescores['fields'])
             score = calculateSimiliarScore(currentHacker, hacker, carescores['interests'], carescores['languages'], carescores['technologies'], carescores['fields'])
             if score != 0:
-                hackathonsimiliarscores.append([hacker['email'], score])
+                hackathonsimiliarscores.append([hacker['urlId'], score])
+        
 
-    print(hackathonsimiliarscores)
+    #print(hackathonsimiliarscores)
     hackathonsimiliarscores.sort(key=lambda x: x[1],reverse=True)
     return hackathonsimiliarscores
+
 
 
 #filters = {'major': [],'graduationYear': ['2018', '2019', '2020', '2021', '2022'],'educationLevel': ['undergraduate', 'graduate'],'school':False}
@@ -218,4 +240,4 @@ def hackathonsimiliarscore(currentHacker, allHackers, carescores):
 similiarscores = hackathonsimiliarscore(currentHacker, allHackers, currentHacker['careScores'])
 json.dumps(similiarscores)
 
-#print(similiarscores)
+print(similiarscores)

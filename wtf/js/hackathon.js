@@ -1,5 +1,5 @@
 $(document).ready(function(){
-
+/*
 	console.log(matches);
 	$.ajax({
         type: "GET",
@@ -12,19 +12,16 @@ $(document).ready(function(){
             alert('text status ' + textstatus + ', err ' + errorThrown);
         }
     });
-
+*/
 	fillHeader();
 	fillAbout();
 	fillSponsors();
-
-
-
-
+	fillHackers(matches);
 });
 
 function fillHeader(){
 	var hero = document.querySelector('#mu-hero');
-	hero.style="background-image: url(https://images.pexels.com/photos/531880/pexels-photo-531880.jpeg?auto=compress&cs=tinysrgb&h=350);";
+	hero.style="background-image: url("+hackathon.imageurl+");";
 	var logo = hero.querySelector('.mu-logo-img')
 	logo.height = "280px";
 	logo.src = hackathon.logo;
@@ -56,25 +53,27 @@ function fillSponsors(){
 function fillHackers(data){
 	var hackerContainer = document.querySelector('.attending-hackers');
 	for(i = 0; i < data.length; i++){
+		//console.log(data[i]);
 		var content = '<article class="search-result row">';
 		content += '<div class="col-xs-12 col-sm-12 col-md-3">';
-		content += '<a href="'+data[i]['href']+'" title="'+data[i]['title']+'" class="thumbnail">';
-		content += '<img src="'+data[i]['pfp']+'" alt="' +data[i]['title']+'"/></a></div>';
+		content += '<a href="/users/'+data[i]['urlId']+'" title="'+data[i]['firstname']+'" class="thumbnail">';
+		content += '<img src="'+data[i]['profileimg']+'" alt="' +data[i]['firstname']+'"/></a></div>';
 
 		content += '<div class="col-xs-12 col-sm-12 col-md-2">';
 		content += '<ul class="meta-search">';
-		content += '<li>'+data[i]['name']+'</li>';
+		content += '<li>'+data[i]['firstname']+'</li>';
 		content += '<li>'+data[i]['major']+'</li>';
 		content += '<li>'+data[i]['school']+'</li>';
 		content += '</ul></div>';
 
 		content += '<div class="col-xs-12 col-sm-12 col-md-7 excerpet">';
 		//TODO: user tuned display interests, technologies, languages, fields or hobbies
-		content += '<h3>'+data[i]['display']+'</h3>';
+		//content += '<h3>'+data[i]['display']+'</h3>';
 		//TODO: hacker social profiles
 		content += '<a href=""><i class="fa fa-facebook"></i></a>';
 		content += '</div></article>';
-		
+		console.log(content);
+		hackerContainer.innerHTML += content;
 	}
 
 }

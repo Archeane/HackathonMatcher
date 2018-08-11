@@ -15,12 +15,18 @@ $(function () {
 	});
 
 	if(settingsEnabled){
-		document.querySelector("#settingsicon").innerHTML += '<i class="fa fa-cog ></i>';
+		var container = document.querySelector("#settingsicon")
+		container.innerHTML += '<i class="fa fa-cog fa-lg" style="padding-left: 10px;"></i>';
 	}
 
 	var email = document.querySelector("#email");
 	email.innerHTML += User.email;
 	console.log(User);
+
+	$('#pfp').attr('src', User.profileimg);
+
+
+
 	var name = User.firstname + ' ' + User.lastname;
 	var Userabout = [name, User.major, User.school, User.educationLevel, User.graduationYear, User.facebook, User.phone, User.instagram, User.github, User.linkedin, User.website];
 	var UserLan = User.preferences.languages;
@@ -48,7 +54,7 @@ $(function () {
 		$(this).parents().eq(2).remove();
 	});
 
-	$('.tech').on('click', function (event) {
+	$('.').on('click', function (event) {
 		event.preventDefault();
 		var remove = $(this).parent().attr('class');
 		if($('.'+remove).parents().eq(1).children().length < 5){	//append button if number of items is less than 5
@@ -84,9 +90,9 @@ function fillAbout(data) {
 	
 	var content = '';
 	content += '<div style="display:inline;">';
-	content += '<p style="margin-top:-1.5em;"><span class="text-md-left">'+data[1]+'</span>';
+	content += '<p style="margin-top:-1.5em;"><span class="text-md-left">'+data[1]+', </span>';
 	content += '<span class="text-md-right">'+data[3]+'</span></p>';
-	content += '<p style="margin-top:-1.7em;">'+data[2]+'<span class="text-md-right">'+data[4]+'</span></p>';
+	content += '<p style="margin-top:-1.7em;">'+data[2]+', <span class="text-md-right">'+data[4]+'</span></p>';
 	content += '</div>';
 	
 	content += '<div>';
@@ -107,32 +113,54 @@ function fillAbout(data) {
 }
 
 function fillAboutSettings(data) {
+	socialIcons = [['Facebook', 'https://www.facebook.com/'],['Phone',''], ['Instagram','https://www.instagram.com/'],
+						['Github', 'https://www.github.com/'],['Linkedin', 'https://www.linkedin.com/in/'],['Personal Website','https://']];
+	console.log(data);
 	var aboutContainer = document.querySelector("#about > .settings");
 	var content = '';
-	content += '<div><select>';
+	content += '<div><select name="major">';
 	content += '<option selected="selected" value="'+data[1]+'">'+data[1]+'</option>';
-	//TODO: load majors json here, make default choice
-	content += '<option value="'+data[2]+'">'+data[2]+'</option>';
-	content += '</select>';
+	$.getJSON("/assets/majors.json", function (majors) {
+		for (i = 0; i < majors.length; i++) {
+			content += '<option value="'+majors[i]['major']+'">'+majors[i]['major']+'</option>';
+		}
+	}).then(() => {
+		content += '</select>';
 
-	content += '<select class="pull-right text-right" style="width:140px;">';
-	content += '<option value="'+data[4]+'">'+data[4]+'</option><option selected="selected" value="2019">Undergraduate</option><option value="2020">Graduate</option><option value="2021">PhD</option></select>'
-	content += '<div style="padding-top:3px"><select>';
-	content += '<option selected="selected" value = "Stony Brook">Stony Brook University</option>';
-	content += '</select>';
-	content += '<select class="pull-right text-right">';
-	content += '<option value="2018">2018</option><option value="2019">2019</option><option value="2020">2020</option><option value="2021">2021</option><option value="2022">2022</option><option value="2023">2023</option><option value="2024">2024</option></select>';
-	content += '<div>';
-	content += '<label for="facebook">Facebook: </label><input name="facebook" type="text">	<label for="phone">Phone: </label><input name="facebook" type="text">';
-	content += '</div>';
+		content += '<select name="eduLevel" class="pull-right text-right" style="width:140px;">';
+		content += '<option selected="selected" value="'+data[3]+'">'+data[3]+'</option>';
+		content += '<option value="highschool">High School</option>';
+		content += '<option value="undergraduate">Undergraduate</option>';
+		content += '<option value="graduate">Graduate</option>';
+		content += '<option value="phd">PhD</option>';
+		content += '</select>';
 
-	aboutContainer.innerHTML += content;
+		content += '<div style="padding-top:3px;"><select name="school">';
+		content += '<option selected="selected" value="'+data[2]+'">'+data[2]+'</option>';
+		$.getJSON("/assets/us_institutions.json", function (unis) {
+			for(i = 0; i < unis.length;i++){
+				content += '<option value="'+unis[i]['institution']+'" >'+unis[i]['institution']+'</option>';
+			}
+		}).then(() => {
+			content += '</select>';
+
+			content += '<select class="pull-right text-right" name="gradYear">';
+			content += '<option value="'+data[4]+'">'+data[4]+'</option><option value="2018">2018</option><option value="2019">2019</option><option value="2020">2020</option><option value="2021">2021</option><option value="2022">2022</option><option value="2023">2023</option></select>';
+			
+			content += '<div>';
+			for(i = 0; i < socialIcons.length; i++){
+				content += '<label for="'+socialIcons[i][0]+'">'+socialIcons[i][0]+': </label><input name="'+socialIcons[i][0]+'" type="text" />';
+			}
+			content += '</div>';
+
+			aboutContainer.innerHTML += content;
+		
+	});
+	});
 }
 
 function fillLanaguages(data) {
 	var skillsContainer = document.querySelector("#skills");
-	console.log("languages length: ",data.length);
-	console.log(data);
 	for(i = 0; i < data.length; i++){
 		if(i == 5){
 			content += '<span>'+data.length-5+' more...</span>';
@@ -141,12 +169,20 @@ function fillLanaguages(data) {
 		if(data[i] != 0){
 			var content = '<div class="lan">';
 			content += '<div class="content" style="padding-bottom: 10px;">';
-			content += '<strong>'+data[i][0]+'</strong><i class="fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span>'+data[i][2]+'</span>';
+			content += '<strong>'+data[i][0]+'</strong>';
+			if(data[i].length == 3){	//There are endorsements for this language
+				content += '<i class="fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span>'+data[i][2]+'</span>';
+			}
 			content += '<span class="pull-right" >'+data[i][1]+'%</span>';
 			content += '<div class="progress">';
 			content += '<div class="progress-bar progress-bar-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+data[i][1]+'" style="width:'+data[i][1]+'%;"></div></div></div>';
+			//Settings
+			
 			content += '<div class="settings" style="padding-top:15px;"><div>';
-			content += '<strong>'+data[i][0]+'</strong><i class="fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span>'+data[i][2]+'</span>';
+			content += '<strong>'+data[i][0]+'</strong>';
+			if(data[i].length == 3){
+				content += '<i class="fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span>'+data[i][2]+'</span>';
+			}
 			content += '<i class="language pull-right fa fa-times"></i><span class="pull-right">%</span>';
 			content += '<input value='+data[i][1]+' class="pull-right" type="number" style="margin-top: -.2em; height: 20px !important;width:40px;" min="1" max="100" class="max100input">';
 			content += '</div>';
@@ -158,7 +194,6 @@ function fillLanaguages(data) {
 	}
 
 }
-
 
 function fillFamiliarTechnologies(data) {
 	var techContainer = document.querySelector("#familiar > .content");
@@ -172,6 +207,7 @@ function fillFamiliarTechnologies(data) {
 				content += '<i class="pull-right fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span class="pull-right">'+data[i][2]+'</span>';
 			}
 			content += '<li>'+data[i][0]+'</li>';
+			content += '<input type="hidden" name="technology" value="'+data[i][0]+'" />';
 			content += '</div>';
 		}
 	}
@@ -227,7 +263,8 @@ function fillInterestedTechnologies(data) {
 
 			settings += '<div style="padding-bottom: 20px;" class="'+data[i][0].split(' ').join('_')+'">';
 			settings += '<i class="tech pull-left fa fa-times" style="padding-right:5px"></i>'+data[i][0];
-			settings += '<input value='+data[i][1]+' class="max10Input pull-right" type="number" style="height: 20px !important;width:40px;" min="1" max="10">';
+			content += '<input type="hidden" name="interest" value="'+data[i][0]+'" />';
+			settings += '<input name="interestcare" value='+data[i][1]+' class="max10Input pull-right" type="number" style="height: 20px !important;width:40px;" min="1" max="10">';
 			settings += '</div>';
 		}
 	}
@@ -277,6 +314,7 @@ function fillFields(data) {
 }
 
 function fillHackathons(data) {
+	console.log(data);
 	var hackContainer = document.querySelector("#hackathons > .content");
 	var content = '<ul>';
 	for(i = 0; i < data.length; i++){
@@ -301,8 +339,12 @@ function fillHackathons(data) {
 	for(i = 0; i < data.length; i++){
 		if(i == 5){ break;}
 		if(data[i] != 0){
-			settings += '<div style="padding-bottom: 20px;" class="'+data[i][0].split(' ').join('_')+'">';
-			settings += '<i class="tech pull-left fa fa-times" style="padding-right:5px"></i>'+data[i][0];
+			settings += '<div>';
+			if(data[i].length > 3){		//won an award
+				settings += '<i class="pull-right fa fa-trophy" title="'+data[i][3]+'"></i>'
+			}
+			settings += '<i class="tech pull-left fa fa-times" style="padding-right:5px"></i>';
+			settings += '<a href="'+data[i][2]+'" style="color: black">'+data[i][0]+ " "+ data[i][1]+'</a>';
 			settings += '</div>';
 		}
 	}
@@ -344,6 +386,8 @@ function print(){
 	content += '</p>';
 	container.innerHTML += content;
 }
+
+
 
 function addTechFamiliar(technology,like, endorse){
 	var techContainer = document.querySelector("#familiar > .content");

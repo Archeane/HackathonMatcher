@@ -1,4 +1,5 @@
 var spawn = require("child_process").spawn;
+const { fork } = require('child_process');
 var convert = require('mongoose_schema-json');
 var MongoClient = require('mongodb').MongoClient;
 const async = require('async');
@@ -65,22 +66,28 @@ exports.testInit = (req,res,next) =>{
 		const tech = require('../wtf/assets/technologies.json');
 		const lan = require('../wtf/assets/languages.json');
 		const fields = require('../wtf/assets/fields.json');
-		
+/*		
 		var usersArr = [];
 		for(j = 0; j < 500; j++){
 			var firstname = random_name({first:true});
 			var lastname = random_name({last:true});
-			var id = randomstring.generate();
-			var index = j;
+			var id = firstname+'.'+lastname;
 			var email = firstname.toLowerCase()+'@gmail.com';
+			var profileurl = '';
+			if(j % 2 == 0){
+				profileurl = 'https://randomuser.me/api/portraits/women/'+Math.floor(Math.random()*99)+'.jpg';
+			}else{
+				profileurl = 'https://randomuser.me/api/portraits/men/'+Math.floor(Math.random()*99)+'.jpg';
+			}
 			var user = new User({
-				name: firstname+' ' +lastname,
-				id: id,
-				index: index,
+				firstname: firstname,
+				lastname:lastname,
+				urlId: id,
 				email: email,
 				password: '1234',
 				emailSecretToken: 'secretToken',
 				emailActive: true,
+				profileimg: profileurl,
 			});
 			
 			user.school = unis[Math.floor(30+Math.random()*50)].institution;
@@ -144,8 +151,8 @@ exports.testInit = (req,res,next) =>{
 		}catch(e){
 			console.log('Error!', e);
 		}
-		
-/*
+*/		
+
 		const Hackathon = require('../models/Hackathon');
 		for(i = 0; i < 9; i++){
 			var uni = unis[Math.floor(30+Math.random()*50)].institution
@@ -155,10 +162,11 @@ exports.testInit = (req,res,next) =>{
 			var state = chance.state({ country: 'us' });
 			var city = chance.city();
 			var url = chance.url();
+			var imageurl = 'https://picsum.photos/300/300/?'+Math.floor(10+Math.random()*500);
 
 			var hackathon = new Hackathon({
 					name: name,
-					guid: chance.guid(),
+					urlId: name.split(' ').join('.').toLowerCase(),
 					university: uni,
 					email: email,
 					phone: phone,
@@ -166,11 +174,11 @@ exports.testInit = (req,res,next) =>{
 					city: city,
 					street: chance.street({country:'us'}),
 					date: chance.date({year: 2018}),
-					about: chance.paragraph()
+					about: chance.paragraph(),
+					imageurl: imageurl
 				});
 			hackathon.isNew = true;
 			try{
-				console.log(hackathon);
 				db.collection('hackathons').insertOne(hackathon, function(){
 					console.log("\x1b[36m","hackathon save success!");
 				});
@@ -178,7 +186,7 @@ exports.testInit = (req,res,next) =>{
 				console.log('Error!', e);
 			}
 		}
-*/
+
 
 		var collection = db.collection('hackathons');
 		collection.find().forEach(function(doc) {
@@ -189,9 +197,7 @@ exports.testInit = (req,res,next) =>{
 				data.forEach(function(d){
 					emails.push(d.email);
 				});
-				//console.log(emails);
 				collection.update({'name': doc.name}, {$set:{'hackers': emails}});
-				console.log('update');
 			});
 		});
 
@@ -205,7 +211,7 @@ exports.getHackathonList = (req,res, next) => {
   		db.collection('hackathons').find().toArray(function (err, result) {
 			if (err) throw err;
 			res.render('hackathonslist', {
-				title: 'All Hackathons', hackathonList: result, css:'hackathonslist.css', js:'hackathons.js'
+				title: 'All Hackathons', hackathonList: result 
 			});
 			loggedinUser = req.user;
 		});
@@ -213,21 +219,32 @@ exports.getHackathonList = (req,res, next) => {
 	});
 };
 
+
+/**
+ * Retrieves hackathon with same urlId as req.params
+ * Processes users attending the hackathon
+ * @param  {[type]}   req  [description]
+ * @param  {[type]}   res  [description]
+ * @param  {Function} next [description]
+ * @return {[type]}        [description]
+ */
 exports.getHackathonById = (req, res, next) => {
 	MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {
 		if (err) throw err;
-		//console.log(req.params.id);
-  		db.collection('hackathons').findOne({"email": req.params.id}, (err, result) =>{
+		console.log(req.params.id);
+  		db.collection('hackathons').findOne({"urlId": req.params.id}, (err, result) =>{
   			if(err) throw err;
 
   			if(result == null){
   				res.send("404 NOT FOUND");
   			}else{
 				var resultBson = result;
-				var resultJson = convert.schema2json(result);
+				//var resultJson = JSON.parse(convert.schema2json(result)); //json format of all hackers attneding the hackathon
+				var resultJson = JSON.parse(convert.schema2json(result));
 				
 				//If user matches is empty
 				//TODO: replace test user with logged in user
+				/*
 				var user = JSON.stringify({
 					"_id":"5b5a01fce094f20594668460",
 				    "preferences" : {
@@ -301,37 +318,68 @@ exports.getHackathonById = (req, res, next) => {
 				    "graduationYear" : "2022",
 				    "educationLevel" : "graduate"
 				});
-
-				db.collection('users').findOne({"email": "eva@gmail.com"}, function(err, data){
-					if(data.matches.length == 0){
-						var process = spawn('python', ["./algorithmn/process.py", resultJson, user]);
-						process.stdout.on('data', function(data){
-							processedData = data.toString();
-						});
-
-						process.stdout.on('end', function(){
-							var arr = eval("["+processedData+"]")[0];
-							db.collection("users").update({"email":"eva@gmail.com"},
-								{
-									$set: {
-										"matches":arr
-									}
-								}
-							);
-							var topten = arr.slice(0,10);
-							console.log(topten);
-							res.render('hackathon', {
-								title: '', foundHackathon: result, data: topten, css:'hackathon.css', js:'hackathon.js'
-							});
-							
-						});
-					}else{
-						var matches = data.matches;
-						var topten = matches.slice(0,10);
-						res.render('hackathon', {
-							title: '', foundHackathon: result, data: topten, css:'hackathon.css', js:'hackathon.js'
-						});
+				*/
+				
+				var allHackathonHackers = resultJson['hackers'];
+				/* separate hackaton hackers in to chunks of data to be sent
+				var iterator = allHackathonHackers.entries();
+				var hundredHackers = [];
+				var tempArr = [];
+				for (let e of iterator) {
+					if(e[0] % 10 == 0 && e[0] != 0){
+						hundredHackers.push(tempArr);
+						tempArr = [];
 					}
+					tempArr.push(e[1]);
+				}
+				*/
+				//console.log(user['preferences']);
+				var process = spawn('python', ["./algorithmn/process.py", allHackathonHackers, JSON.stringify(req.user)]);
+			
+				process.stdout.on('data', function(data){
+					processedData = data.toString();
+					//console.log(processedData);
+				});
+
+				process.stdout.on('end', function(){
+					var arr = eval("["+processedData+"]")[0];
+					//console.log(arr);
+					var hackathonMatches = [result['name']];
+					hackathonMatches.push(arr);
+					//TODO: instead of pushing, update existing hackathon matches if already exist in user matches
+					db.collection("users").update({"urlId":req.user.urlId},
+						{
+							$set: {
+								"matches":hackathonMatches
+							}
+						}
+					);
+					var topten = arr.slice(0,10);
+					console.log(topten);
+					var toptenHackers = [];
+					var counter = 0;
+					new Promise((resolve, reject) => {
+						topten.forEach(function(item){
+							//console.log(item);
+							db.collection('users').findOne({'urlId':item[0]}, function(err,user){
+								if(err) throw err;
+								toptenHackers.push(user);
+								counter++;
+								if(counter == topten.length-1){
+									resolve(toptenHackers);
+								}
+							});	
+						});
+					}).then((tempdata) =>{
+						//console.log(tempdata);
+						res.render('hackathon', {
+							title: '', foundHackathon: result, data: tempdata, css:'hackathon.css', js:'hackathon.js'
+						});
+					});
+
+						//process.kill('SIGHUP');
+				
+					
 				});
 
   			}
@@ -339,6 +387,15 @@ exports.getHackathonById = (req, res, next) => {
   		});
 	});
 };
+
+/*
+	@param: list of complete data users to be minified
+	@returns: list of minified users
+ */
+function getMinifiedUsers(){
+
+}
+
 
 exports.visual = (req, res, next) =>{
 	MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {

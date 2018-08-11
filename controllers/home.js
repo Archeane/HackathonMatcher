@@ -7,20 +7,18 @@
  * Home page.
  */
 exports.index = (req, res) => {
-//  if (req.user){
-//  	res.send('there is a logged user');
-//  }else{
-  	res.render('landing', {
-    title: ''
-  });
-//  }	
+	//console.log(req.user);
+	if (req.user){
+		console.log('home');
+		res.render('home', {
+			title:'Home'
+		});
+	}else{
+		res.render('landing', {
+			title: ''
+		});
+	}	
   
-};
-
-exports.getHome = (req, res) =>{
-	res.render('landing', {
-		title: 'Home'
-	});
 };
 
 /*

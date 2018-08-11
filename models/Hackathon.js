@@ -5,6 +5,7 @@ const hackathonSchema = new mongoose.Schema({
 		hero: String,
 		logo: String
 	},
+	urlId: String,
 	url: String,
 	name: String,
 	university: String,
@@ -15,9 +16,10 @@ const hackathonSchema = new mongoose.Schema({
 	date: Date,
 	address: String,
 	about: String,
+	imageurl: String,
+
 	hackers: Array,
 	sponsors: Array
-	
 }, {
 	timestamps: true
 });

@@ -1,5 +1,8 @@
 extends layout
 
+block append head
+	link(rel="stylesheet" href="/css/hackathonslist.css")
+
 block content
 	.seasons-events.seasons-events-index.old-layout
 		.header
@@ -22,6 +25,8 @@ block content
 
 	script.
 		var list = !{JSON.stringify(hackathonList)};
+
+	script(src="/js/hackathons.js")
 		
 
 
