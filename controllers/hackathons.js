@@ -344,7 +344,7 @@ exports.getHackathonById = (req, res, next) => {
 				process.stdout.on('end', function(){
 					var arr = eval("["+processedData+"]")[0];
 					//console.log(arr);
-					var hackathonMatches = [result['name']];
+					var hackathonMatches = [result['urlId']];
 					hackathonMatches.push(arr);
 					//TODO: instead of pushing, update existing hackathon matches if already exist in user matches
 					db.collection("users").update({"urlId":req.user.urlId},
@@ -402,7 +402,7 @@ exports.visual = (req, res, next) =>{
 		if (err) throw err;
 
 		//TODO: replace with logged in user info
-		var user = JSON.stringify({
+		/*var user = JSON.stringify({
 						"_id":"5b5a01fce094f20594668460",
 					    "preferences" : {
 					        "interests" : [ 
@@ -475,7 +475,50 @@ exports.visual = (req, res, next) =>{
 					    "graduationYear" : "2022",
 					    "educationLevel" : "graduate"
 					});
+		*/
+		var user = JSON.stringify(req.user);
+		var parsedUser = JSON.parse(user);
+		var hackathonUrlId = req.params.id;
+		var matchedHackathon = parsedUser.matches[0];
+		
+		//TODO: change this if urlID format is changed
+		//if user already containes matched hackers for params hackathon
+		if(matchedHackathon === hackathonUrlId){
+			var matches = parsedUser.matches[1];
+			var minUsers = [];
+			new Promise((resolve, reject) => {
+				matches.forEach(function(hacker){
+					db.collection('users').findOne({"urlId":hacker[0]}, function(err, data){
+						var user = JSON.stringify({
+							"_id":data._id,
+							"urlId": data.urlId,
+							"email":data.email,
+							"hackathons":data.hackathons,
+							"name": data.firstname+" "+data.lastname,
+							"profileurl": data.profileimg,
+							"school":data.school,
+							"major":data.major,
+							"graduationYear":data.graduationYear,
+							"educationLevel":data.educationLevel,
+							"score": hacker[1]
+						});
+						minUsers.push(user);
+						if(minUsers.length == matches.length){
+							resolve(minUsers);
+						}
+					});
+				});
+			}).then(function(result){
+				res.render('visualization', {
+					title:'Visualization', matches: result, css:"visualization.css", js:"visualization.js"
+				});
+			}, function(err){
+				throw err;
+			});
+		}else{	//do processing first
 
+		}
+/*
 		db.collection('users').findOne({"email": "eva@gmail.com"}, function(err, data){
 			if(data.matches.length == 0){
 				var process = spawn('python', ["./algorithmn/process.py", resultJson, user]);
@@ -552,7 +595,7 @@ exports.visual = (req, res, next) =>{
 				});
 			}
 		});
-
+*/
 	});
 
 	

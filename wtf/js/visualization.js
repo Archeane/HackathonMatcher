@@ -137,6 +137,7 @@ $(document).ready(function(){
 			display(matches);
 		}
 	});
+	console.log(matches);
 	display(matches);
 });
 
@@ -180,11 +181,11 @@ function bubbleChart() {
 	.gravity(-0.01)
 	.friction(0.9);
 
-
+/*
   var fillColor = d3.scale.ordinal()
 	.domain(['undergraduate', 'graduate', 'PhD'])
 	.range(['#d84b2a', '#beccae', '#7aa25c']);
-
+*/
   var radiusScale = d3.scale.pow()
 	.exponent(0.5)
 	.range([2, 85]);
@@ -203,6 +204,7 @@ function bubbleChart() {
 		major: d.major,
 		graduationYear: d.graduationYear,
 		educationLevel: d.educationLevel,
+		imgURL: d.profileurl,
 		x: Math.random() * 900,
 		y: Math.random() * 800
 	  };
@@ -226,22 +228,32 @@ function bubbleChart() {
 	  .attr('width', width)
 	  .attr('height', height);
 
+	var defs = svg.append('svg:pattern')
+		.append("svg:image")
+	  	.attr("xlink:href", 'http://placekitten.com/g/48/48');
+
 	bubbles = svg.selectAll('.bubble')
-	  .data(nodes, function (d) { return d.name; });
+	  .data(nodes, function (d) { return d.name; })
+	  
 
 	bubbles.enter()
 	.append('circle')
 	  .classed('bubble', true)
 	  .attr('r', 0)
-	  .attr('fill', function (d) { return fillColor(d.group); })
-	  .attr('stroke', function (d) { return d3.rgb(fillColor(d.group)).darker(); })
+//	  .attr('fill', function (d) { return fillColor(d.group); })
+//	  .attr('stroke', function (d) { return d3.rgb(fillColor(d.group)).darker(); })
 	  .attr('stroke-width', 2)
 	  .on('mouseover', showDetail)
 	  .on('mouseout', hideDetail)
 	  .on('click', function(d){
 	  	window.location = "http://localhost:8080/dashboard/" + d.email;
-	  });
-	
+	  })
+	  .style('fill', 'url(#./images/bg-masthead.jpg)');
+//	  .attr("xlink:href", 'http://placekitten.com/g/48/48')
+	  /*
+	  .append("svg:image")
+        .attr("xlink:href",  function(d) { console.log(d.imgURL); return d.imgURL;})
+	*/
 	bubbles.transition()
 	  .duration(2000)
 	  .attr('r', function (d) { return d.radius; });

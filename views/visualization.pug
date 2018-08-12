@@ -1,5 +1,8 @@
 extends layout
 
+block append head
+	link(rel='stylesheet' href='/css/visualization.css')
+
 block content
 
 	.container
@@ -29,3 +32,5 @@ block content
 
 	script.
 		var allMatches = !{JSON.stringify(matches)};
+
+	script(src="/js/visualization.js")
