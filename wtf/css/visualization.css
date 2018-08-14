@@ -20,6 +20,16 @@ button{
 	border-width: 0;
 }
 
+#vis{
+	margin-top: -150px;
+	margin-left:-200px;
+}
+
+.filters{
+	margin-top: 80px;
+	margin-left:-150px;
+}
+
 
 .dropdown-menu{
 	width: 120%;

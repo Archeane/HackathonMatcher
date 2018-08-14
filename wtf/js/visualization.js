@@ -205,6 +205,7 @@ function bubbleChart() {
 		graduationYear: d.graduationYear,
 		educationLevel: d.educationLevel,
 		imgURL: d.profileurl,
+		hackathons: d.hackathons,
 		x: Math.random() * 900,
 		y: Math.random() * 800
 	  };
@@ -228,9 +229,38 @@ function bubbleChart() {
 	  .attr('width', width)
 	  .attr('height', height);
 
-	var defs = svg.append('svg:pattern')
-		.append("svg:image")
+	var defs = svg.append('defs')
+
+	defs.append("pattern")
+		.attr('id','snow')
+		.attr('height',"100%")
+		.attr('width', "100%")
+		.attr('patternContentUnits','objectBoundingBox')
+		.append("image")
+		.attr('height',1)
+		.attr('width',1)
+		.attr('preserveAspectRatio','none')
+		.attr('xmlns:xlink','http://www.w3.org/1999/xlink')
 	  	.attr("xlink:href", 'http://placekitten.com/g/48/48');
+
+	defs.selectAll('.cirlces-pattern')
+		.data(nodes)
+		.enter().append('pattern')
+		.attr('class','circles-pattern')
+		.attr('id', function(d){
+			return d.email;
+		})
+		.attr('height',"100%")
+		.attr('width', "100%")
+		.attr('patternContentUnits','objectBoundingBox')
+		.append("image")
+		.attr('height',1)
+		.attr('width',1)
+		.attr('preserveAspectRatio','none')
+		.attr('xmlns:xlink','http://www.w3.org/1999/xlink')
+	  	.attr("xlink:href", function(d){
+	  		return d.imgURL;
+	  	});
 
 	bubbles = svg.selectAll('.bubble')
 	  .data(nodes, function (d) { return d.name; })
@@ -248,12 +278,12 @@ function bubbleChart() {
 	  .on('click', function(d){
 	  	window.location = "http://localhost:8080/dashboard/" + d.email;
 	  })
-	  .style('fill', 'url(#./images/bg-masthead.jpg)');
+	  .style('fill', function(d){
+	  	return 'url(#'+d.email+')';
+	  });
 //	  .attr("xlink:href", 'http://placekitten.com/g/48/48')
-	  /*
-	  .append("svg:image")
-        .attr("xlink:href",  function(d) { console.log(d.imgURL); return d.imgURL;})
-	*/
+	  
+
 	bubbles.transition()
 	  .duration(2000)
 	  .attr('r', function (d) { return d.radius; });
@@ -300,10 +330,6 @@ function bubbleChart() {
 		}
 
 
-
-
-
-
 	  var target = centers[d.year];
 	  d.x = d.x + (target.x - d.x) * damper * alpha * 1.1;
 	  d.y = d.y + (target.y - d.y) * damper * alpha * 1.1;
@@ -311,8 +337,7 @@ function bubbleChart() {
   }
 
   function showDetail(d) {
-	d3.select(this).attr('stroke', 'black');
-
+	d3.select(this).attr('stroke', 'black')
 
 
 	var content = '<div class="content">';
@@ -322,16 +347,18 @@ function bubbleChart() {
 	content += '<div class="row">';
 	content += '<div class="col-md-12"><span class="major text-left">'+d.major+', </span>';
 	content += '<span class="graduationYear text-right">'+d.graduationYear+'</span></div></div>';
-	content += '<div class="row"><div class="col-md-12"<span class="hackathons">'+d.hackathons+'</span></div></div>';
-	//content += '</div>';
+	var hacks = d.hackathons;
+	content += '<div class="row">';
+	for(i = 0; i < hacks.length; i++){
+		content += '<span class="hackathons">'+hacks[i]+'</span>';
+	}
+	content += '</div>';
 
 	tooltip.showTooltip(content, d3.event);
   }
 
   function hideDetail(d) {
-	d3.select(this)
-	  .attr('stroke', d3.rgb(fillColor(d.group)).darker());
-
+  	d3.select(this).attr('stroke', 'transparent');
 	tooltip.hideTooltip();
   }
   return chart;
