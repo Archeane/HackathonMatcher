@@ -1,4 +1,4 @@
-.navbar.navbar-light.fixed-top.navbar-expand-md
+.navbar.navbar-light.fixed-top.navbar-expand-md#headerApp
   a.navbar-brand(href='/')
     i.fas.fa-cube
     | Hacker Matcher
@@ -8,20 +8,16 @@
   .collapse.navbar-collapse
     ul.nav.navbar-nav
       if user
-        li.active.nav-item
-          .search-container
-            button.search
-              i.fa.fa-search
-            <input type="text" name="typeahead" class="typeahead tt-query" id="searchInput" autocomplete="off" spellcheck="false" placeholder="Search for a user or hackathon...">
-        li.active.nav-item(class=(title === 'Home') ? 'active' : undefined)
-          a.nav-link(href='/') Home
-    
+        .search-container
+          button.search
+            i.fa.fa-search
+          input(type="text" name="typeahead" class="typeahead tt-query" id="searchInput" autocomplete="off" spellcheck="false" placeholder="Search for a user or hackathon...")
+  
     ul.nav.navbar-nav.ml-auto
-
       if !user
         form(method='POST', action="/login")
           input(type='hidden', name='_csrf', value=_csrf)
-          .row.nav-item
+          .row#login
             .col-md-auto
               label(for="email" class="pull-left") 
                 | Email
@@ -29,13 +25,12 @@
               .form-group
                 input(type="text" placeholder="Your Email" name="email" class="pull-right", autofocus, required)
             .col-md-auto
-            .col-md-auto
               label(for="password") 
                 | Password
             .col-md-auto
               .form-group
                 input(type="text" placeholder="Your Password" name="password", autofocus, required)
-            .col-md-1
+            .col-md-1(style="margin-right:20px;")
               button.btn.btn-primary(type='submit')
                 i.far.fa-user.fa-sm
                 | Login
@@ -46,17 +41,24 @@
                 | Forgot password?
 
       else
-        li.dropdown(class=(title === 'Account Management') ? 'active' : undefined).nav-item
-          a.dropdown-toggle.nav-link(href='#', data-toggle='dropdown')
-            if user.picture
-              img(src=user.picture)
+        #profile.li.active(class=(title === 'Home') ? 'active' : undefined)
+          a(href="/account" style="text-decoration:none; color: black")
+            if user.profileimg
+                img(src=user.profileimg)
             else
               img(src=user.gravatar(60))
             span= user.name || user.email || user.id
+        li.active.nav-item(class=(title === 'Home') ? 'active' : undefined)
+          a.nav-link(href='/') Home
+        li.dropdown(class=(title === 'Account Management') ? 'active' : undefined).nav-item
+          a.dropdown-toggle.nav-link(href='#', data-toggle='dropdown')
             i.caret
           ul.dropdown-menu
             li.dropdown-item
-              a(href='/account') My Account
+              a(href='/account') Account Settings
+            li.divider.dropdown-item
+            li.dropdown-item
+              a(href='/account') Preferences Settings
             li.divider.dropdown-item
             li.dropdown-item
               a(href='/logout') Logout
@@ -69,7 +71,7 @@ script.
       },
       queryTokenizer: Bloodhound.tokenizers.whitespace,
       remote: {
-          url: '/search?keyword=%QUERY&searchtype=home&type=user',
+          url: '/search?keyword=%QUERY&searchtype=home',
           filter: function (movies) {
               console.log(movies);
               return $.map(movies, function (movie) {

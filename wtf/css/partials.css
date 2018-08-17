@@ -1,21 +1,41 @@
 a{
 	text-decoration: none;
 }
+
+.navbar{
+	position: absolute;
+	height:100px !important;
+}
 .navbar-nav img {
-	width: 30px;
-	min-height: 30px;
-	margin: -15px 15px -15px;
+	width: 70px;
+	height: 70px;
+	padding: 10px;
+	border-radius: 50%;
+}
+
+#profile{
+	margin-top:10px;
+	margin-right:20px;
+}
+#profile:hover{
+	background: #ccc;
 }
 
 .navbar {
-	padding: 0px;
-	margin-bottom: 20px;
+	height:100px !important;
 	display: block;
+	background-color:#FFF;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    opacity: 0.9;
 }
 
 .nav-item{
-	margin-top:15px;
-	margin-bottom: -15px;
+	margin-right:20px;
+	margin-top:20px;
+}
+
+#login{
+	margin-top: 15px;
 }
 
 .nav-item input[type=text]{
@@ -27,6 +47,7 @@ a{
 	float: left;
 	vertical-align: center;
 	margin-left: 5em;
+	margin-top: 20px;
 }
 
 .navbar-toggler {
@@ -47,6 +68,8 @@ a{
 }
 
 .search-container{
+	margin-top: 20px;
+	margin-left: 50px;
 }
 
 .navbar #searchInput {
@@ -89,6 +112,16 @@ a{
     }
 }
 
+footer{
+	background: #fff;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    opacity: 0.9;
+    margin-bottom: -10px;
+}
+
+footer .container{
+	padding-top:10px;
+}
 
 
 

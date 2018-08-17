@@ -20,7 +20,6 @@ jQuery(document).ready(function(){
 	var modalButton = $('.modal-add');
 	modalButton.on('click', function(){
 		var interest = $(this).parent().find('span').text();
-		console.log(interest);
 		var pref = createPrefElement(interest);
 		var containerName = $(this).closest(".modal");
 		var container = document.querySelector('.'+containerName.attr('id').substr(5));
@@ -136,7 +135,6 @@ function fillPreferences(data){
 function createModals(data){
 	for(i = 0; i < data.length; i++){
 		var container = document.querySelector('#modal'+data[i][0]);
-		//console.log(container);
 		container = container.querySelector('.modal-body');
 		var content = '';
 		for(j = 0; j < data[i][1].length; j++){

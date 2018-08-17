@@ -3,15 +3,15 @@
   outline: none;
 }
 
-#body {
+body {
   margin: 0;
-  padding: 0;
+  padding: 0px;
   background: #DDD;
   font-size: 16px;
   color: #222;
   font-family: 'Roboto', sans-serif;
   font-weight: 300;
-  background-image: url("/images/home_background.jpg");
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.1) 100%), url('/images/home_bg.jpg');
   background-size:cover;
 }
 
@@ -41,10 +41,10 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
   opacity: 0.9;
   margin-top: 10em;
+  padding:20px;
 }
 
-#register-box h2, h3{
-  padding:0.5em;
+#register-box h2, h4{
   text-align:center;
   font: "sans-serif";
   color:rgb(100,100,100);

@@ -1,6 +1,7 @@
 extends ../layout
 
 block append head
+	script(src="/js/lib/jquery.backstretch.min.js")
 	link(href="/css/profile.css", rel="stylesheet", type="text/css")
 	
 block content
@@ -18,7 +19,8 @@ block content
 						hr
 						#settingsicon
 							i.fa.fa-users.fa-lg
-							input(type="submit" value="Save Changes" class="settings")
+							.settings
+								input(type="submit" value="Save Changes" class="settings")
 						h3#email
 
 
@@ -37,6 +39,8 @@ block content
 						h3.accent
 							| Top Languages
 							i.pull-right.fa.fa-cog
+						.content
+						.settings
 
 		<section class="container">
 			<div class="row">
@@ -93,6 +97,60 @@ block content
 			</div>
 		</section>
 
+
+	#modalLanguages.modal.fade(tabindex='-1', role='dialog', style='display:none;', aria-hidden='true')
+		.modal-dialog(role='document')
+			.modal-content
+				.modal-header(style='padding-bottom: 0px;')
+					.col-md-11
+						h5.modal-title Languages
+					button.close(type='button', data-dismiss='modal', aria-label='Close')
+						span(aria-hidden='true') ×
+				.modal-body
+
+	#modalfamiliar.modal.fade(tabindex='-1', role='dialog', style='display:none;', aria-hidden='true')
+		.modal-dialog(role='document')
+			.modal-content
+				.modal-header(style='padding-bottom: 0px;')
+					.col-md-11
+						h5.modal-title Technologies
+					button.close(type='button', data-dismiss='modal', aria-label='Close')
+						span(aria-hidden='true') ×
+				.modal-body
+
+	#modalinterested.modal.fade(tabindex='-1', role='dialog', style='display:none;', aria-hidden='true')
+		.modal-dialog(role='document')
+			.modal-content
+				.modal-header(style='padding-bottom: 0px;')
+					.col-md-11
+						h5.modal-title Technologies
+					button.close(type='button', data-dismiss='modal', aria-label='Close')
+						span(aria-hidden='true') ×
+				.modal-body
+	#modalfields.modal.fade(tabindex='-1', role='dialog', style='display:none;', aria-hidden='true')
+		.modal-dialog(role='document')
+			.modal-content
+				.modal-header(style='padding-bottom: 0px;')
+					.col-md-11
+						h5.modal-title Technologies
+					button.close(type='button', data-dismiss='modal', aria-label='Close')
+						span(aria-hidden='true') ×
+				.modal-body
+	#modalhackathons.modal.fade(tabindex='-1', role='dialog', style='display:none;', aria-hidden='true')
+		.modal-dialog(role='document')
+			.modal-content
+				.modal-header(style='padding-bottom: 0px;')
+					.col-md-11
+						h5.modal-title Technologies
+					button.close(type='button', data-dismiss='modal', aria-label='Close')
+						span(aria-hidden='true') ×
+				.modal-body
+					select#hackathonYear
+						option(selected="selected" value=0) select a hackathon year
+						option(value="2014") 2014
+						option(value="2015") 2015
+						option(value="2016") 2016
+						option(value="2017") 2017
 		script.
 			var User = !{JSON.stringify(dashboardUser)};
 			var settingsEnabled = !{settingsEnabled};

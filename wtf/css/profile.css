@@ -416,9 +416,9 @@ footer {
 }
 
 .content {
-	display: none;
+	display: block;
 }
 
 .settings {
-	display: block;
+	display: none;
 }

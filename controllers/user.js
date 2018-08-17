@@ -9,14 +9,22 @@ const randomBytesAsync = promisify(crypto.randomBytes);
 const fs = require('fs');
 const nodemailer = require('nodemailer');
 var GoogleCloudStorage = require('@google-cloud/storage');
+/*
 var storage = new GoogleCloudStorage({
   projectId: process.env.GOOGLE_CLOUD_STORAGE_PROJECT_ID,
   keyFilename: process.env.GOOGLE_CLOUD_STORAGE_KEYFILE_NAME
 });
 var myBucket = storage.bucket(process.env.GOOGLE_CLOUD_BUCKET_NAME);
+*/
+const mailgunTransport = require('nodemailer-mailgun-transport')
+// Configure transport options
+const mailgunOptions = {
+  auth: {
+    api_key: process.env.MAILGUN_ACTIVE_API_KEY,
+    domain: process.env.MAILGUN_DOMAIN,
+  }
+}
 
-
-const AWS = require('aws-sdk');
 
 
 //---------HOME----------------
@@ -39,6 +47,7 @@ exports.postIndex = (req, res, next) => {
 	const user = new User({
 		firstname: req.body.firstname,
 		lastname:req.body.lastname,
+		name: req.body.firstname+req.body.lastname,
 		email: req.body.email,
 		password: req.body.password,
 		emailSecretToken: secretToken,
@@ -60,9 +69,9 @@ exports.postIndex = (req, res, next) => {
 		var transporter = nodemailer.createTransport({
 			debug: false,
 		    requireTLS: true,
-		    port: 25,
-		    secureConnection: false,
-		    service: 'gmail',
+		    host: 'smtp.gmail.com',
+			port: 465,
+			secure: true,
 			auth: {
 				user: 'jennyxu8448@gmail.com',
 				pass: 'xu1029!~'
@@ -97,18 +106,6 @@ exports.postIndex = (req, res, next) => {
 			res.render('account/verifyemail',{
 				title: 'Verify Email'
 			});
-
-/*
-			req.logIn(user, (err) => {
-				if (err) {
-					return next(err);
-				}
-				res.render('account/signup',{
-				"title":"Signup", "css":["signup.css"], "js":["signup.js"]
-				});
-			});
-			*/
-
 		});
 	});
 };
@@ -158,48 +155,6 @@ exports.verifyemail = async (req, res) => {
 	});
 };
 
-exports.getVerifyEmail = (req, res) =>{
-	console.log('in getVerifyEmail');
-	User.findOne({'emailSecretToken' : secretToken}, function(err, user){
-		if(err) throw err;
-		if(!user){
-			req.flash('error', 'no user found');
-		}
-		user.emailActive = true;
-		user.emailSecretToken = '';
-		req.flash('success', 'You email is verified, you may now log in');
-	});
-	
-};
-exports.postVerifyEmail = async (req, res, next) => {
-	try {
-		const {
-			secretToken
-		} = req.body;
-		console.log(secretToken);
-
-		//find the account that matches the secret token
-		const user = await User.findOne({
-			'emailSecretToken': secretToken
-		});
-		console.log(user);
-		if (!user) {
-			console.log('no user is found');
-			req.flash('error. no user found for that secret token');
-			res.redirect('/verify');
-			return;
-		}
-		user.emailActive = true;
-		user.emailSecretToken = '';
-		await user.save();
-
-		req.flash('Verification succeeded. You may login now.');
-		res.redirect('/login');
-	} catch (error) {
-		next(error);
-	}
-}
-
 //----------LOGIN--------------
 exports.postLogin = (req, res, next) => {
 	req.assert('email', 'Email is not valid').isEmail();
@@ -229,15 +184,7 @@ exports.postLogin = (req, res, next) => {
 			if (err) {
 				return next(err);
 			}
-			console.log('login success');
-			req.flash('success', {
-				msg: 'Success! You are logged in.'
-			});
-
-			res.render('account/signup');
-
-			//TODO: What is this?
-      //res.redirect(req.session.returnTo || '/');
+			res.redirect('/');
 		});
 	})(req, res, next);
 };
@@ -257,6 +204,7 @@ exports.getSignup = (req, res) => {
 	});
 }
 
+/*
 exports.postPFPUpload = (req, res, next) =>{
 	var localReadStream = fs.createReadStream(req.file.path);
 	const gcsname = Date.now() + req.file.originalname;
@@ -319,7 +267,7 @@ var uploadToGCloud = async(file) => {
 	    });
 	  });
 };
-
+*/
 exports.postSignup = async (req, res, next) => {
 	console.log(req.body);
 	User.findOne({
@@ -455,7 +403,12 @@ exports.postSignup = async (req, res, next) => {
 
 
 //---------dashboard--------------
-//Gets user based on url query key. If id is equal to req.user, enables settings button
+/**
+ * Gets user based on url query key. If id is equal to req.user, enables settings button
+ * @param  {[type]} req [description]
+ * @param  {[type]} res [description]
+ * @return {[type]}     [description]
+ */
 exports.getProfile = (req, res) => {
 	console.log('in getUserById');
 	var id = req.params.id;
@@ -486,57 +439,53 @@ exports.getProfile = (req, res) => {
 	*/
 };
 
-//Post profile changes to database
+/**
+ * Post profile changes to database
+ * @param  {[type]}   req  [description]
+ * @param  {[type]}   res  [description]
+ * @param  {Function} next [description]
+ * @return {[type]}        [description]
+ */
 exports.postProfile = (req, res, next) => {
-	console.log('in postProfile');
-	console.log(req.body);
-	
-/*	req.assert('email', 'Please enter a valid email address.').isEmail();
-	req.sanitize('email').normalizeEmail({
-		gmail_remove_dots: false
-	});
-
-	const errors = req.validationErrors();
-
-	if (errors) {
-		req.flash('errors', errors);
-		return res.redirect('/account');
-	}
-
 	User.findById(req.user.id, (err, user) => {
 		if (err) {
 			return next(err);
 		}
-		user.email = req.body.email || '';
-		user.profile.name = req.body.name || '';
-		user.profile.gender = req.body.gender || '';
-		user.profile.location = req.body.location || '';
-		user.profile.website = req.body.website || '';
+		//TODO: set fields here
+		user.major = req.body.major;
+
+
 		user.save((err) => {
 			if (err) {
-				if (err.code === 11000) {
-					req.flash('errors', {
-						msg: 'The email address you have entered is already associated with an account.'
-					});
-					return res.redirect('/account');
-				}
 				return next(err);
 			}
-			req.flash('success', {
-				msg: 'Profile information has been updated.'
-			});
-			res.redirect('/account');
+			res.redirect('/users/'+req.user.urlId);
 		});
-	});*/
+	});
 };
 
-
+/**
+ * Gets preferences of user and renders it into preference setting page. 
+ * Appears when: 
+ * Visualizing all users for a hackathon for the first time 
+ * OR if user chooses save settings for future visualization:
+ * 	shows after 3 months since last time a change is made in preferences
+ * @param  {[type]} req [description]
+ * @param  {[type]} res [description]
+ * @return {[type]}     [description]
+ */
 exports.getPreferences = (req, res) => {
 	res.render('account/preferences', {
 		title: 'Preferences', dashboardUser: req.user, js:'preferences.js', css:'preferences.css'
 	});
 };
 
+/**
+ * Updates the preferences of the user
+ * @param  {[type]} req [description]
+ * @param  {[type]} res [description]
+ * @return {[type]}     [description]
+ */
 exports.postPreferences = (req,res) => {
 	var interests = req.body.interests;
 	var languages = req.body.languages;
@@ -565,6 +514,11 @@ exports.postPreferences = (req,res) => {
 	});
 };
 
+exports.getAccount = (req, res) => {
+	res.render('account/dashboard', {
+			title: 'Account Management', dashboardUser: req.user, settingsEnabled: true
+		});
+};
 
 
 //-------account-----------
@@ -576,7 +530,7 @@ exports.postUpdatePassword = (req, res, next) => {
 
 	if (errors) {
 		req.flash('errors', errors);
-		return res.redirect('/account');
+		return res.redirect('/');
 	}
 
 	User.findById(req.user.id, (err, user) => {
@@ -591,7 +545,7 @@ exports.postUpdatePassword = (req, res, next) => {
 			req.flash('success', {
 				msg: 'Password has been changed.'
 			});
-			res.redirect('/account');
+			res.redirect('/');
 		});
 	});
 };

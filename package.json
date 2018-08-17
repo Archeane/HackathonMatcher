@@ -79,6 +79,7 @@
     "twilio": "^3.16.0",
     "twit": "^2.2.9",
     "validator": "^10.1.0",
+    "vue": "^2.5.17",
     "xoauth2": "^1.2.0"
   },
   "devDependencies": {

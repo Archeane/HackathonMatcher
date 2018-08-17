@@ -1,8 +1,10 @@
+
 $(window).on('load', function () {
 	$('.preloader').delay(500).fadeOut("slow"); // set duration in brackets
 });
 
 $(function () {
+	
 	jQuery(document).ready(function () {
 		$('body').backstretch([
 	 		 "/images/tm-bg-slide-1.jpg",
@@ -38,15 +40,23 @@ $(function () {
 
 	fillAbout(Userabout);
 	fillAboutSettings(Userabout);
+
 	fillLanaguages(UserLan);
+	fillLanguagesModal(UserLan);
 	
 	fillFamiliarTechnologies(UserFamiliar);
+	fillTechModal(UserFamiliar);
+
 	fillInterestedTechnologies(UserInterest);
+	fillInterestsModal(UserInterest);
 	fillFields(UserFields);
+	fillFieldsModals(UserFields);
 
 	fillHackathons(UserHackatons);
+//	fillHackathonsModal(UserHackatons);
+/*
 	fillNote(UserHobbies);
-
+*/
 	//TODO: add fill modals
 
 	$('.language').on('click', function (event) {
@@ -54,7 +64,7 @@ $(function () {
 		$(this).parents().eq(2).remove();
 	});
 
-	$('.').on('click', function (event) {
+	$('.tech').on('click', function (event) {
 		event.preventDefault();
 		var remove = $(this).parent().attr('class');
 		if($('.'+remove).parents().eq(1).children().length < 5){	//append button if number of items is less than 5
@@ -81,7 +91,8 @@ $(function () {
 		}
 	});
 
-})
+});
+
 
 function fillAbout(data) {
 	const socialIcons = [['facebook', 'https://www.facebook.com/'],['phone',''], ['instagram','https://www.instagram.com/'],
@@ -160,7 +171,7 @@ function fillAboutSettings(data) {
 }
 
 function fillLanaguages(data) {
-	var skillsContainer = document.querySelector("#skills");
+	var skillsContainer = document.querySelector("#skills > .content");
 	for(i = 0; i < data.length; i++){
 		if(i == 5){
 			content += '<span>'+data.length-5+' more...</span>';
@@ -176,23 +187,72 @@ function fillLanaguages(data) {
 			content += '<span class="pull-right" >'+data[i][1]+'%</span>';
 			content += '<div class="progress">';
 			content += '<div class="progress-bar progress-bar-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+data[i][1]+'" style="width:'+data[i][1]+'%;"></div></div></div>';
-			//Settings
-			
-			content += '<div class="settings" style="padding-top:15px;"><div>';
-			content += '<strong>'+data[i][0]+'</strong>';
-			if(data[i].length == 3){
-				content += '<i class="fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span>'+data[i][2]+'</span>';
-			}
-			content += '<i class="language pull-right fa fa-times"></i><span class="pull-right">%</span>';
-			content += '<input value='+data[i][1]+' class="pull-right" type="number" style="margin-top: -.2em; height: 20px !important;width:40px;" min="1" max="100" class="max100input">';
-			content += '</div>';
-			content += '<div class="progress" style="margin-top:10px;">';
-			content += '<div class="progress-bar progress-bar-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+data[i][1]+'" style="width:'+data[i][1]+'%;"></div></div>';
-			content += '</div></div>';
 			skillsContainer.innerHTML += content;
 		}
 	}
 
+	var settings = '';
+	for(i = 0; i < data.length; i++){
+		settings += '<div class="settings" style="padding-top:15px;"><div>';
+		settings += '<strong>'+data[i][0]+'</strong>';
+		if(data[i].length == 3){
+			settings += '<i class="fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span>'+data[i][2]+'</span>';
+		}
+		settings += '<i class="language pull-right fa fa-times"></i><span class="pull-right">%</span>';
+		settings += '<input value='+data[i][1]+' class="pull-right" type="number" style="margin-top: -.2em; height: 20px !important;width:40px;" min="1" max="100" class="max100input">';
+		settings += '</div>';
+		settings += '<div class="progress" style="margin-top:10px;">';
+		settings += '<div class="progress-bar progress-bar-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+data[i][1]+'" style="width:'+data[i][1]+'%;"></div></div>';
+		settings += '</div></div>';
+	}
+	if(data.length < 5){
+		settings += '<div padding-top="10px;">';
+		settings += '<button style="border-radius: 0px; border-width: 1px; text-align:center" data-toggle="modal" data-target="#modalLanguages">';
+		settings += '<i class="fa fa-plus"></i> add</button>';
+		settings += '</div>';
+	}
+	skillsContainer.innerHTML += settings;
+}
+
+
+function fillLanguagesModal(data){
+	var container = document.querySelector('#modalLanguages');
+	container = container.querySelector('.modal-body');
+	var content = '';
+	if(data.length > 5){	//if there's more than 5 languages that user didn't put on dashboard
+		for(i = 0; i < data.length; i++){
+			content += '<div class="row"><div class="col-md-10">';
+			content += '<span class="language" style="padding-left: 30px;">'+data[i]+'</span>';
+			content += '</div><button class="modal-add pull-right" style="border:none;"><i class="fa fa-plus"></i>Add</button></div>';
+			if(j != data[i][1].length-1){
+				content += '</div><hr>'
+			}
+		}
+	}
+	container.innerHTML += content;
+
+	var languages = [];
+	$.ajax({
+		dataType:'json',
+		type:'GET',
+		url: '/assets/interests.json',
+		success:function(data){
+			languages = data;
+		},
+		error: function(req,err){
+			alert("Error:", err, "Request:", req);
+		}
+	}).then(() => {
+		languages.forEach(function(d){
+			content += '<div class="row"><div class="col-md-8">';
+			content += '<span class="language" style="padding-left: 30px;">'+d.name+'</span>';
+			content += '</div><button class="modal-add pull-right" style="border:none;"><i class="fa fa-plus"></i>Add</button>';
+			content += '</div></div>'
+			container.innerHTML += content;
+		});
+	});
+
+	
 }
 
 function fillFamiliarTechnologies(data) {
@@ -231,13 +291,71 @@ function fillFamiliarTechnologies(data) {
 	}
 	settings += '</ul>';
 	if(data.length < 5){
-		settings += '<button style="border-radius: 0px; border-width: 1px; text-align:center" data-toggle="modal" data-target="#tech-familiar">';
+		settings += '<button style="border-radius: 0px; border-width: 1px; text-align:center" data-toggle="modal" data-target="#modalfamiliar">';
 		settings += '<i class="fa fa-plus"></i> add</button>';
 	}
 
 
 	settingsContainer.innerHTML += settings;
 
+}
+
+//TODO: take modalbutton to initialize after ajax request completed. Make function a promise?
+function fillTechModal(data){
+	var tech = [];
+	$.ajax({
+		dataType:'json',
+		type:'GET',
+		url: '/assets/technologies.json',
+		success:function(data){
+			tech = data;
+		},
+		error: function(req,err){
+			alert("Error:", err, "Request:", req);
+		}
+	}).then(() => {
+		var container = document.querySelector('#modalfamiliar');
+		container = container.querySelector('.modal-body');
+		var content = '';
+		for(i = 0; i < data.length; i++){
+			content += '<div class="row"><div class="col-md-8">';
+			content += '<span class="language" style="padding-left: 30px;">'+data[i]+'</span>';
+			content += '</div><button class="modal-add pull-right" style="border:none;"><i class="fa fa-plus"></i>Add</button>';
+			content += '</div>';
+		}
+		
+		tech.forEach(function(d){
+			content += '<div class="row"><div class="col-md-8">';
+			content += '<span class="language" style="padding-left: 30px;">'+d.name+'</span>';
+			content += '</div><button class="modal-add pull-right" style="border:none;"><i class="fa fa-plus"></i>Add</button>';
+			content += '</div>';
+		});
+		container.innerHTML += content;
+
+		var modalButton = $('.modal-add');
+		modalButton.on('click', function(){
+			console.log('clicked');
+			var containerName = $(this).closest(".modal").attr('id');
+			var contentContainer = $('#'+containerName.substr(5)+' > .content');
+			var settingsContainer = $('#'+containerName.substr(5)+' > .settings');
+			var spanText = $(this).parent().find('span').text()
+			var content = '', settings = '';
+
+			content += '<div class="'+spanText.split(' ').join('_')+'">';
+			content += '<span class="pull-right">10/10</span>';
+			content += '<li>'+spanText+'</li>';
+			content += '<input type="hidden" name="technology" value="'+spanText+'" />';
+			content += '</div>';
+			contentContainer.find('ul').append(content);
+
+			settings += '<div style="padding-bottom: 20px;" class="'+spanText.split(' ').join('_')+'">';
+			settings += '<i class="tech pull-left fa fa-times" style="padding-right:5px"></i>'+spanText;
+			settings += '<input value=10 class="max10Input pull-right" type="number" style="height: 20px !important;width:40px;" min="1" max="10">';
+			settings += '</div>';
+			settingsContainer.find('ul').append(settings);
+		});
+	});
+		
 }
 
 function fillInterestedTechnologies(data) {
@@ -270,12 +388,69 @@ function fillInterestedTechnologies(data) {
 	}
 	settings += '</ul>';
 	if(data.length < 5){
-		settings += '<button style="border-radius: 0px; border-width: 1px; text-align:center" data-toggle="modal" data-target="#tech-familiar">';
+		settings += '<button style="border-radius: 0px; border-width: 1px; text-align:center" data-toggle="modal" data-target="#modalinterested">';
 		settings += '<i class="fa fa-plus"></i> add</button>';
 	}
 
 	settingsContainer.innerHTML += settings;
 }
+
+function fillInterestsModal(data){
+	var tech = [];
+	$.ajax({
+		dataType:'json',
+		type:'GET',
+		url: '/assets/interests.json',
+		success:function(data){
+			tech = data;
+		},
+		error: function(req,err){
+			alert("Error:", err, "Request:", req);
+		}
+	}).then(() => {
+		var container = document.querySelector('#modalinterested');
+		container = container.querySelector('.modal-body');
+		var content = '';
+		for(i = 0; i < data.length; i++){
+			content += '<div class="row"><div class="col-md-8">';
+			content += '<span class="language" style="padding-left: 30px;">'+data[i]+'</span>';
+			content += '</div><button class="modal-add pull-right" style="border:none;"><i class="fa fa-plus"></i>Add</button>';
+			content += '</div>';
+		}
+		
+		tech.forEach(function(d){
+			content += '<div class="row"><div class="col-md-8">';
+			content += '<span class="language" style="padding-left: 30px;">'+d.name+'</span>';
+			content += '</div><button class="modal-add pull-right" style="border:none;"><i class="fa fa-plus"></i>Add</button>';
+			content += '</div>';
+		});
+		container.innerHTML += content;
+
+		var modalButton = $('.modal-add');
+		modalButton.on('click', function(){
+			console.log('clicked');
+			var containerName = $(this).closest(".modal").attr('id');
+			var contentContainer = $('#'+containerName.substr(5)+' > .content');
+			var settingsContainer = $('#'+containerName.substr(5)+' > .settings');
+			var spanText = $(this).parent().find('span').text()
+			var content = '', settings = '';
+
+			content += '<div class="'+spanText.split(' ').join('_')+'">';
+			content += '<span class="pull-right">10/10</span>';
+			content += '<li>'+spanText+'</li>';
+			content += '<input type="hidden" name="technology" value="'+spanText+'" />';
+			content += '</div>';
+			contentContainer.find('ul').append(content);
+
+			settings += '<div style="padding-bottom: 20px;" class="'+spanText.split(' ').join('_')+'">';
+			settings += '<i class="tech pull-left fa fa-times" style="padding-right:5px"></i>'+spanText;
+			settings += '<input value=10 class="max10Input pull-right" type="number" style="height: 20px !important;width:40px;" min="1" max="10">';
+			settings += '</div>';
+			settingsContainer.find('ul').append(settings);
+		});
+	});
+}
+
 
 function fillFields(data) {
 	var fieldsContainer = document.querySelector("#fields > .content");
@@ -305,7 +480,7 @@ function fillFields(data) {
 	}
 	settings += '</ul>';
 	if(data.length < 5){
-		settings += '<button style="border-radius: 0px; border-width: 1px; text-align:center" data-toggle="modal" data-target="#tech-familiar">';
+		settings += '<button style="border-radius: 0px; border-width: 1px; text-align:center" data-toggle="modal" data-target="#modalfields">';
 		settings += '<i class="fa fa-plus"></i> add</button>';
 	}
 
@@ -313,8 +488,64 @@ function fillFields(data) {
 
 }
 
+function fillFieldsModals(data){
+	var tech = [];
+	$.ajax({
+		dataType:'json',
+		type:'GET',
+		url: '/assets/fields.json',
+		success:function(data){
+			tech = data;
+		},
+		error: function(req,err){
+			alert("Error:", err, "Request:", req);
+		}
+	}).then(() => {
+		var container = document.querySelector('#modalfields');
+		container = container.querySelector('.modal-body');
+		var content = '';
+		for(i = 0; i < data.length; i++){
+			content += '<div class="row"><div class="col-md-8">';
+			content += '<span class="language" style="padding-left: 30px;">'+data[i]+'</span>';
+			content += '</div><button class="modal-add pull-right" style="border:none;"><i class="fa fa-plus"></i>Add</button>';
+			content += '</div>';
+		}
+		
+		tech.forEach(function(d){
+			content += '<div class="row"><div class="col-md-8">';
+			content += '<span class="language" style="padding-left: 30px;">'+d.name+'</span>';
+			content += '</div><button class="modal-add pull-right" style="border:none;"><i class="fa fa-plus"></i>Add</button>';
+			content += '</div>';
+		});
+		container.innerHTML += content;
+
+		var modalButton = $('.modal-add');
+		modalButton.on('click', function(){
+			console.log('clicked');
+			var containerName = $(this).closest(".modal").attr('id');
+			var contentContainer = $('#'+containerName.substr(5)+' > .content');
+			var settingsContainer = $('#'+containerName.substr(5)+' > .settings');
+			var spanText = $(this).parent().find('span').text()
+			var content = '', settings = '';
+
+			content += '<div class="'+spanText.split(' ').join('_')+'">';
+			content += '<span class="pull-right">10/10</span>';
+			content += '<li>'+spanText+'</li>';
+			content += '<input type="hidden" name="technology" value="'+spanText+'" />';
+			content += '</div>';
+			contentContainer.find('ul').append(content);
+
+			settings += '<div style="padding-bottom: 20px;" class="'+spanText.split(' ').join('_')+'">';
+			settings += '<i class="tech pull-left fa fa-times" style="padding-right:5px"></i>'+spanText;
+			settings += '<input value=10 class="max10Input pull-right" type="number" style="height: 20px !important;width:40px;" min="1" max="10">';
+			settings += '</div>';
+			settingsContainer.find('ul').append(settings);
+		});
+	});
+}
+
+
 function fillHackathons(data) {
-	console.log(data);
 	var hackContainer = document.querySelector("#hackathons > .content");
 	var content = '<ul>';
 	for(i = 0; i < data.length; i++){
@@ -350,7 +581,7 @@ function fillHackathons(data) {
 	}
 	settings += '</ul>';
 	if(data.length < 5){
-		settings += '<button style="border-radius: 0px; border-width: 1px; text-align:center" data-toggle="modal" data-target="#tech-familiar">';
+		settings += '<button style="border-radius: 0px; border-width: 1px; text-align:center" data-toggle="modal" data-target="#modalhackathons">';
 		settings += '<i class="fa fa-plus"></i> add</button>';
 	}
 
@@ -358,6 +589,71 @@ function fillHackathons(data) {
 
 }
 
+function fillHackathonsModal(data){
+	var tech = [];
+	console.log($('#hackathonYear').val());
+	$('#hackathonYear').on('change', ()=>{
+		var hackYear = $('#hackathonYear').val()
+		if(hackYear != 0){
+			$.ajax({
+				dataType:'json',
+				type:'GET',
+				url: '/assets/hackathons'+hackYear+'.json',
+				success:function(data){
+					tech = data;
+				},
+				error: function(req,err){
+					alert("Error:", err, "Request:", req);
+				}
+			}).then(() => {
+				var container = document.querySelector('#modalhackathons');
+				container = container.querySelector('.modal-body');
+				var content = '';
+				for(i = 0; i < data.length; i++){
+					content += '<div class="row"><div class="col-md-8">';
+					content += '<span class="language" style="padding-left: 30px;">'+data[i]+'</span>';
+					content += '</div><button class="modal-add pull-right" style="border:none;"><i class="fa fa-plus"></i>Add</button>';
+					content += '</div>';
+				}
+				
+				tech.forEach(function(d){
+					content += '<div class="row"><div class="col-md-8">';
+					content += '<span class="language" style="padding-left: 30px;">'+d.name+'</span>';
+					content += '</div><button class="modal-add pull-right" style="border:none;"><i class="fa fa-plus"></i>Add</button>';
+					content += '</div>';
+				});
+				container.innerHTML += content;
+
+				var modalButton = $('.modal-add');
+				modalButton.on('click', function(){
+					console.log('clicked');
+					var containerName = $(this).closest(".modal").attr('id');
+					var contentContainer = $('#'+containerName.substr(5)+' > .content');
+					var settingsContainer = $('#'+containerName.substr(5)+' > .settings');
+					var spanText = $(this).parent().find('span').text()
+					var content = '', settings = '';
+
+					content += '<div class="'+spanText.split(' ').join('_')+'">';
+					content += '<span class="pull-right">10/10</span>';
+					content += '<li>'+hackYear+" "+spanText+'</li>';
+					content += '<input type="hidden" name="technology" value="'+spanText+'" />';
+					content += '</div>';
+					contentContainer.find('ul').append(content);
+
+					settings += '<div style="padding-bottom: 20px;" class="'+spanText.split(' ').join('_')+'">';
+					settings += '<i class="tech pull-left fa fa-times" style="padding-right:5px"></i>'+hackYear+" "+spanText;
+					settings += '</div>';
+					settingsContainer.find('ul').append(settings);
+				});
+			});
+		}
+	});
+	/*
+	
+	*/
+}
+
+/*
 function fillNote(data){
 	var container = document.querySelector("#note > .content");
 	var content = '<h4 class="accent"> Hobbies</h4>';
@@ -411,7 +707,7 @@ function addTechFamiliar(technology,like, endorse){
 	settings += '</div>';
 	set.innerHTML += settings;
 }
-
+*/
 
 
 

@@ -118,7 +118,14 @@ app.use(express.static(path.join(__dirname, 'wtf')));//, { maxAge: 31557600000 }
 //Test upload pfp route
 
 const fs = require('fs');
-app.post('/uploadpfp', upload.single('myFile'),  userController.postPFPUpload);
+
+//TODO: put this back
+//app.post('/uploadpfp', upload.single('myFile'),  userController.postPFPUpload);
+
+/*
+  Sign up
+ */
+app.get('/signup', userController.getSignup);
 app.post('/signup', upload.single('myFile'), userController.postSignup);
 //TODO: put upload routes before csrf
 app.use((req, res, next) => {
@@ -132,13 +139,6 @@ app.use((req, res, next) => {
   }
 });
 
-
-
-
-
-
-
-
 /**
  * Landing
  */
@@ -149,12 +149,6 @@ app.get('/forgot', userController.getForgot);
 app.post('/forgot', userController.postForgot);
 app.get('/verifyemail', userController.verifyemail);
 
-/*
-  Sign up
- */
-app.get('/emailVerification', userController.getVerifyEmail);
-//app.post('/emailVerification', userController.postVerifyEmail);
-app.get('/signup', userController.getSignup);
 
 
 
@@ -163,22 +157,22 @@ app.get('/signup', userController.getSignup);
 /*
   Search
  */
-app.post('/search', homeController.postSearch);
+app.post('/search', homeController.getSearch);
 /*TEST ROUTE*/
-app.get('/search', homeController.getSearch);
+app.get('/search', homeController.postSearch);
 //app.get('/search/results', homeController.searchResult);
 /*
   Navbar
  */
 app.get('/logout', userController.logout);
 app.get('/users/:id', userController.getProfile);
+app.get('/account', userController.getAccount);
 //app.get('/home', homeController.getHome);
 //app.get('/account', passportConfig.isAuthenticated, userController.getAccount);
 /*
   Dashboard
  */
 //TODO: authenticatation for logged in user post requestes
-app.get('/account/dashboard', )
 app.post('/users/:id', passportConfig.isAuthenticated, userController.postProfile);
 //app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);
 //app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);

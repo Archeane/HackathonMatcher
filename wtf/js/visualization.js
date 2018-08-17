@@ -196,6 +196,7 @@ function bubbleChart() {
 	// working with data.
 	var myNodes = rawData.map(function (d) {
 	  return {
+	  	urlId: d.urlId,
 	  	email: d.email,
 		radius: radiusScale(+d.score),
 		value: d.score,
@@ -248,7 +249,7 @@ function bubbleChart() {
 		.enter().append('pattern')
 		.attr('class','circles-pattern')
 		.attr('id', function(d){
-			return d.email;
+			return d.urlId;
 		})
 		.attr('height',"100%")
 		.attr('width', "100%")
@@ -270,18 +271,15 @@ function bubbleChart() {
 	.append('circle')
 	  .classed('bubble', true)
 	  .attr('r', 0)
-//	  .attr('fill', function (d) { return fillColor(d.group); })
-//	  .attr('stroke', function (d) { return d3.rgb(fillColor(d.group)).darker(); })
 	  .attr('stroke-width', 2)
 	  .on('mouseover', showDetail)
 	  .on('mouseout', hideDetail)
 	  .on('click', function(d){
-	  	window.location = "http://localhost:8080/dashboard/" + d.email;
+	  	window.location = "http://localhost:8080/users/" + d.urlId;
 	  })
 	  .style('fill', function(d){
-	  	return 'url(#'+d.email+')';
+	  	return 'url(#'+d.urlId+')';
 	  });
-//	  .attr("xlink:href", 'http://placekitten.com/g/48/48')
 	  
 
 	bubbles.transition()

@@ -15,7 +15,7 @@ exports.index = (req, res) => {
 		});
 	}else{
 		res.render('landing', {
-			title: ''
+			title: '', expressFlash:req.flash('failure')
 		});
 	}	
   
@@ -37,7 +37,6 @@ exports.index = (req, res) => {
 		Renders searchResults page
  */
 exports.postSearch = (req, res, next) => {
-	console.log('in post search');
 	var MongoClient = require('mongodb').MongoClient;
 	console.log(req.query);
 	var keyword = req.query.keyword;
@@ -109,7 +108,10 @@ exports.postSearch = (req, res, next) => {
 		MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {
 			var results = [];
 			var userPromise = new Promise((resolve, reject) => {
-				db.collection('users').find({ "name": { $regex: keyword, $options:"i m"}}).toArray(function(err, docs){
+				db.collection('users').find({ $or: [
+					{"firstname": { $regex: keyword, $options:"i m"}}, 
+					{"lastname": { $regex: keyword, $options:"i m"}}
+				]}).toArray(function(err, docs){
 					if(err) throw err;
 					results.push(docs);
 					resolve();
@@ -124,8 +126,8 @@ exports.postSearch = (req, res, next) => {
 			});
 
 			Promise.all([userPromise, hackathonPromise]).then((err) =>{
-				console.log(results);
 				if(searchType === "home"){
+					console.log(results);
 					res.write(JSON.stringify(results));
 					res.end();
 				}else if(searchType === "result"){

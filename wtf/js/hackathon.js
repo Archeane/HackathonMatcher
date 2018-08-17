@@ -1,3 +1,9 @@
+
+window.onload = function(){
+	var visulURl = window.location.toString() + '/visual';
+	console.log(visulURl)
+    document.getElementById("visLink").href = visulURl;
+}
 $(document).ready(function(){
 /*
 	console.log(matches);
@@ -72,7 +78,6 @@ function fillHackers(data){
 		//TODO: hacker social profiles
 		content += '<a href=""><i class="fa fa-facebook"></i></a>';
 		content += '</div></article>';
-		console.log(content);
 		hackerContainer.innerHTML += content;
 	}
 
