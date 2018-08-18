@@ -18,7 +18,17 @@ $(function () {
 
 	if(settingsEnabled){
 		var container = document.querySelector("#settingsicon")
-		container.innerHTML += '<i class="fa fa-cog fa-lg" style="padding-left: 10px;"></i>';
+		container.innerHTML += '<i class="fa fa-cog fa-lg content" style="padding-left: 10px;"></i>';
+		$('.fa-cog').click(function() {
+		    $('.settings').css({
+		        'display': 'block'
+		
+		    });
+		    $('.content').css({
+		        'display': 'none'
+		
+		    });
+		});
 	}
 
 	var email = document.querySelector("#email");
@@ -26,8 +36,6 @@ $(function () {
 	console.log(User);
 
 	$('#pfp').attr('src', User.profileimg);
-
-
 
 	var name = User.firstname + ' ' + User.lastname;
 	var Userabout = [name, User.major, User.school, User.educationLevel, User.graduationYear, User.facebook, User.phone, User.instagram, User.github, User.linkedin, User.website];
@@ -38,60 +46,192 @@ $(function () {
 	var UserHobbies = User.preferences.hobbies;
 	var UserHackatons = User.hackathons;
 
-	fillAbout(Userabout);
-	fillAboutSettings(Userabout);
-
-	fillLanaguages(UserLan);
-	fillLanguagesModal(UserLan);
-	
-	fillFamiliarTechnologies(UserFamiliar);
-	fillTechModal(UserFamiliar);
-
-	fillInterestedTechnologies(UserInterest);
-	fillInterestsModal(UserInterest);
-	fillFields(UserFields);
-	fillFieldsModals(UserFields);
-
-	fillHackathons(UserHackatons);
-//	fillHackathonsModal(UserHackatons);
-/*
-	fillNote(UserHobbies);
-*/
-	//TODO: add fill modals
-
-	$('.language').on('click', function (event) {
-		event.preventDefault();
-		$(this).parents().eq(2).remove();
-	});
-
-	$('.tech').on('click', function (event) {
-		event.preventDefault();
-		var remove = $(this).parent().attr('class');
-		if($('.'+remove).parents().eq(1).children().length < 5){	//append button if number of items is less than 5
-			var settingsContainer = document.querySelector("#familiar > .settings");
-			var settings = '';
-			settings += '<button style="border-radius: 0px; border-width: 1px; text-align:center" data-toggle="modal" data-target="#tech-familiar">';
-			settings += '<i class="fa fa-plus"></i> add</button>';
-			settingsContainer.innerHTML += settings;
-		}
-		$('.'+remove).remove();
-	});
-
-
-	//TODO: wait for user input to finish
-	$('.max10Input').on('input', function(val){
-		if($(this).val() > 10){
-			$(this).val(10);
-		}
-	});
-
-	$('.max100Input').on('input', function(val){
-		if($(this).val() > 100){
-			$(this).val(100);
-		}
-	});
+	console.log(UserFields);
+	fillFieldsVue(UserFields);
+	fillTechVue(UserFamiliar);
+	fillInterestsVue(UserInterest);
+	fillHackathonsVue(UserHackatons);
+	fillLanVue(UserLan);
+	//fillAbout(Userabout);
+	//fillAboutSettings(Userabout);
 
 });
+
+function fillFieldsVue(data){
+	new Promise((resolve,reject) => {
+		$.getJSON("/assets/fields.json", function (data) {
+			resolve(data);
+		})
+	}).then((fieldsConstants) => {
+		new Vue({
+			el: '#app-5',
+			data: {
+				fields: data,
+				constants: fieldsConstants,
+				input: data
+			},
+			computed: {
+				totalFields() {
+					return this.fields.reduce((sum) => {
+						return sum + 1;
+					}, 0);
+				}
+			},
+			methods: {
+				deleteObject: function(index) {
+					this.$delete(this.fields, index);
+				},
+				appendObject: function(child, id, index) {
+					if(this.fields.length <= 5){
+						var arr = [child, id];
+						this.fields.push(arr);
+						this.constants.splice(index,1);
+						this.input.push(arr);
+					}
+				}
+			}
+		});
+	});
+}
+
+function fillTechVue(data){
+	new Promise((resolve,reject) => {
+		$.getJSON("/assets/technologies.json", function (data) {
+			resolve(data);
+		})
+	}).then((fieldsConstants) => {
+		new Vue({
+			el: '#app-3',
+			data: {
+				fields: data,
+				constants: fieldsConstants,
+				input: data
+			},
+			computed: {
+				totalFields() {
+					return this.fields.reduce((sum) => {
+						return sum + 1;
+					}, 0);
+				}
+			},
+			methods: {
+				deleteObject: function(index) {
+					this.$delete(this.fields, index);
+				},
+				appendObject: function(child, id, index) {
+					if(this.fields.length <= 5){
+						var arr = [child, id];
+						this.fields.push(arr);
+						this.constants.splice(index,1);
+						this.input.push(arr);
+					}
+				}
+			}
+		});
+	});
+}
+
+function fillInterestsVue(data){
+	new Promise((resolve,reject) => {
+		$.getJSON("/assets/interests.json", function (data) {
+			resolve(data);
+		})
+	}).then((fieldsConstants) => {
+		new Vue({
+			el: '#app-interest',
+			data: {
+				fields: data,
+				constants: fieldsConstants,
+				input: data
+			},
+			computed: {
+				totalFields() {
+					return this.fields.reduce((sum) => {
+						return sum + 1;
+					}, 0);
+				}
+			},
+			methods: {
+				deleteObject: function(index) {
+					this.$delete(this.fields, index);
+				},
+				appendObject: function(child, id, index) {
+					if(this.fields.length <= 5){
+						var arr = [child, id];
+						this.fields.push(arr);
+						this.constants.splice(index,1);
+						this.input.push(arr);
+					}
+				}
+			}
+		});
+	});
+}
+
+function fillHackathonsVue(data){
+	var p1 = new Promise((res, rej) => {
+		$.getJSON("/assets/hackathons2014.json", function (data) {
+			res(data);
+		});
+	});
+	var p2 = new Promise((res, rej) => {
+		$.getJSON("/assets/hackathons2015.json", function (data) {
+			res(data);
+		});
+	});
+	var p3 = new Promise((res, rej) => {
+		$.getJSON("/assets/hackathons2016.json", function (data) {
+			res(data);
+		});
+	});
+	var p4 = new Promise((res, rej) => {
+		$.getJSON("/assets/hackathons2017.json", function (data) {
+			res(data);
+		});
+	});
+	var p5 = new Promise((res, rej) => {
+		$.getJSON("/assets/hackathons2018.json", function (data) {
+			res(data);
+		});
+	});
+	var yearsMap = ['2014', '2015', '2016', '2017', '2018'];
+
+	Promise.all([p1,p2,p3,p4,p5]).then((values) =>{
+		console.log(values);
+		
+		new Vue({
+			el: '#app-hackathons',
+			data: {
+				hackathons: data,
+				constants: [],
+				input: data
+			},
+			computed: {
+				totalFields() {
+					return this.hackathons.reduce((sum) => {
+						return sum + 1;
+					}, 0);
+				}
+			},
+			methods: {
+				hackYear: function(e){
+					this.constants = values[e.target.value];
+				},
+				deleteObject: function(index) {
+					this.$delete(this.hackathons, index);
+				},
+				appendObject: function(child, index) {
+					if(this.hackathons.length <= 5){	
+						var arr = [yearsMap[this.$refs.hackathonYear.value], child];
+						this.hackathons.push(arr);
+						this.constants.splice(index,1);
+						this.input.push(arr);
+					}
+				}
+			}
+		});
+	});
+}
 
 
 function fillAbout(data) {
@@ -125,7 +265,7 @@ function fillAbout(data) {
 
 function fillAboutSettings(data) {
 	socialIcons = [['Facebook', 'https://www.facebook.com/'],['Phone',''], ['Instagram','https://www.instagram.com/'],
-						['Github', 'https://www.github.com/'],['Linkedin', 'https://www.linkedin.com/in/'],['Personal Website','https://']];
+						['Github', 'https://www.github.com/'],['Linkedin', 'https://www.linkedin.com/in/'],['Website','https://']];
 	console.log(data);
 	var aboutContainer = document.querySelector("#about > .settings");
 	var content = '';
@@ -170,6 +310,44 @@ function fillAboutSettings(data) {
 	});
 }
 
+function fillLanVue(data){
+	new Promise((resolve,reject) => {
+		$.getJSON("/assets/languages.json", function (data) {
+			resolve(data);
+		})
+	}).then((fieldsConstants) => {
+		new Vue({
+			el: '#skills',
+			data: {
+				languages: data,
+				constants: fieldsConstants,
+				input: data
+			},
+			computed: {
+				totalLans() {
+					return this.languages.reduce((sum) => {
+						return sum + 1;
+					}, 0);
+				}
+			},
+			methods: {
+				deleteObject: function(index) {
+					this.$delete(this.languages, index);
+				},
+				appendObject: function(child, id, index) {
+					if(this.languages.length <= 5){
+						var arr = [child, id];
+						this.languages.push(arr);
+						this.constants.splice(index,1);
+						this.languages.push(arr);
+					}
+				}
+			}
+		});
+	});
+}
+
+/*
 function fillLanaguages(data) {
 	var skillsContainer = document.querySelector("#skills > .content");
 	for(i = 0; i < data.length; i++){
@@ -254,7 +432,7 @@ function fillLanguagesModal(data){
 
 	
 }
-
+/*
 function fillFamiliarTechnologies(data) {
 	var techContainer = document.querySelector("#familiar > .content");
 	var content = '<ul>';
@@ -648,12 +826,33 @@ function fillHackathonsModal(data){
 			});
 		}
 	});
-	/*
 	
-	*/
 }
 
-/*
+function addTechFamiliar(technology,like, endorse){
+	var techContainer = document.querySelector("#familiar > .content");
+	var tech = techContainer.querySelector('ul');
+	var content = '';
+	content += '<span class="pull-right">'+like+'/10</span>';
+	if(endorse != 0){
+		content += '<i class="pull-right fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span class="pull-right">'+endorse+'</span>';
+	}
+	content += '<li>'+technology+'</li>';
+	tech.innerHTML += content;
+
+	var settingsContainer = document.querySelector("#familiar > .settings");
+	var set = settingsContainer.querySelector('ul');
+	var settings = '<div style="padding-bottom: 20px;" class="familiarTech">';
+	settings += '<i class="tech pull-left fa fa-times" style="padding-right:5px"></i>'+technology;
+	if(endorse != 0){
+		settings += '<i class="pull-right fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span class="pull-right">'+endorse+'</span>';
+	}
+	settings += '<input value='+like+' class="max10Input pull-right" type="number" style="height: 20px !important;width:40px;" min="1" max="10">';
+	settings += '</div>';
+	set.innerHTML += settings;
+}
+*/
+
 function fillNote(data){
 	var container = document.querySelector("#note > .content");
 	var content = '<h4 class="accent"> Hobbies</h4>';
@@ -682,32 +881,6 @@ function print(){
 	content += '</p>';
 	container.innerHTML += content;
 }
-
-
-
-function addTechFamiliar(technology,like, endorse){
-	var techContainer = document.querySelector("#familiar > .content");
-	var tech = techContainer.querySelector('ul');
-	var content = '';
-	content += '<span class="pull-right">'+like+'/10</span>';
-	if(endorse != 0){
-		content += '<i class="pull-right fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span class="pull-right">'+endorse+'</span>';
-	}
-	content += '<li>'+technology+'</li>';
-	tech.innerHTML += content;
-
-	var settingsContainer = document.querySelector("#familiar > .settings");
-	var set = settingsContainer.querySelector('ul');
-	var settings = '<div style="padding-bottom: 20px;" class="familiarTech">';
-	settings += '<i class="tech pull-left fa fa-times" style="padding-right:5px"></i>'+technology;
-	if(endorse != 0){
-		settings += '<i class="pull-right fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span class="pull-right">'+endorse+'</span>';
-	}
-	settings += '<input value='+like+' class="max10Input pull-right" type="number" style="height: 20px !important;width:40px;" min="1" max="10">';
-	settings += '</div>';
-	set.innerHTML += settings;
-}
-*/
 
 
 

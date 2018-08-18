@@ -9,7 +9,7 @@ block content
 		.sk-spinner.sk-spinner-wordpress
 			span.sk-inner-circle
 
-	form(method="POST")
+	form(method="POST" action="/account")
 		input(type='hidden', name='_csrf', value=_csrf)
 		header
 			.container
@@ -17,15 +17,18 @@ block content
 					.col-md-12.col-sm-12
 						img#pfp.img-responsive.img-circle.tm-border(src='', alt='profile picture', height=300, width=300)
 						hr
-						#settingsicon
-							i.fa.fa-users.fa-lg
-							.settings
-								input(type="submit" value="Save Changes" class="settings")
+						#settingsicon.row
+							.col-md-5
+							.col-md-1
+								i.fa.fa-users.fa-lg
+							.col-md-auto
+								.settings
+									input(type="submit" value="Save Changes" class="settings" style="width:140px;")
 						h3#email
 
 
-		.section.container
-			.row
+		<section class="container">
+			<div class="row">
 				.col-md-6.col-sm-12
 					#about
 						h3.accent
@@ -34,42 +37,61 @@ block content
 							| Jenny Xu
 						.content
 						.settings
-				.col-md-6.col-sm-12
-					#skills
-						h3.accent
-							| Top Languages
-							i.pull-right.fa.fa-cog
-						.content
-						.settings
-
-		<section class="container">
-			<div class="row">
-				<div class="col-md-8 col-sm-12">
-					<div class="education">
-						<h2 class="accent">Technologies</h2>
-						<div class="row">
-							<div class='col-md-6' id="familiar">
-								<h4 class='bold'>Most Familiar</h4>
-								<div class="content">
-
+				<div class="col-md-6 col-sm-12">
+					<div id="skills">
+						<h3 class="accent">Top Languages</h3>
+						<div class="content">
+							<div class="lan" v-for="(lan,index) in languages">
+								<strong>{{lan[0]}}</strong>
+								<div v-if="lan.length > 2">
+									<i class="fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i>
+									<span>{{lan[2]}}</span>
 								</div>
-								<div class="settings">
-
+								<span style="float:right">{{lan[1]}}%</span>
+								<div class="progress">
+									<div class="progress-bar progress-bar-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" v-bind:aria-valuenow="lan[1]" v-bind:style="{width:lan[1]*10+'%'}"></div>
 								</div>
-							</div>
-							<div class='col-md-6' id="interested">
-								<h4 class='bold'>Most Interested</h4>
-								<div class="content"></div>
-								<div class="settings"></div>
 							</div>
 						</div>
-					</div>
-				</div>
-				<div class="col-md-4 col-sm-12">
-					<div class="languages" id="fields">
-						<h2>Fields</h2>
-						<div class="content"></div>
-						<div class="settings"></div>
+						<div class="settings">
+							<input v-bind:value="input" type="hidden" name="lanContent" ref="fieldsContent"  />
+							<div class="lan" v-for="(lan,index) in languages">
+								<strong>{{lan[0]}}</strong>
+								<div v-if="lan.length > 2">
+									<i class="fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i>
+									<span>{{lan[2]}}</span>
+								</div>
+								<i v-on:click="deleteObject(index)" class="fa fa-times" style="float:right;"></i>
+								<span style="float:right; padding-right:5px;">{{lan[1]}}%</span>
+								<div class="progress">
+									<div class="progress-bar progress-bar-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" v-bind:aria-valuenow="lan[1]" v-bind:style="{width:lan[1]+'%'}"></div>
+								</div>
+							</div>
+							<div style="padding-top:20px;">
+								<button v-on:click.prevent v-if="totalLans < 5" data-toggle="modal" data-target="#modalLan" style="border-radius: 0px; border-width: 1px; text-align:center;">
+								<i class="fa fa-plus"></i> add</button>
+							</div>
+						</div>
+						<div class="modal fade" id="modalLan" tabindex="-1" role="dialog" style="display:none;" aria-hidden="true">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content" style="color:dimgrey;">
+									<div class="modal-header" style="padding-bottom: 0px;">
+										<div class="col-md-11">
+											<h5 class="modal-title">Fields</h5>
+										</div>
+										<button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+									</div>
+									<div class="modal-body">
+										<div class="row" v-for="(constant, index) in constants">
+											<div class="col-md-8">
+												<span style="padding-left: 30px;">{{constant.name}}</span>
+											</div>
+											<button v-on:click.prevent="appendObject(constant.name, 10, index)" class="pull-right" style="border:none;"><i class="fa fa-plus"></i>Add</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 
 					</div>
 				</div>
@@ -78,13 +100,191 @@ block content
 
 		<section class="container">
 			<div class="row">
-				<div class="col-md-4 col-sm-12">
-					<div class="contact" id="hackathons">
-						<h2>Hackathons</h2>
-						<div class="content"></div>
-						<div class="settings"></div>
+				<div class="col-md-8 col-sm-12">
+					<div class="education">
+						<h2 class="accent">Technologies</h2>
+						<div class="row">
+							<div class='col-md-6' id="app-3">
+								<h4 class='bold'>Most Familiar</h4>
+								<div class="content">
+									<div class="tech" v-for="(field,index) in fields">
+										<span style="float:right">{{field[1]}}/10</span>
+										<li>{{field[0]}}</li>
+									</div>
+								</div>
+								<div class="settings">
+									<input v-bind:value="input" type="hidden" name="techContent" ref="fieldsContent"  />
+									<div class="tech row" v-for="(field,index) in fields">
+										<div class="col-md-10">
+											<i v-on:click="deleteObject(index)" class="fa fa-times" style="padding-right:5px"></i>{{field[0]}}
+										</div>
+										<input v-bind:value="field[1]" class="max10Input" type="number" style="height: 20px !important;width:40px; float:right" min="1" max="10" />
+									</div>
+									<button v-on:click.prevent v-if="totalFields < 5" data-toggle="modal" data-target="#modalTech" style="border-radius: 0px; border-width: 1px; text-align:center">
+										<i class="fa fa-plus"></i> add</button>
+								</div>
+								<div class="modal fade" id="modalTech" tabindex="-1" role="dialog" style="display:none;" aria-hidden="true">
+									<div class="modal-dialog" role="document">
+										<div class="modal-content" style="color:dimgrey;">
+											<div class="modal-header" style="padding-bottom: 0px;">
+												<div class="col-md-11">
+													<h5 class="modal-title">Fields</h5>
+												</div>
+												<button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+											</div>
+											<div class="modal-body">
+												<div class="row" v-for="(constant, index) in constants">
+													<div class="col-md-8">
+														<span style="padding-left: 30px;">{{constant.name}}</span>
+													</div>
+													<button v-on:click.prevent="appendObject(constant.name, 10, index)" class="pull-right" style="border:none;"><i class="fa fa-plus"></i>Add</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class='col-md-6' id="app-interest">
+								<h4 class='bold'>Most Interested</h4>
+								<div class="content">
+									<div class="interest" v-for="(field,index) in fields">
+										<span style="float:right">{{field[1]}}/10</span>
+										<li>{{field[0]}}</li>
+									</div>
+								</div>
+								<div class="settings">
+									<input v-bind:value="input" type="hidden" name="interestsContent" ref="fieldsContent"  />
+									<div class="interest row" v-for="(field,index) in fields">
+										<div class="col-md-10">
+											<i v-on:click="deleteObject(index)" class="fa fa-times" style="padding-right:5px"></i>{{field[0]}}
+										</div>
+										<input v-bind:value="field[1]" type="number" style="height: 20px !important;width:40px; float:right" min="1" max="10" />
+									</div>
+									<button v-on:click.prevent v-if="totalFields < 5" data-toggle="modal" data-target="#modalInterest" style="border-radius: 0px; border-width: 1px; text-align:center">
+										<i class="fa fa-plus"></i> add</button>
+								</div>
+								<div class="modal fade" id="modalInterest" tabindex="-1" role="dialog" style="display:none;" aria-hidden="true">
+									<div class="modal-dialog" role="document">
+										<div class="modal-content" style="color:dimgrey;">
+											<div class="modal-header" style="padding-bottom: 0px;">
+												<div class="col-md-11">
+													<h5 class="modal-title">Interests</h5>
+												</div>
+												<button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+											</div>
+											<div class="modal-body">
+												<div class="row" v-for="(constant, index) in constants">
+													<div class="col-md-8">
+														<span style="padding-left: 30px;">{{constant.name}}</span>
+													</div>
+													<button v-on:click.prevent="appendObject(constant.name, 10, index)" class="pull-right" style="border:none;"><i class="fa fa-plus"></i>Add</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
+				<div class="languages col-md-4 col-sm-12" id="app-5">
+					<h2 class="accent">Fields</h2>
+					<div class="content">
+						<div class="field" v-for="(field,index) in fields">
+							<span style="float:right">{{field[1]}}/10</span>
+							<li>{{field[0]}}</li>
+						</div>
+					</div>
+					<div class="settings">
+						<ul>
+							<input v-bind:value="input" type="hidden" name="fieldsContent" ref="fieldsContent"  />
+							<li class="field" style="list-style-type: none;" v-for="(field,index) in fields">
+								<i v-on:click="deleteObject(index)" class="fa fa-times" style="padding-right:5px"></i>{{field[0]}}
+								<input v-bind:value="field[1]" type="number" style="height: 20px !important;width:40px; float:right" min="1" max="10" />
+							</li>
+						</ul>
+						<button v-on:click.prevent v-if="totalFields < 5" data-toggle="modal" data-target="#modalField" style="border-radius: 0px; border-width: 1px; text-align:center">
+							<i class="fa fa-plus"></i> add</button>
+					</div>
+					<div class="modal fade" id="modalField" tabindex="-1" role="dialog" style="display:none;" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header" style="padding-bottom: 0px;">
+									<div class="col-md-11">
+										<h5 class="modal-title">Fields</h5>
+									</div>
+									<button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+								</div>
+								<div class="modal-body">
+									<div class="row" v-for="(constant, index) in constants">
+										<div class="col-md-8">
+											<span style="padding-left: 30px;">{{constant.name}}</span>
+										</div>
+										<button v-on:click.prevent="appendObject(constant.name, 10, index)" class="pull-right" style="border:none;"><i class="fa fa-plus"></i>Add</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</section>
+
+		<section class="container">
+			<div class="row">
+				<div class="col-md-4 col-sm-12">
+					<div class="contact" id="app-hackathons">
+						<h2>Hackathons</h2>
+						<div class="content">
+							<div class="hackathon" v-for="(hackathon,index) in hackathons">
+								<i v-if="hackathon.length > 2" class="fa fa-trophy" style="float:right;"></i>
+								<li style="float:left;">{{hackathon[0]}}  {{hackathon[1]}}</li>
+							</div>
+						</div>
+						<div class="settings">
+							<ul>
+								<input v-bind:value="input" type="hidden" name="hackathonsContent" ref="fieldsContent"  />
+								<li class="field" style="list-style-type: none;" v-for="(hackathon,index) in hackathons">
+									<i v-on:click="deleteObject(index)" class="fa fa-times" style="padding-right:5px" style="float:left"></i>
+									<span>{{hackathon[0]}}  {{hackathon[1]}}</span>
+									<i v-if="hackathon.length > 2" class="fa fa-trophy" style="float:right;"></i>
+								</li>
+							</ul>
+							<button v-on:click.prevent v-if="totalFields < 5" data-toggle="modal" data-target="#modalHackathons" style="border-radius: 0px; border-width: 1px; text-align:center">
+								<i class="fa fa-plus"></i> add</button>
+						</div>
+						<div class="modal fade" id="modalHackathons" tabindex="-1" role="dialog" style="display:none;" aria-hidden="true">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<div class="modal-header" style="padding-bottom: 0px;">
+										<div class="col-md-11">
+											<h5 class="modal-title">Hackathons</h5>
+										</div>
+										<button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+									</div>
+									<div class="modal-body">
+										<select v-on:change="hackYear" ref="hackathonYear">
+											<option selected="selected" disabled value="">Please select hackathon year</option>
+											<option value="0">2014</option>
+											<option value="1">2015</option>
+											<option value="2">2016</option>
+											<option value="3">2017</option>
+											<option value="4">2018</option>
+										</select>
+										<div class="row" v-for="(constant, index) in constants">
+											<div class="col-md-8">
+												<span style="padding-left: 30px;">{{constant.name}}</span>
+											</div>
+											<button v-on:click.prevent="appendObject(constant.name, index)" class="pull-right" style="border:none;"><i class="fa fa-plus"></i>Add</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
 				<div class="col-md-8 col-sm-12">
 					<div class="experience">
 						<h2>A Little More About Me...</h2>
@@ -98,59 +298,6 @@ block content
 		</section>
 
 
-	#modalLanguages.modal.fade(tabindex='-1', role='dialog', style='display:none;', aria-hidden='true')
-		.modal-dialog(role='document')
-			.modal-content
-				.modal-header(style='padding-bottom: 0px;')
-					.col-md-11
-						h5.modal-title Languages
-					button.close(type='button', data-dismiss='modal', aria-label='Close')
-						span(aria-hidden='true') ×
-				.modal-body
-
-	#modalfamiliar.modal.fade(tabindex='-1', role='dialog', style='display:none;', aria-hidden='true')
-		.modal-dialog(role='document')
-			.modal-content
-				.modal-header(style='padding-bottom: 0px;')
-					.col-md-11
-						h5.modal-title Technologies
-					button.close(type='button', data-dismiss='modal', aria-label='Close')
-						span(aria-hidden='true') ×
-				.modal-body
-
-	#modalinterested.modal.fade(tabindex='-1', role='dialog', style='display:none;', aria-hidden='true')
-		.modal-dialog(role='document')
-			.modal-content
-				.modal-header(style='padding-bottom: 0px;')
-					.col-md-11
-						h5.modal-title Technologies
-					button.close(type='button', data-dismiss='modal', aria-label='Close')
-						span(aria-hidden='true') ×
-				.modal-body
-	#modalfields.modal.fade(tabindex='-1', role='dialog', style='display:none;', aria-hidden='true')
-		.modal-dialog(role='document')
-			.modal-content
-				.modal-header(style='padding-bottom: 0px;')
-					.col-md-11
-						h5.modal-title Technologies
-					button.close(type='button', data-dismiss='modal', aria-label='Close')
-						span(aria-hidden='true') ×
-				.modal-body
-	#modalhackathons.modal.fade(tabindex='-1', role='dialog', style='display:none;', aria-hidden='true')
-		.modal-dialog(role='document')
-			.modal-content
-				.modal-header(style='padding-bottom: 0px;')
-					.col-md-11
-						h5.modal-title Technologies
-					button.close(type='button', data-dismiss='modal', aria-label='Close')
-						span(aria-hidden='true') ×
-				.modal-body
-					select#hackathonYear
-						option(selected="selected" value=0) select a hackathon year
-						option(value="2014") 2014
-						option(value="2015") 2015
-						option(value="2016") 2016
-						option(value="2017") 2017
 		script.
 			var User = !{JSON.stringify(dashboardUser)};
 			var settingsEnabled = !{settingsEnabled};

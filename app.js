@@ -173,7 +173,7 @@ app.get('/account', userController.getAccount);
   Dashboard
  */
 //TODO: authenticatation for logged in user post requestes
-app.post('/users/:id', passportConfig.isAuthenticated, userController.postProfile);
+app.post('/account', passportConfig.isAuthenticated, userController.postProfile);
 //app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);
 //app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/reset/:token', userController.getReset);

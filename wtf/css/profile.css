@@ -96,7 +96,7 @@ button{
 }
 
 
-mmodal-dialog .modal-content {
+modal-dialog .modal-content {
 	border-top-left-radius: 0px !important;
 	border-top-right-radius: 0px !important;
 }
@@ -421,4 +421,8 @@ footer {
 
 .settings {
 	display: none;
+}
+
+.settings li{
+	list-style-type: none;
 }

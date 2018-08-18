@@ -73,8 +73,7 @@ exports.postIndex = (req, res, next) => {
 			port: 465,
 			secure: true,
 			auth: {
-				user: 'jennyxu8448@gmail.com',
-				pass: 'xu1029!~'
+				
 			},
 		    tls: {
 		        ciphers:'SSLv3',
@@ -447,21 +446,56 @@ exports.getProfile = (req, res) => {
  * @return {[type]}        [description]
  */
 exports.postProfile = (req, res, next) => {
+	console.log(req.body);
+	var major = req.body.major;
+	var educationLevel = req.body.eduLevel;
+	var school = req.body.school;
+	var graduationYear = req.body.graduationYear;
+	var fb = req.body.Facebook;
+	var phone = req.body.Phone;
+	var insta = req.body.Instagram;
+	var git = req.body.Github;
+	var linkedin = req.body.Linkedin;
+	var website = req.body.Website;
+	var fields = req.body.fieldsContent.split(',');
+	var languages = req.body.lanContent.split(',');
+	var technologies = req.body.techContent.split(',');
+	var interests = req.body.interestsContent.split(',');
+	var hackathons = req.body.hackathonsContent.split(',');
+	console.log(languages);
+	console.log(technologies);
+	console.log(hackathons);
+	
 	User.findById(req.user.id, (err, user) => {
 		if (err) {
 			return next(err);
 		}
 		//TODO: set fields here
-		user.major = req.body.major;
-
-
+		user.major = major;
+		user.educationLevel = educationLevel;
+		user.school = school;
+		user.graduationYear = graduationYear;
+		user.facebook = fb;
+		user.phone = phone;
+		user.instagram = insta;
+		user.website = website;
+		/*
+		user.preferences.fields = fields;
+		user.preferences.languages = languages;
+		user.preferences.technologies = technologies;
+		user.preferences.interests = interests;
+		user.hackathons = hackathons;
+*/
 		user.save((err) => {
 			if (err) {
 				return next(err);
 			}
-			res.redirect('/users/'+req.user.urlId);
+			res.render('account/dashboard', {
+				title: 'Dashboard', dashboardUser: req.user, settingsEnabled: true
+			});
 		});
 	});
+	
 };
 
 /**
