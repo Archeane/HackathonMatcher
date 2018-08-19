@@ -38,6 +38,7 @@ $(function () {
 	$('#pfp').attr('src', User.profileimg);
 
 	var name = User.firstname + ' ' + User.lastname;
+	console.log(name);
 	var Userabout = [name, User.major, User.school, User.educationLevel, User.graduationYear, User.facebook, User.phone, User.instagram, User.github, User.linkedin, User.website];
 	var UserLan = User.preferences.languages;
 	var UserFamiliar = User.preferences.technologies;
@@ -46,14 +47,13 @@ $(function () {
 	var UserHobbies = User.preferences.hobbies;
 	var UserHackatons = User.hackathons;
 
-	console.log(UserFields);
 	fillFieldsVue(UserFields);
 	fillTechVue(UserFamiliar);
 	fillInterestsVue(UserInterest);
 	fillHackathonsVue(UserHackatons);
 	fillLanVue(UserLan);
-	//fillAbout(Userabout);
-	//fillAboutSettings(Userabout);
+	fillAbout(Userabout);
+	fillAboutSettings(Userabout);
 
 });
 
@@ -197,7 +197,6 @@ function fillHackathonsVue(data){
 	var yearsMap = ['2014', '2015', '2016', '2017', '2018'];
 
 	Promise.all([p1,p2,p3,p4,p5]).then((values) =>{
-		console.log(values);
 		
 		new Vue({
 			el: '#app-hackathons',
@@ -250,10 +249,10 @@ function fillAbout(data) {
 	content += '<ul class="social-icons">';
 	
 	for(i=5; i < data.length; i++){
-		if(data[i] != '' || data[i] != undefined || data[i] != null){
+		if(data[i] != '' && data[i] != undefined && data[i] != null){
 			var li = '';
 			li = '<li>';
-			li += '<a href="'+socialIcons[i-5][1]+data[i]+'" class="fa fa-'+socialIcons[i-5][0]+'" />';
+			li += '<a href="'+socialIcons[i-5][1]+data[i]+'" class="fab fa-'+socialIcons[i-5][0]+'" />';
 			li += '</li>';
 			content += li;
 		}
@@ -299,8 +298,14 @@ function fillAboutSettings(data) {
 			content += '<option value="'+data[4]+'">'+data[4]+'</option><option value="2018">2018</option><option value="2019">2019</option><option value="2020">2020</option><option value="2021">2021</option><option value="2022">2022</option><option value="2023">2023</option></select>';
 			
 			content += '<div>';
-			for(i = 0; i < socialIcons.length; i++){
-				content += '<label for="'+socialIcons[i][0]+'">'+socialIcons[i][0]+': </label><input name="'+socialIcons[i][0]+'" type="text" />';
+			for(i=5; i < data.length; i++){
+				if(data[i] != '' && data[i] != undefined && data[i] != null){
+					var li = '';
+					li = '<li>';
+					li += '<a href="'+socialIcons[i-5][1]+data[i]+'" class="fab fa-'+socialIcons[i-5][0]+'" />';
+					li += '</li>';
+					content += li;
+				}
 			}
 			content += '</div>';
 

@@ -16,16 +16,6 @@ var storage = new GoogleCloudStorage({
 });
 var myBucket = storage.bucket(process.env.GOOGLE_CLOUD_BUCKET_NAME);
 */
-const mailgunTransport = require('nodemailer-mailgun-transport')
-// Configure transport options
-const mailgunOptions = {
-  auth: {
-    api_key: process.env.MAILGUN_ACTIVE_API_KEY,
-    domain: process.env.MAILGUN_DOMAIN,
-  }
-}
-
-
 
 //---------HOME----------------
 exports.postIndex = (req, res, next) => {
@@ -66,21 +56,13 @@ exports.postIndex = (req, res, next) => {
 			});
 			return res.redirect('/signup');
 		}
-		var transporter = nodemailer.createTransport({
-			debug: false,
-		    requireTLS: true,
-		    host: 'smtp.gmail.com',
-			port: 465,
-			secure: true,
-			auth: {
-				
-			},
-		    tls: {
-		        ciphers:'SSLv3',
-		        rejectUnauthorized: false
-		    }
-		  
-		});
+		var smtpTransport = nodemailer.createTransport({
+	        service: "gmail",
+	        auth: {
+	            user: process.env.GMAIL_LOGIN,
+	            pass: process.env.GMAIL_LOGIN_PW
+	        }
+	    });
 
 		var mailOptions = {
 		  from: 'jennyxu8448@gmail.com',
@@ -89,13 +71,12 @@ exports.postIndex = (req, res, next) => {
 		  text: '<p>Thanks for registering with Hackermatcher!</p><p>Please click this link to confirm your email:<a>'+confirmurl+'</a></p>'
 		};
 
-		transporter.sendMail(mailOptions, function(error, info){
-		  if (error) {
-		    console.log("\x1b[31m",error);
-		  } else {
-		    console.log("\x1b[32m", 'Email sent: ' + info);
-		  }
-		});
+		smtpTransport.sendMail(mailOptions, function(error, response){
+	        if(error){
+	            console.log(error);
+	        }
+	        console.log('mail sent success!', response);
+	    });
 
 		user.save((err) => {
 			if (err) {
@@ -400,6 +381,10 @@ exports.postSignup = async (req, res, next) => {
 }
 
 
+exports.testPUG = (req,res) => {
+	res.render('account/test');
+};
+
 
 //---------dashboard--------------
 /**
@@ -462,10 +447,60 @@ exports.postProfile = (req, res, next) => {
 	var technologies = req.body.techContent.split(',');
 	var interests = req.body.interestsContent.split(',');
 	var hackathons = req.body.hackathonsContent.split(',');
-	console.log(languages);
-	console.log(technologies);
-	console.log(hackathons);
-	
+
+	//TODO: variable size processing?
+	var pLan = [];
+	var pTech = [];
+	var pInt = [];
+	var pHack = [];
+	var pField = [];
+	for(i = 0; i < languages.length; i += 2){
+		var arr = [];
+		arr.push(languages[i])
+		arr.push(languages[i+1]);
+		if(languages[i] === languages[i+2]){
+			i += 2;
+		}
+		pLan.push(arr);
+	}
+	for(i = 0; i < technologies.length; i += 2){
+		var arr = [];
+		arr.push(technologies[i])
+		arr.push(technologies[i+1]);
+		if(technologies[i] === technologies[i+2]){
+			i += 2;
+		}
+		pTech.push(arr);
+	}
+	for(i = 0; i < interests.length; i += 2){
+		var arr = [];
+		arr.push(interests[i])
+		arr.push(interests[i+1]);
+		if(interests[i] === interests[i+2]){
+			i += 2;
+		}
+		pInt.push(arr);
+	}
+	for(i = 0; i < fields.length; i += 2){
+		var arr = [];
+		arr.push(fields[i])
+		arr.push(fields[i+1]);
+		if(fields[i] === fields[i+2]){
+			i += 2;
+		}
+		pField.push(arr);
+	}
+	for(i = 0; i < hackathons.length; i += 2){
+		var arr = [];
+		arr.push(hackathons[i])
+		arr.push(hackathons[i+1]);
+		if(hackathons[i] === hackathons[i+2]){
+			i += 2;
+		}
+		pHack.push(arr);
+	}
+
+
 	User.findById(req.user.id, (err, user) => {
 		if (err) {
 			return next(err);
@@ -479,13 +514,14 @@ exports.postProfile = (req, res, next) => {
 		user.phone = phone;
 		user.instagram = insta;
 		user.website = website;
-		/*
-		user.preferences.fields = fields;
-		user.preferences.languages = languages;
-		user.preferences.technologies = technologies;
-		user.preferences.interests = interests;
-		user.hackathons = hackathons;
-*/
+		
+		user.preferences.fields = pField;
+		user.preferences.languages = pLan;
+		user.preferences.technologies = pTech;
+		user.preferences.interests = pInt;
+		user.hackathons = pHack;
+
+
 		user.save((err) => {
 			if (err) {
 				return next(err);

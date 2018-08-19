@@ -127,6 +127,7 @@ const fs = require('fs');
  */
 app.get('/signup', userController.getSignup);
 app.post('/signup', upload.single('myFile'), userController.postSignup);
+
 //TODO: put upload routes before csrf
 app.use((req, res, next) => {
   if (req.path === '/api/upload') {
@@ -138,6 +139,8 @@ app.use((req, res, next) => {
     lusca.csrf()(req, res, next);
   }
 });
+
+
 
 /**
  * Landing
@@ -165,6 +168,9 @@ app.get('/search', homeController.postSearch);
   Navbar
  */
 app.get('/logout', userController.logout);
+
+app.get('/pugtest', userController.testPUG);
+
 app.get('/users/:id', userController.getProfile);
 app.get('/account', userController.getAccount);
 //app.get('/home', homeController.getHome);

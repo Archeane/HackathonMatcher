@@ -155,7 +155,7 @@ exports.testInit = (req,res,next) =>{
 
 		const Hackathon = require('../models/Hackathon');
 		for(i = 0; i < 9; i++){
-			var uni = unis[Math.floor(30+Math.random()*50)].institution
+			var uni = unis[Math.floor(100+Math.random()*50)].institution
 			var name = 'hack'+uni;
 			var email = chance.email();
 			var phone = chance.phone();
@@ -190,7 +190,7 @@ exports.testInit = (req,res,next) =>{
 
 		var collection = db.collection('hackathons');
 		collection.find().forEach(function(doc) {
-			var rand = Math.floor(100+Math.random()*200);
+			var rand = Math.floor(10+Math.random()*20);
 			db.collection('users').aggregate([ { $sample: { size: rand } } ], function(err, data){
 				if(err) throw err;
 				var emails = [];
@@ -231,7 +231,6 @@ exports.getHackathonList = (req,res, next) => {
 exports.getHackathonById = (req, res, next) => {
 	MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {
 		if (err) throw err;
-		console.log(req.params.id);
   		db.collection('hackathons').findOne({"urlId": req.params.id}, (err, result) =>{
   			if(err) throw err;
 
@@ -241,84 +240,6 @@ exports.getHackathonById = (req, res, next) => {
 				var resultBson = result;
 				//var resultJson = JSON.parse(convert.schema2json(result)); //json format of all hackers attneding the hackathon
 				var resultJson = JSON.parse(convert.schema2json(result));
-				
-				//If user matches is empty
-				//TODO: replace test user with logged in user
-				/*
-				var user = JSON.stringify({
-					"_id":"5b5a01fce094f20594668460",
-				    "preferences" : {
-				        "interests" : [ 
-				            [ 
-				                "Computer Vision", 
-				                1
-				            ], 
-				            [ 
-				                "Graphics", 
-				                6
-				            ]
-				        ],
-				        "languages" : [ 
-				            [ 
-				                "mysql", 
-				                2
-				            ], 
-				            [ 
-				                "C++", 
-				                5
-				            ],
-				            [
-				            	"PHP",
-				            	3
-				            ]
-				        ],
-				        "fields" : [ 
-				            [ 
-				                "Scinece", 
-				                9
-				            ], 
-				            [ 
-				                "Finance", 
-				                7
-				            ]
-				        ],
-				        "technologies" : [ 
-				            [ 
-				                "React Native", 
-				                7
-				            ], 
-				            [ 
-				                "Firebase", 
-				                4
-				            ], 
-				            [ 
-				                "Ruby-on-rails", 
-				                3
-				            ]
-				        ],
-				        "hobbies" : []
-				    },
-				    "careScores" : {
-				        "interests" : 3,
-				        "technologies" : 1,
-				        "languages" : 9,
-				        "fields" : 8
-				    },
-				    "tokens" : [],
-				    "hackathons" : [],
-				    "name" : "Eva Desak",
-				    "id" : "340JYLom9QrSHed96jRUxKGI941BuGai",
-				    "index" : 1,
-				    "email" : "eva@gmail.com",
-				    "password" : "1234",
-				    "emailSecretToken" : "secretToken",
-				    "emailActive" : true,
-				    "school" : "AVTEC-Alaska's Institute of Technology",
-				    "major" : "Accounting",
-				    "graduationYear" : "2022",
-				    "educationLevel" : "graduate"
-				});
-				*/
 				
 				var allHackathonHackers = resultJson['hackers'];
 				/* separate hackaton hackers in to chunks of data to be sent
@@ -343,7 +264,7 @@ exports.getHackathonById = (req, res, next) => {
 
 				process.stdout.on('end', function(){
 					var arr = eval("["+processedData+"]")[0];
-					//console.log(arr);
+					
 					var hackathonMatches = [result['urlId']];
 					hackathonMatches.push(arr);
 					//TODO: instead of pushing, update existing hackathon matches if already exist in user matches
@@ -354,6 +275,7 @@ exports.getHackathonById = (req, res, next) => {
 							}
 						}
 					);
+					//console.log(arr);
 					var topten = arr.slice(0,10);
 					console.log(topten);
 					var toptenHackers = [];
@@ -401,81 +323,6 @@ exports.visual = (req, res, next) =>{
 	MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {
 		if (err) throw err;
 
-		//TODO: replace with logged in user info
-		/*var user = JSON.stringify({
-						"_id":"5b5a01fce094f20594668460",
-					    "preferences" : {
-					        "interests" : [ 
-					            [ 
-					                "Computer Vision", 
-					                1
-					            ], 
-					            [ 
-					                "Graphics", 
-					                6
-					            ]
-					        ],
-					        "languages" : [ 
-					            [ 
-					                "mysql", 
-					                2
-					            ], 
-					            [ 
-					                "C++", 
-					                5
-					            ],
-					            [
-					            	"PHP",
-					            	3
-					            ]
-					        ],
-					        "fields" : [ 
-					            [ 
-					                "Scinece", 
-					                9
-					            ], 
-					            [ 
-					                "Finance", 
-					                7
-					            ]
-					        ],
-					        "technologies" : [ 
-					            [ 
-					                "React Native", 
-					                7
-					            ], 
-					            [ 
-					                "Firebase", 
-					                4
-					            ], 
-					            [ 
-					                "Ruby-on-rails", 
-					                3
-					            ]
-					        ],
-					        "hobbies" : []
-					    },
-					    "careScores" : {
-					        "interests" : 3,
-					        "technologies" : 1,
-					        "languages" : 9,
-					        "fields" : 8
-					    },
-					    "tokens" : [],
-					    "hackathons" : [],
-					    "name" : "Eva Desak",
-					    "id" : "340JYLom9QrSHed96jRUxKGI941BuGai",
-					    "index" : 1,
-					    "email" : "eva@gmail.com",
-					    "password" : "1234",
-					    "emailSecretToken" : "secretToken",
-					    "emailActive" : true,
-					    "school" : "AVTEC-Alaska's Institute of Technology",
-					    "major" : "Accounting",
-					    "graduationYear" : "2022",
-					    "educationLevel" : "graduate"
-					});
-		*/
 		var user = JSON.stringify(req.user);
 		var parsedUser = JSON.parse(user);
 		var hackathonUrlId = req.params.id;
@@ -606,6 +453,5 @@ exports.updateVisual = (req,res,next) => {
 	res.write('received');
 	res.end();
 };
-
 
 

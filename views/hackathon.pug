@@ -4,7 +4,6 @@ block append head
 	link(rel='stylesheet' href="/css/hackathon.css")
 
 block content 
-
 	.hackathon
 		header#mu-hero
 			.mu-hero-overlay
@@ -15,6 +14,9 @@ block content
 								img.mu-logo-img
 								a.mu-logo(href='#') 
 							.mu-hero-featured-content
+
+			
+
 		.bg-light.text-dark
 			.container
 				.about.center
@@ -26,12 +28,17 @@ block content
 		
 		.bg-light.text-dark
 			.container
-				.row
-					a(href="" id="visLink") View All in Visual
 				.hackers.center
 					h2 Attending Hackers
-					.row.attending-hackers
-						
+					.row
+						.col-md-6
+						button.btn-primary
+							a(href="" id="visLink") View All
+					.attending-hackers
+					
+							
+
+
 	script.
 		var hackathon = !{JSON.stringify(foundHackathon)};
 		var matches = !{JSON.stringify(data)};

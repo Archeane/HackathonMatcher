@@ -2,6 +2,11 @@ a{
 	text-decoration: none;
 }
 
+.contain {
+	
+}
+
+
 .navbar{
 	position: absolute;
 	height:100px !important;
@@ -116,11 +121,7 @@ footer{
 	background: #fff;
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
     opacity: 0.9;
-    margin-bottom: -10px;
-}
-
-footer .container{
-	padding-top:10px;
+    margin-bottom: 0 !important;
 }
 
 

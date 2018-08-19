@@ -12,7 +12,6 @@ db = client['test']
 currentHackathon = sys.argv[1]
 currentHacker = json.loads(sys.argv[2])
 #print(currentHacker)
-#print(currentHacker['email'])
 #k = json.load(currentHacker)
 #print(currentHacker)
 #print('printing from python!!', currentHacker)
@@ -51,7 +50,7 @@ def calculateInterestScore(hacker, carescore):
     newInterestArr = []
     scoresum = 0;
     for interest in interestsArr:
-        scoresum = scoresum + interest[1]
+        scoresum = scoresum + float(interest[1])
 
     multipler = 0
     caremultipler = 0
@@ -64,7 +63,7 @@ def calculateInterestScore(hacker, carescore):
     for interest in interestsArr:
         score = []
         score.append(interest[0])
-        score.append(round(interest[1]*multipler*caremultipler,2))
+        score.append(round(float(interest[1])*multipler*caremultipler,2))
         newInterestArr.append(score)
 
     return newInterestArr
@@ -79,7 +78,7 @@ def calculateLanguageScore(hacker, carescore):
 
     scoresum = 0;
     for language in languagesArr:
-        scoresum = scoresum + language[1]
+        scoresum = scoresum + float(language[1])
 
     multipler = 0
     caremultipler = 0
@@ -92,7 +91,7 @@ def calculateLanguageScore(hacker, carescore):
     for language in languagesArr:
         score = []
         score.append(language[0])
-        score.append(round(language[1] * multipler * caremultipler, 2))
+        score.append(round(float(language[1]) * multipler * caremultipler, 2))
         newLanguagesArr.append(score)
 
     return newLanguagesArr
@@ -105,7 +104,7 @@ def calculateTechScore(hacker, carescore):
     newInterestArr = []
     scoresum = 0;
     for interest in interestsArr:
-        scoresum = scoresum + interest[1]
+        scoresum = scoresum + float(interest[1])
 
     multipler = 0
     caremultipler = 0
@@ -118,7 +117,7 @@ def calculateTechScore(hacker, carescore):
     for interest in interestsArr:
         score = []
         score.append(interest[0])
-        score.append(round(interest[1]*multipler*caremultipler,2))
+        score.append(round(float(interest[1])*multipler*caremultipler,2))
         newInterestArr.append(score)
 
     return newInterestArr
@@ -131,7 +130,7 @@ def calculateFieldScore(hacker, carescore):
     newInterestArr = []
     scoresum = 0;
     for interest in interestsArr:
-        scoresum = scoresum + interest[1]
+        scoresum = scoresum + float(interest[1])
 
     multipler = 0
     caremultipler = 0
@@ -144,7 +143,7 @@ def calculateFieldScore(hacker, carescore):
     for interest in interestsArr:
         score = []
         score.append(interest[0])
-        score.append(round(interest[1]*multipler*caremultipler,2))
+        score.append(round(float(interest[1])*multipler*caremultipler,2))
         newInterestArr.append(score)
 
     return newInterestArr
@@ -221,7 +220,7 @@ def hackathonsimiliarscore(currentHacker, allHackers, carescores):
     resetuser(currentHacker, carescores['interests'], carescores['languages'], carescores['technologies'], carescores['fields'])
     hackathonsimiliarscores = []
     for c,hacker in enumerate(allHackers):
-        if hacker != None and hacker['email'] != 'jennyxu1029@gmail.com':
+        if hacker != None:
             resetuser(hacker, carescores['interests'], carescores['languages'], carescores['technologies'], carescores['fields'])
             score = calculateSimiliarScore(currentHacker, hacker, carescores['interests'], carescores['languages'], carescores['technologies'], carescores['fields'])
             if score != 0:

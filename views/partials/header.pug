@@ -64,7 +64,6 @@
               a(href='/logout') Logout
 
 script.
-  console.log('in header script');
   var movies = new Bloodhound({
       datumTokenizer: function (datum) {
           return Bloodhound.tokenizers.whitespace(datum.value);
@@ -73,11 +72,12 @@ script.
       remote: {
           url: '/search?keyword=%QUERY&searchtype=home',
           filter: function (movies) {
-              console.log(movies);
-              return $.map(movies, function (movie) {
-                  return {
-                      value: movie.name
-                  };
+              //Handle user & hackathon type search
+              return $.map(movies[0], function (movie) { 
+                  return{
+                    value: '<a style="text-decoration: none;" href="/users/'+movie.urlId+'"><img src="'+movie.profileimg+'" /><span>    '+movie.firstname+' '+movie.lastname+'</span></a>'
+
+                  }
               });
           }
       }
@@ -89,7 +89,17 @@ script.
   // Instantiate the Typeahead UI
   $('.typeahead').typeahead(null, {
       displayKey: 'value',
-      source: movies.ttAdapter()
+      source: movies.ttAdapter(),
+      minLength: 1,
+      order: "asc",
+      dynamic: true,
+      delay: 500,
+      backdrop: {
+          "background-color": "#fff"
+      },
+      empty: "no result for {{query}}",
+    
+    debug: true
   });
 
 
