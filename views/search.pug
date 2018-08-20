@@ -5,89 +5,128 @@ block append head
 	script(src="/js/search.js")
 
 block content
-	.pull-left
-		.collectionfilters
-			h3
-				img#filter-icon(src='//cdn.shopify.com/s/files/1/1338/0845/t/16/assets/filter.png?17311055686262584516')
-				|  Sort
-			.filtergroup(data-title='product-type', group='0')
-				h4 Preference
-				.filteroption(group='0', filter='ultra-matte-lip') Interests
-				.filteroption(group='0', filter='ultra-satin-lip') Languages
-				.filteroption(group='0', filter='ultra-blotted-lip') Technologies
-				.filteroption(group='0', filter='ultra-metallic-lip') Fields
-			.filtergroup(data-title='finish', group='1')
-				h4 Finish
-				.filteroption(group='1', filter='sheer-matte') sheer matte
-				.filteroption(group='1', filter='matte') matte
-				.filteroption(group='1', filter='satin') satin
-			.filtergroup(data-title='shade', group='2')
-				h4 Shade
-				.filteroption(group='2', filter='pinks') pinks
-				.filteroption(group='2', filter='reds') reds
-				.filteroption(group='2', filter='oranges-corals') oranges corals
-				.filteroption(group='2', filter='purples') purples
-				.filteroption(group='2', filter='darks') darks
-				.filteroption(group='2', filter='nudes') nudes
-			.filtergroup(data-title='rating', group='3')
-				h4 Rating
-				.filteroption(group='3', filter='5-stars') 5 stars
-				.filteroption(group='3', filter='4-stars') 4 stars
-				.filteroption(group='3', filter='3-stars') 3 stars
-				.filteroption(group='3', filter='2-stars') 2 stars
-				.filteroption(group='3', filter='1-star') 1 star
-	.pull-left.searchcontent
-		.row.profile-container
-			.pfpcontainer.pull-left
-				img(src='https://upload.wikimedia.org/wikipedia/en/2/2f/Profile_image_Nadia_Lim_chef_2014.jpg')
-				.social-icons.center
-					i.fa.fa-facebook-square.fa-lg
-					i.fa.fa-linkedin-square.fa-lg
-					i.fa.fa-github-square.fa-lg
-					i.fa.fa-user-circle.fa-lg
-			.profile-details
-				h3.normal
-					a.bold(href='/') Jenny Xu  
-					span.bold 55
-					|  projects | Stony Brook University, Computer Science
-				.row(style='padding-left: 2em;')
-					h6.bold Interests
-					a.badge.badge-info(href='#') Node.js
-					a.badge.badge-info(href='#') Node.js
-				.row(style='padding-left: 2em;')
-					h6.bold Languages
-					a.badge.badge-dark(href='#') Node.js
-				.row(style='padding-left: 2em;')
-					h6.bold Technologies
-					a.badge.badge-light(href='#') Node.js
-				.row(style='padding-left: 2em;')
-					h6.bold Fields
-					a.badge.badge-primary(href='#') Node.js
-		.row.profile-container
-			.pfpcontainer.pull-left
-				img(src='https://upload.wikimedia.org/wikipedia/en/2/2f/Profile_image_Nadia_Lim_chef_2014.jpg')
-				.social-icons.center
-					i.fa.fa-facebook-square.fa-lg
-					i.fa.fa-linkedin-square.fa-lg
-					i.fa.fa-github-square.fa-lg
-					i.fa.fa-user-circle.fa-lg
-			.profile-details
-				h3.normal
-					a.bold(href='/') Jenny Xu  
-					span.bold 55
-					|  projects | Stony Brook University, Computer Science
-				.row(style='padding-left: 2em;')
-					h6.bold Interests
-					a.badge.badge-info(href='#') Node.js
-				.row(style='padding-left: 2em;')
-					h6.bold Languages
-					a.badge.badge-dark(href='#') Node.js
-				.row(style='padding-left: 2em;')
-					h6.bold Technologies
-					a.badge.badge-light(href='#') Node.js
-				.row(style='padding-left: 2em;')
-					h6.bold Fields
-					a.badge.badge-primary(href='#') Node.js
+	if seeAll
+		.pull-left
+			.collectionfilters
+				h3
+					img#filter-icon(src='//cdn.shopify.com/s/files/1/1338/0845/t/16/assets/filter.png?17311055686262584516')
+					|  Sort
+				.filtergroup(data-title='product-type', group='0')
+					h4 Preference
+					.filteroption(group='0', filter='ultra-matte-lip') Interests
+					.filteroption(group='0', filter='ultra-satin-lip') Languages
+					.filteroption(group='0', filter='ultra-blotted-lip') Technologies
+					.filteroption(group='0', filter='ultra-metallic-lip') Fields
+				.filtergroup(data-title='finish', group='1')
+					h4 Finish
+					.filteroption(group='1', filter='sheer-matte') sheer matte
+					.filteroption(group='1', filter='matte') matte
+					.filteroption(group='1', filter='satin') satin
+				.filtergroup(data-title='shade', group='2')
+					h4 Shade
+					.filteroption(group='2', filter='pinks') pinks
+					.filteroption(group='2', filter='reds') reds
+					.filteroption(group='2', filter='oranges-corals') oranges corals
+					.filteroption(group='2', filter='purples') purples
+					.filteroption(group='2', filter='darks') darks
+					.filteroption(group='2', filter='nudes') nudes
+				.filtergroup(data-title='rating', group='3')
+					h4 Rating
+					.filteroption(group='3', filter='5-stars') 5 stars
+					.filteroption(group='3', filter='4-stars') 4 stars
+					.filteroption(group='3', filter='3-stars') 3 stars
+					.filteroption(group='3', filter='2-stars') 2 stars
+					.filteroption(group='3', filter='1-star') 1 star
+		.pull-left.searchcontent
+			.row.profile-container
+				.pfpcontainer.pull-left
+					img(src='https://upload.wikimedia.org/wikipedia/en/2/2f/Profile_image_Nadia_Lim_chef_2014.jpg')
+					.social-icons.center
+						i.fa.fa-facebook-square.fa-lg
+						i.fa.fa-linkedin-square.fa-lg
+						i.fa.fa-github-square.fa-lg
+						i.fa.fa-user-circle.fa-lg
+				.profile-details
+					h3.normal
+						a.bold(href='/') Jenny Xu  
+						span.bold 55
+						|  projects | Stony Brook University, Computer Science
+					.row(style='padding-left: 2em;')
+						h6.bold Interests
+						a.badge.badge-info(href='#') Node.js
+						a.badge.badge-info(href='#') Node.js
+					.row(style='padding-left: 2em;')
+						h6.bold Languages
+						a.badge.badge-dark(href='#') Node.js
+					.row(style='padding-left: 2em;')
+						h6.bold Technologies
+						a.badge.badge-light(href='#') Node.js
+					.row(style='padding-left: 2em;')
+						h6.bold Fields
+						a.badge.badge-primary(href='#') Node.js
+			.row.profile-container
+				.pfpcontainer.pull-left
+					img(src='https://upload.wikimedia.org/wikipedia/en/2/2f/Profile_image_Nadia_Lim_chef_2014.jpg')
+					.social-icons.center
+						i.fa.fa-facebook-square.fa-lg
+						i.fa.fa-linkedin-square.fa-lg
+						i.fa.fa-github-square.fa-lg
+						i.fa.fa-user-circle.fa-lg
+				.profile-details
+					h3.normal
+						a.bold(href='/') Jenny Xu  
+						span.bold 55
+						|  projects | Stony Brook University, Computer Science
+					.row(style='padding-left: 2em;')
+						h6.bold Interests
+						a.badge.badge-info(href='#') Node.js
+					.row(style='padding-left: 2em;')
+						h6.bold Languages
+						a.badge.badge-dark(href='#') Node.js
+					.row(style='padding-left: 2em;')
+						h6.bold Technologies
+						a.badge.badge-light(href='#') Node.js
+					.row(style='padding-left: 2em;')
+						h6.bold Fields
+						a.badge.badge-primary(href='#') Node.js
+
+	else
+		#search-results.container
+			h1.bold 
+				| Search Results
+			.row
+				
+				.col-md-5
+					h2(style="padding-bottom:30px;") Hackers
+					.content.row(v-for="(result,index) in hackers")
+						.col-md-5.center
+							img(v-bind:src="result.profileimg")
+						.col-md-7
+							ul(style="list-style-type:none;")
+								li  
+								li <a v-bind:href="'users/'+result.urlId" > <b>{{result.firstname}} {{result.lastname}}</b></a> 
+								li {{result.major}}
+								li {{result.school}}
+								li Class of {{result.graduationYear}}
+				.col-md-1
+				.col-md-6
+					h2(style="padding-bottom:30px") Hackathons
+					.content.row(v-for="(hackathon,index) in hackathons" style="padding:10px; border-bottom: dotted 2px dimgrey; ")
+						.col-md-5
+							img(v-bind:src="hackathon.imageurl")
+						.col-md-7
+							ul(style="list-style-type:none;")
+								li <a v-bind:href="'hackathons/'+hackathon.urlId" > <b>{{hackathon.name}}</b></a>
+								li {{hackathon.date}} 
+								li {{hackathon.city}}, {{hackathon.state}}
+					
+
+								
+			
+			
+					
+
+			
 	script.
 		var results = !{searchResults};
 		

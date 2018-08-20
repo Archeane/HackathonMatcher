@@ -1,0 +1,12 @@
+extends layout
+
+block append head
+	if #{redirectURL}
+		<meta http-equiv="refresh" content="3;url=http://localhost:8080"+#{redirectURL} />
+	else
+		<meta http-equiv="refresh" content="3;url=http://localhost:8080" />
+
+block content
+	.container(style="padding-top:100px;")
+		h3 #{pageTitle}
+		h6 #{message}

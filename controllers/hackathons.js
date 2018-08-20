@@ -264,44 +264,49 @@ exports.getHackathonById = (req, res, next) => {
 
 				process.stdout.on('end', function(){
 					var arr = eval("["+processedData+"]")[0];
-					
-					var hackathonMatches = [result['urlId']];
-					hackathonMatches.push(arr);
-					//TODO: instead of pushing, update existing hackathon matches if already exist in user matches
-					db.collection("users").update({"urlId":req.user.urlId},
-						{
-							$set: {
-								"matches":hackathonMatches
-							}
-						}
-					);
-					//console.log(arr);
-					var topten = arr.slice(0,10);
-					console.log(topten);
-					var toptenHackers = [];
-					var counter = 0;
-					new Promise((resolve, reject) => {
-						topten.forEach(function(item){
-							//console.log(item);
-							db.collection('users').findOne({'urlId':item[0]}, function(err,user){
-								if(err) throw err;
-								toptenHackers.push(user);
-								counter++;
-								if(counter == topten.length-1){
-									resolve(toptenHackers);
-								}
-							});	
-						});
-					}).then((tempdata) =>{
-						//console.log(tempdata);
-						res.render('hackathon', {
-							title: '', foundHackathon: result, data: tempdata, css:'hackathon.css', js:'hackathon.js'
-						});
-					});
+					if(arr != null && arr.length > 0 && arr != undefined && arr != '' && arr != []){
 
-						//process.kill('SIGHUP');
-				
-					
+						var hackathonMatches = [result['urlId']];
+						hackathonMatches.push(arr);
+						//TODO: instead of pushing, update existing hackathon matches if already exist in user matches
+						db.collection("users").update({"urlId":req.user.urlId},
+							{
+								$set: {
+									"matches":hackathonMatches
+								}
+							}
+						);
+						//console.log(arr);
+						var topten = arr.slice(0,10);
+						console.log(topten);
+						var toptenHackers = [];
+						var counter = 0;
+						new Promise((resolve, reject) => {
+							topten.forEach(function(item){
+								//console.log(item);
+								db.collection('users').findOne({'urlId':item[0]}, function(err,user){
+									if(err) throw err;
+									toptenHackers.push(user);
+									counter++;
+									if(counter == topten.length-1){
+										resolve(toptenHackers);
+									}
+								});	
+							});
+						}).then((tempdata) =>{
+							//console.log(tempdata);
+							res.render('hackathon', {
+								title: '', foundHackathon: result, containsHackers: true, data: tempdata
+							});
+						});
+					}else{
+						console.log('arr is empty');
+						var temp = [];
+						res.render('hackathon', {
+							title: '', foundHackathon: result, containsHackers: false, data: false
+						});
+					}
+
 				});
 
   			}
@@ -320,6 +325,7 @@ function getMinifiedUsers(){
 
 
 exports.visual = (req, res, next) =>{
+	console.log('loading visual');
 	MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {
 		if (err) throw err;
 
@@ -328,10 +334,11 @@ exports.visual = (req, res, next) =>{
 		var hackathonUrlId = req.params.id;
 		var matchedHackathon = parsedUser.matches[0];
 		
+		console.log(matchedHackathon);
 		//TODO: change this if urlID format is changed
 		//if user already containes matched hackers for params hackathon
-		if(matchedHackathon === hackathonUrlId){
-			var matches = parsedUser.matches[1];
+		if(matchedHackathon === hackathonUrlId && parsedUser.matches[1] != null && parsedUser.matches[1] != undefined){
+			var matches = parsedUser.matches[1];	//Gets all the users of hackatonUrlId
 			var minUsers = [];
 			new Promise((resolve, reject) => {
 				matches.forEach(function(hacker){
@@ -363,95 +370,80 @@ exports.visual = (req, res, next) =>{
 				throw err;
 			});
 		}else{	//do processing first
+			db.collection('hackathons').findOne({"urlId": req.params.id}, (err, result) =>{
+	  			if(err) throw err;
 
-		}
-/*
-		db.collection('users').findOne({"email": "eva@gmail.com"}, function(err, data){
-			if(data.matches.length == 0){
-				var process = spawn('python', ["./algorithmn/process.py", resultJson, user]);
-				process.stdout.on('data', function(data){
-					processedData = data.toString();
-				});
-
-				process.stdout.on('end', function(){
-					var arr = eval("["+processedData+"]")[0];
-					db.collection("users").update({"email":"eva@gmail.com"},
-						{
-							$set: {
-								"matches":arr
-							}
+	  			if(result == null){
+	  				res.send("404 NOT FOUND");
+	  			}else{
+					var resultJson = JSON.parse(convert.schema2json(result));
+					var allHackathonHackers = resultJson['hackers'];
+					
+					var process = spawn('python', ["./algorithmn/process.py", allHackathonHackers, JSON.stringify(req.user)]);
+					
+					process.stdout.on('data', function(data){
+						processedData = data.toString();
+						console.log(processedData);
+					});
+					
+					process.stdout.on('end', function(){
+						var arr = eval("["+processedData+"]")[0];
+						if(arr != null && arr.length > 0 && arr != undefined && arr != '' && arr != []){
+							var hackathonMatches = [hackathonUrlId];
+							hackathonMatches.push(arr);
+							//TODO: instead of pushing, update existing hackathon matches if already exist in user matches
+							db.collection("users").update({"urlId":req.user.urlId},
+								{
+									$set: {
+										"matches":hackathonMatches
+									}
+								},
+							() => {
+								new Promise((resolve, reject) => {
+									var minUsers = [];
+									arr.forEach(function(hacker){
+										db.collection('users').findOne({"urlId":hacker[0]}, function(err, data){
+											var user = JSON.stringify({
+												"_id":data._id,
+												"urlId": data.urlId,
+												"email":data.email,
+												"hackathons":data.hackathons,
+												"name": data.firstname+" "+data.lastname,
+												"profileurl": data.profileimg,
+												"school":data.school,
+												"major":data.major,
+												"graduationYear":data.graduationYear,
+												"educationLevel":data.educationLevel,
+												"score": hacker[1]
+											});
+											minUsers.push(user);
+											//TODO: not a good way to get out of async functions. Do promoise
+											if(minUsers.length == matches.length){
+												resolve(minUsers);
+											}
+										});
+									});
+								}).then(function(result){
+									res.render('visualization', {
+										title:'Visualization', matches: result, css:"visualization.css", js:"visualization.js"
+									});
+								}, function(err){
+									throw err;
+								});
+							});
+						}else{
+							res.render('message',{
+								title:'unmatched preferences', 
+								pageTitle:'No users with similiar preferences found', 
+								message:'Please add a preference.',
+								redirectURL: '/hackathons'
+							});
 						}
-					);
+					});
+				}
+			});
+		}
 
-					var minUsers = [];
-					arr.forEach(function(hacker){
-						db.collection('users').findOne({"email":arr[0]}, function(err, data){
-							var user = JSON.stringify({
-								"_id":data._id,
-								"email":data.email,
-								"hackathons":data.hackathons,
-								"name": data.name,
-								"school":data.school,
-								"major":data.major,
-								"graduationYear":data.graduationYear,
-								"educationLevel":data.educationLevel,
-								"score": arr[1]
-							});
-							minUsers.push(user);
-							if(minUsers.length == matches.length){
-								resolve(minUsers);
-							}
-						});
-					}).then(function(result){
-						res.render('visualization', {
-							title:'Visualization', matches: result, css:"visualization.css", js:"visualization.js"
-						});
-					}, function(err){
-						throw err;
-					});
-				});
-			}else{
-				var matches = data.matches;
-				var minUsers = [];
-				new Promise(function(resolve, reject){
-					matches.forEach(function(hacker){
-						db.collection('users').findOne({"email":hacker[0]}, function(err, data){
-							var user = JSON.stringify({
-								"_id":data._id,
-								"email":data.email,
-								"hackathons":data.hackathons,
-								"name": data.name,
-								"school":data.school,
-								"major":data.major,
-								"graduationYear":data.graduationYear,
-								"educationLevel":data.educationLevel,
-								"score":hacker[1]
-							});
-							minUsers.push(user);
-							if(minUsers.length == matches.length){
-								resolve(minUsers);
-							}
-						});
-					});
-				}).then(function(result){
-					res.render('visualization', {
-						title:'Visualization', matches: result, css:"visualization.css", js:"visualization.js"
-					});
-				}, function(err){
-					throw err;
-				});
-			}
-		});
-*/
 	});
-
-	
 };
-
-exports.updateVisual = (req,res,next) => {
-	console.log(req.body);
-	res.write('received');
-	res.end();
-};
-
 

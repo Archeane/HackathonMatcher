@@ -9,13 +9,13 @@ const randomBytesAsync = promisify(crypto.randomBytes);
 const fs = require('fs');
 const nodemailer = require('nodemailer');
 var GoogleCloudStorage = require('@google-cloud/storage');
-/*
+
 var storage = new GoogleCloudStorage({
   projectId: process.env.GOOGLE_CLOUD_STORAGE_PROJECT_ID,
   keyFilename: process.env.GOOGLE_CLOUD_STORAGE_KEYFILE_NAME
 });
 var myBucket = storage.bucket(process.env.GOOGLE_CLOUD_BUCKET_NAME);
-*/
+
 
 //---------HOME----------------
 exports.postIndex = (req, res, next) => {
@@ -56,6 +56,7 @@ exports.postIndex = (req, res, next) => {
 			});
 			return res.redirect('/signup');
 		}
+
 		var smtpTransport = nodemailer.createTransport({
 	        service: "gmail",
 	        auth: {
@@ -83,17 +84,17 @@ exports.postIndex = (req, res, next) => {
 				return next(err);
 			}
 			
-			res.render('account/verifyemail',{
-				title: 'Verify Email'
+			res.render('account/message',{
+				title: 'Verify Email', pageTitle: 'Please Verify Your Email', message: 'Please check your inbox for a verification email. Click <a>here</a> to resend one. '
 			});
 		});
 	});
 };
 
 exports.verifyemail = async (req, res) => {
-	console.log('in tester');
+	
 	var secretToken = req.query.token;
-	console.log(secretToken);
+
 	User.findOne({'emailSecretToken' : secretToken}, function(err, user){
 		if(err) throw err;
 		if(!user){
@@ -111,12 +112,16 @@ exports.verifyemail = async (req, res) => {
 			if(!person){
 				duplicateID = false;
 				user.urlId = userId;
-				console.log('setting userid success');
+				
 				user.save((err) => {
 					if (err) {
 						return next(err);
 					}
-					console.log('You email is verified, you may now log in');
+					
+					res.render('account/message', {
+						title:'Verification Success', message:'Verification Success. You will now be taken to a signup page.'
+					});
+					setTimeout(1500);
 					req.logIn(user, (err) => {
 						if (err) {
 							return next(err);
@@ -179,11 +184,20 @@ exports.logout = (req, res) => {
 
 //---------SIGNUP-----------
 exports.getSignup = (req, res) => {
-	res.render('account/signup',{
-		"title":"Signup"
-	});
+	if(!req.user){
+		res.render('message', {
+			title: "Invalid Login", pageTitle: "Please register your email.", message: "You are not logged in. Please login or register your email first. "
+		})
+	}else{
+		res.render('account/signup',{
+			"title":"Signup"
+		});
+	}
 }
 
+var getPublicUrl = file_name => {
+  return `https://storage.googleapis.com/${process.env.GOOGLE_CLOUD_BUCKET_NAME}/${file_name}`
+}
 /*
 exports.postPFPUpload = (req, res, next) =>{
 	var localReadStream = fs.createReadStream(req.file.path);
@@ -204,11 +218,6 @@ exports.postPFPUpload = (req, res, next) =>{
 	    });
 	  });
 };
-
-var getPublicUrl = file_name => {
-  return `https://storage.googleapis.com/${process.env.GOOGLE_CLOUD_BUCKET_NAME}/${file_name}`
-}
-
 exports.saveToS3 = (req,res,next) =>{
 	var file = req.file;
 	console.log(file);
@@ -226,7 +235,6 @@ exports.saveToS3 = (req,res,next) =>{
 	 });
 	});
 };
-
 var uploadToGCloud = async(file) => {
 	var localReadStream = fs.createReadStream(file.path);
 	const gcsname = Date.now() + file.originalname;
@@ -262,8 +270,7 @@ exports.postSignup = async (req, res, next) => {
 		user.graduationYear = req.body.graduationYear || '';
 		user.educationLevel = req.body.educationLevel || '';
 		user.numOfHackathons = req.body.numOfHackathons || 0;
-		console.log(req.body.hackYear);
-		console.log(req.body.hackathon);
+		
 		if(req.body.hackathon){
 		var hackathonArr = [];
 		for(h = 0; h < req.body.hackathon.length; h++){
@@ -337,7 +344,7 @@ exports.postSignup = async (req, res, next) => {
 		user.github = req.body.github || '';
 
 		const file = req.file;
-		if(file){
+		if(file){	//upload pfp to gcloud
 			var localReadStream = fs.createReadStream(file.path);
 			const gcsname = Date.now() + file.originalname;
 			var image = myBucket.file(gcsname);
@@ -380,12 +387,6 @@ exports.postSignup = async (req, res, next) => {
 	});
 }
 
-
-exports.testPUG = (req,res) => {
-	res.render('account/test');
-};
-
-
 //---------dashboard--------------
 /**
  * Gets user based on url query key. If id is equal to req.user, enables settings button
@@ -411,16 +412,6 @@ exports.getProfile = (req, res) => {
 			});
 		});
 	}
-	/*
-	User.findById(id, (err, user, next) => {
-		if (err) {
-			return next(err);
-		}
-		res.render('account/dashboard', {
-			title: 'Account Management', dashboardUser: user, css: 'profile.css', js: 'profile.js'
-		});
-	});
-	*/
 };
 
 /**
@@ -431,7 +422,6 @@ exports.getProfile = (req, res) => {
  * @return {[type]}        [description]
  */
 exports.postProfile = (req, res, next) => {
-	console.log(req.body);
 	var major = req.body.major;
 	var educationLevel = req.body.eduLevel;
 	var school = req.body.school;
@@ -545,9 +535,15 @@ exports.postProfile = (req, res, next) => {
  * @return {[type]}     [description]
  */
 exports.getPreferences = (req, res) => {
-	res.render('account/preferences', {
-		title: 'Preferences', dashboardUser: req.user, js:'preferences.js', css:'preferences.css'
-	});
+	if(req.user){
+		res.render('account/preferences', {
+			title: 'Preferences', dashboardUser: req.user
+		});
+	}else{
+		res.render('message', {
+			title: '404', pageTitle: 'No login user detected', message: 'Only logged in user may access preferences settings.'
+		});
+	}
 };
 
 /**
@@ -557,37 +553,79 @@ exports.getPreferences = (req, res) => {
  * @return {[type]}     [description]
  */
 exports.postPreferences = (req,res) => {
-	var interests = req.body.interests;
-	var languages = req.body.languages;
-	var technologies = req.body.technologies;
-	var fields = req.body.fields;
 	var interestScore = req.body.interestScore;
 	var languageScore =req.body.languageScore;
 	var techScore = req.body.techScore;
 	var fieldScore = req.body.fieldsScore;
 
 	console.log("\x1b[1m", req.body);
-	//var email = req.user.email;
-	var email = 'kaleigh@gmail.com';
-	User.updateOne({'email': email}, {$set: {
-		'preferences.interests': interests,
-		'preferences.languages' : languages,
-		'preferences.technologies': technologies,
-		'preferences.fields': fields,
+	var fields = req.body.fieldsContent.split(',');
+	var languages = req.body.lanContent.split(',');
+	var technologies = req.body.techContent.split(',');
+	var interests = req.body.interestsContent.split(',');
+	
+	//TODO: variable size processing?
+	var pLan = [];
+	var pTech = [];
+	var pInt = [];
+	var pField = [];
+	for(i = 0; i < languages.length; i += 2){
+		var arr = [];
+		arr.push(languages[i])
+		arr.push(languages[i+1]);
+		if(languages[i] === languages[i+2]){
+			i += 2;
+		}
+		pLan.push(arr);
+	}
+	for(i = 0; i < technologies.length; i += 2){
+		var arr = [];
+		arr.push(technologies[i])
+		arr.push(technologies[i+1]);
+		if(technologies[i] === technologies[i+2]){
+			i += 2;
+		}
+		pTech.push(arr);
+	}
+	for(i = 0; i < interests.length; i += 2){
+		var arr = [];
+		arr.push(interests[i])
+		arr.push(interests[i+1]);
+		if(interests[i] === interests[i+2]){
+			i += 2;
+		}
+		pInt.push(arr);
+	}
+	for(i = 0; i < fields.length; i += 2){
+		var arr = [];
+		arr.push(fields[i])
+		arr.push(fields[i+1]);
+		if(fields[i] === fields[i+2]){
+			i += 2;
+		}
+		pField.push(arr);
+	}
+	
+	User.updateOne({'urlId': req.user.urlId}, {$set: {
+		'preferences.interests': pInt,
+		'preferences.languages' : pLan,
+		'preferences.technologies': pTech,
+		'preferences.fields': pField,
 		'careScores.interests' : interestScore,
 		'careScores.technologies': techScore,
 		'careScores.fields':fieldScore,
 		'careScores.languages':languageScore
 	}}, function(err, user){
 		if(err) throw err;
-		console.log("\x1b[35m", user);
+		var urlId = req.params.id;
+		res.redirect('/hackathons/'+urlId+'/visual');
 	});
 };
 
 exports.getAccount = (req, res) => {
 	res.render('account/dashboard', {
-			title: 'Account Management', dashboardUser: req.user, settingsEnabled: true
-		});
+		title: 'Account Management', dashboardUser: req.user, settingsEnabled: true
+	});
 };
 
 

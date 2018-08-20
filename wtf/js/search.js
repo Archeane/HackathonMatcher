@@ -1,4 +1,26 @@
 $(document).ready(function(){
+	var hackathons = [];
+	var hackers = [];
+
+	//Sort results by hackathons and hackers
+	for(i = 0; i < results.length; i++){
+		if(results[i].firstname != undefined || results[i].firstname != null){
+			hackers.push(results[i]);
+		}else{
+			hackathons.push(results[i]);
+		}
+	}
+	console.log(hackathons);
+	console.log(hackers);
+	new Vue({
+		el: '#search-results',
+		data: {
+			hackers: hackers,
+			hackathons: hackathons
+		}
+	});
+
+
 	/*$.ajax({
 		url:'/currentuser',
 		type: 'GET',
@@ -34,6 +56,7 @@ $(document).ready(function(){
 	    }
 	});
 */
+/*
 	var url = window.location.href;
 	results.forEach(function(result){
 		var person = fillPerson(result);
@@ -43,6 +66,7 @@ $(document).ready(function(){
 			element.style["padding-left"] = "2em";
 		});
 	});
+	*/
 	//console.log(results);
 
 });

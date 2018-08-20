@@ -36,16 +36,18 @@ exports.index = (req, res) => {
 	@searchtype=result, required
 		Renders searchResults page
  */
-exports.postSearch = (req, res, next) => {
+exports.getSearch = (req, res, next) => {
 	var MongoClient = require('mongodb').MongoClient;
 	console.log(req.query);
 	var keyword = req.query.keyword;
 	var searchType = req.query.searchtype;
 	
+
 	if(keyword === undefined || searchType === undefined){
 		//TODO: handle error thrown
 		throw new URIError("URI has invalid paramaters keyword or searchtype");
 	}
+	if(keyword != ''){
 	if(req.query.type){
 		type = req.query.type;
 		if(type === 'users'){
@@ -54,12 +56,11 @@ exports.postSearch = (req, res, next) => {
 				var userPromise = new Promise((resolve, reject) => {
 					db.collection('users').find({ "name": { $regex: keyword, $options:"i m"}}).toArray(function(err, docs){
 						if(err) throw err;
-						results.push(docs);
+						results = docs;
 						resolve(results);
 					});
 				});
 				userPromise.then((results) => {
-					console.log(results);
 					if(searchType === "home"){
 						console.log("\x1b[32m", 'sending to res');
 						res.write(JSON.stringify(results));
@@ -67,7 +68,7 @@ exports.postSearch = (req, res, next) => {
 					}else if(searchType === "result"){
 						console.log("\x1b[32m", 'rendering search result');
 						res.render('search',{
-							title: 'Results', searchResults : JSON.stringify(results)
+							title: 'Results', searchResults : JSON.stringify(results), seeAll: false
 						});
 					}else{
 						throw new URIError("invalid paramter searchtype");
@@ -78,22 +79,20 @@ exports.postSearch = (req, res, next) => {
 		}else if(type === 'hackathons'){
 			MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {
 				var results = [];
-				console.log('keyword', keyword);
 				var userPromise = new Promise((resolve, reject) => {
 					db.collection('hackathons').find({ "name": { $regex: keyword, $options:"i m"}}).toArray(function(err, docs){
 						if(err) throw err;
-						results.push(docs);
+						results = docs;
 						resolve(results);
 					});
 				});
 				userPromise.then((results) => {
-					console.log(results);
 					if(searchType === "home"){
 						res.write(JSON.stringify(results));
 						res.end();
 					}else if(searchType === "result"){
 						res.render('search',{
-							title: 'Results', searchResults: JSON.stringify(results)
+							title: 'Results', searchResults: JSON.stringify(results), seeAll: false
 						});
 					}else{
 						throw new URIError("invalid paramter searchtype");
@@ -106,33 +105,57 @@ exports.postSearch = (req, res, next) => {
 		}
 	}else{
 		MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {
-			var results = [];
+			var results; 
 			var userPromise = new Promise((resolve, reject) => {
 				db.collection('users').find({ $or: [
 					{"firstname": { $regex: keyword, $options:"i m"}}, 
 					{"lastname": { $regex: keyword, $options:"i m"}}
 				]}).toArray(function(err, docs){
 					if(err) throw err;
-					results.push(docs);
+					if(results != undefined && results != '' && results != null){
+						docs.forEach((d) =>{
+							if(d != undefined && d != '' && d != []){
+								results.push(d);
+							}
+							if(d == docs[docs.length-1]){
+								resolve();
+							}
+						});
+					}else{
+						results = docs;
+						resolve();
+					}
 					resolve();
 				});
 			});
 			var hackathonPromise = new Promise((resolve, reject) => {
 				db.collection('hackathons').find({ "name": { $regex: keyword, $options:"i m"}}).toArray(function(err, docs){
 					if(err) throw err;
-					results.push(docs);
-					resolve();
+					
+					if(results != undefined && results != '' && results != null){
+						docs.forEach((d) =>{
+							if(d != undefined && d != '' && d != []){
+								results.push(d);
+							}
+							if(d == docs[docs.length-1]){
+								resolve();
+							}
+						});
+					}else{
+						results = docs;
+						resolve();
+					}
+					
 				});
 			});
 
 			Promise.all([userPromise, hackathonPromise]).then((err) =>{
 				if(searchType === "home"){
-					console.log(results);
 					res.write(JSON.stringify(results));
 					res.end();
 				}else if(searchType === "result"){
 					res.render('search',{
-						title: 'Results', searchResults : JSON.stringify(results)
+						title: 'Results', searchResults : JSON.stringify(results), seeAll: false
 					});
 				}else{
 					throw new URIError("invalid paramter searchtype");
@@ -141,13 +164,14 @@ exports.postSearch = (req, res, next) => {
 			});
 		});
 	}
+	}
 }
 
 
 /*
 	NOTE: TEST ROUTE
  */
-exports.getSearch = (req, res) => {
+exports.getTopSearch = (req, res) => {
 	console.log('in getsearch');
 	var MongoClient = require('mongodb').MongoClient;
 	console.log(req.query);

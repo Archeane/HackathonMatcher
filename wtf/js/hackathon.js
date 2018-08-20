@@ -1,14 +1,24 @@
 window.onload = function(){
 	var visulURl = window.location.toString() + '/visual';
-    document.getElementById("visLink").href = visulURl;
+	var preferenceURL = window.location.toString() + '/preferences';
+	console.log(preferenceURL);
+	if(containsHackers){
+    	document.getElementById("visLink").href = visulURl;
+	}
+    console.log(document.getElementById("prefLink"));
+    document.getElementById("prefLink").href = preferenceURL;
 }
 $(document).ready(function(){
 
 	//fillHackersVue(matches);
+	//console.log(hackathon);
 	fillHeader();
 	fillAbout();
 	fillSponsors();
-	fillHackers(matches);
+	if(containsHackers){
+		fillHackers(matches);
+	}
+	
 });
 
 function fillHeader(){

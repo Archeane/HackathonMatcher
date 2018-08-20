@@ -11,30 +11,24 @@ db = client['test']
 
 currentHackathon = sys.argv[1]
 currentHacker = json.loads(sys.argv[2])
-#print(currentHacker)
-#k = json.load(currentHacker)
-#print(currentHacker)
 #print('printing from python!!', currentHacker)
 #print(currentHackathon)
 allHackers = []
-
 '''
-hackathon = db['hackathons'].find_one({'urlId': 'hackalaska.bible.college'})
+currentHacker = db['users'].find_one({'urlId': 'jenny.xu'})
+hackathon = db['hackathons'].find_one({'urlId': 'hackmohave.community.college'})
 for email in hackathon['hackers']:
     temp = db['users'].find_one({'email':email})
     allHackers.append(temp)
-'''
+
 #print(currentHackathon)
-'''
 for email in currentHackathon['hackers']:
     temp = db['users'].find_one({'email':email})
     allHackers.append(temp)
 '''
 
-
 startIndex = 0
 for index, char in enumerate(currentHackathon):
-    #print(char)
     if char == ',':
         email = currentHackathon[startIndex:index]
         startIndex = index+1
@@ -47,6 +41,9 @@ def calculateInterestScore(hacker, carescore):
     interestsArr = hacker['preferences']['interests']
     if len(interestsArr) == 0:
         return []
+    if interestsArr[0] == None or len(interestsArr[0]) == 0 or interestsArr[0][0] == '' or interestsArr[0][1] == '':
+        return []
+
     newInterestArr = []
     scoresum = 0;
     for interest in interestsArr:
@@ -72,6 +69,8 @@ def calculateInterestScore(hacker, carescore):
 def calculateLanguageScore(hacker, carescore):
     languagesArr = hacker['preferences']['languages']
     if len(languagesArr) == 0:
+        return []
+    if languagesArr[0] == None or len(languagesArr[0]) == 0 or languagesArr[0][0] == '' or languagesArr[0][1] == '':
         return []
 
     newLanguagesArr = []
@@ -101,8 +100,10 @@ def calculateTechScore(hacker, carescore):
     interestsArr = hacker['preferences']['technologies']
     if len(interestsArr) == 0:
         return []
+    if interestsArr[0] == None or len(interestsArr[0]) == 0 or interestsArr[0][0] == '' or interestsArr[0][1] == '':
+        return []
     newInterestArr = []
-    scoresum = 0;
+    scoresum = 0
     for interest in interestsArr:
         scoresum = scoresum + float(interest[1])
 
@@ -127,6 +128,9 @@ def calculateFieldScore(hacker, carescore):
     interestsArr = hacker['preferences']['fields']
     if len(interestsArr) == 0:
         return []
+    if interestsArr[0] == None or len(interestsArr[0]) == 0 or interestsArr[0][0] == '' or interestsArr[0][1] == '':
+        return []
+
     newInterestArr = []
     scoresum = 0;
     for interest in interestsArr:
@@ -212,7 +216,6 @@ def findcommonelements(arr1, arr2):
         else:
             j += 1
     common.append(interestsum)
-    #print(common)
     return common
 
 
@@ -236,7 +239,21 @@ def hackathonsimiliarscore(currentHacker, allHackers, carescores):
 #filters = {'major': [],'graduationYear': ['2018', '2019', '2020', '2021', '2022'],'educationLevel': ['undergraduate', 'graduate'],'school':False}
 #similiarscores = hackathonsimiliarscore(allHackers[0], allHackers, allHackers[0]['careScores'])
 
-similiarscores = hackathonsimiliarscore(currentHacker, allHackers, currentHacker['careScores'])
-json.dumps(similiarscores)
-
-print(similiarscores)
+#default value for carescores
+if 'careScores' not in currentHacker:
+    temp = json.loads('{"interests" : 10, "technologies" : 10, "languages" : 10,"fields" : 10}')
+    similiarscores = hackathonsimiliarscore(currentHacker, allHackers, temp)
+    print(similiarscores)
+else:
+    if currentHacker['careScores']['interests'] == None:
+        currentHacker['careScores']['interests'] = 1
+    if currentHacker['careScores']['languages'] == None:
+        currentHacker['careScores']['languages'] = 1
+    if currentHacker['careScores']['technologies'] == None:
+        currentHacker['careScores']['technologies'] = 1
+    if currentHacker['careScores']['fields'] == None:
+        currentHacker['careScores']['fields'] = 1
+    #print(currentHacker['careScores'])
+    similiarscores = hackathonsimiliarscore(currentHacker, allHackers, currentHacker['careScores'])
+    json.dumps(similiarscores)
+    print(similiarscores)

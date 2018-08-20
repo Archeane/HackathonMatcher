@@ -160,17 +160,14 @@ app.get('/verifyemail', userController.verifyemail);
 /*
   Search
  */
-app.post('/search', homeController.getSearch);
-/*TEST ROUTE*/
-app.get('/search', homeController.postSearch);
+app.get('/search/top', homeController.getTopSearch);
+app.get('/search', homeController.getSearch);
+
 //app.get('/search/results', homeController.searchResult);
 /*
   Navbar
  */
 app.get('/logout', userController.logout);
-
-app.get('/pugtest', userController.testPUG);
-
 app.get('/users/:id', userController.getProfile);
 app.get('/account', userController.getAccount);
 //app.get('/home', homeController.getHome);
@@ -189,8 +186,8 @@ app.post('/reset/:token', userController.postReset);
  */
 app.get('/hackathons/:id/visual', hackathonController.visual);
 app.get('/hackathons', hackathonController.getHackathonList);
-app.get('/preferences', userController.getPreferences);
-app.post('/preferences', userController.postPreferences);
+app.get('/hackathons/:id/preferences', userController.getPreferences);
+app.post('/hackathons/:id/preferences', userController.postPreferences);
 
 /*============================UNUSED LINKS======================================*/
 /*

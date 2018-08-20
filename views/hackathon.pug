@@ -31,9 +31,17 @@ block content
 				.hackers.center
 					h2 Attending Hackers
 					.row
-						.col-md-6
-						button.btn-primary
-							a(href="" id="visLink") View All
+						.col-md-5
+
+						if !{containsHackers}
+							button.btn-primary
+								a(href="http://localhost:8080" id="visLink") View All
+							button.btn-primary
+								a(href="http://localhost:8080" id="prefLink") Set Preferences
+						else
+							span(style="padding:20px;")
+								| There are no hackers who matches you based on your preferneces input. You can reset your preferences settings <a href="http://localhost:8080" id="prefLink"> here</a>
+							 
 					.attending-hackers
 					
 							
@@ -41,7 +49,10 @@ block content
 
 	script.
 		var hackathon = !{JSON.stringify(foundHackathon)};
-		var matches = !{JSON.stringify(data)};
+		var containsHackers = !{containsHackers}
+		if(containsHackers){
+			var matches = !{JSON.stringify(data)}
+		}
 
 	script(src="/js/hackathon.js")
 
