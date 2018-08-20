@@ -1,4 +1,12 @@
-
+//TODO
+//ABOUT settings: 1. change uni input length  2. social media inputs are gone? 
+//LAN settings: 3. input for languages  
+//TECH, INT, FIELD settings: 4. Prevent fields that are already in user to be in modal  4.5 Number input with max & min
+//NOTE: 5. Add hobbies? Edit for Note. 
+//PFP: 6. change pfp
+//**FIX DUPLICATE ADDING
+//Backgound: change background? LOW PRIORITY
+//	
 $(window).on('load', function () {
 	$('.preloader').delay(500).fadeOut("slow"); // set duration in brackets
 });
@@ -38,7 +46,7 @@ $(function () {
 	$('#pfp').attr('src', User.profileimg);
 
 	var name = User.firstname + ' ' + User.lastname;
-	console.log(name);
+	$('#name').text(name);
 	var Userabout = [name, User.major, User.school, User.educationLevel, User.graduationYear, User.facebook, User.phone, User.instagram, User.github, User.linkedin, User.website];
 	var UserLan = User.preferences.languages;
 	var UserFamiliar = User.preferences.technologies;

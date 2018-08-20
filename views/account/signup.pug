@@ -54,7 +54,6 @@ block content
 			</select>
 			<div id="selectHackathons">
 			</div>
-			<button class = "next" />NEXT</button>
 			<input type="button" name="next" class="next action-button" value="Next" id="next1" />
 		</fieldset>
 		<fieldset id="fieldset2">
@@ -144,13 +143,6 @@ block content
 			<input type="hidden" id="user" name="user" />
 			<input type="submit" name="submit" class="submit action-button" value="Submit" />
 		</fieldset>
-
-		form(method='POST' action='/uploadpfp', enctype='multipart/form-data', class="uploadForm")
-		input(type='hidden', name='_csrf', value=_csrf)
-		.label Upload Profile Image
-		input(type="file", name="myFile", id="hello")
-		img#img-upload(height='300;', width='300;')
-		input.submit.action-button(type='submit', class="upload", name='submit', value='Submit')
 
 	script(src="/js/signup.js")
 

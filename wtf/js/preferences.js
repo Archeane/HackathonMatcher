@@ -1,3 +1,5 @@
+//TODO: handle 0 preferences choosen
+
 jQuery(document).ready(function(){
 	
 	$(document).on('click', '.add', function () {
@@ -17,6 +19,25 @@ jQuery(document).ready(function(){
 	fillTechVue(UserFamiliar);
 	fillFieldsVue(UserFields);
 	fillInterestsVue(UserInterest);
+
+	$('.submit').on('click', (event)=>{
+		event.preventDefault();
+		var interestScore = $('input[name=similiarinterersts]:checked').val(); 
+		var languagesScore = $('input[name=similiarlanguages]:checked').val(); 
+		var techScore = $('input[name=similiartechnologies]:checked').val(); 
+		var fieldsScore = $('input[name=similiarfields]:checked').val(); 
+		if(interestScore != undefined && interestScore != null && languagesScore != undefined && languagesScore != null && 
+		techScore != undefined && techScore != null && fieldsScore != undefined && fieldsScore != null){
+			$('#preferencesForm').submit();
+		}else{
+			$('#error').text('Please fill out all scores fields');
+			$('#error').show();
+			
+		}
+
+	})
+	
+
 	/*
 	createModals([['interests',['AWS', 'S3', 'Nodejs']]]);
 	//TODO: debug this function for duplicae preferences. This function runs twice for some reason

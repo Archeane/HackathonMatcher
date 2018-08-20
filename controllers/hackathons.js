@@ -1,3 +1,4 @@
+//TODO: Add a top hackers page, ranked by num of projects.
 var spawn = require("child_process").spawn;
 const { fork } = require('child_process');
 var convert = require('mongoose_schema-json');
@@ -23,32 +24,14 @@ function asyncFunction(msg,callback) {
     callback();
 }
 
-exports.search = (req, res, next) =>{
-	console.log(req.query.key);
-	MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {
-		db.collection('users').find({ "name": { $regex: req.query.key, $options:"i m"}}).toArray(function(err, docs){
-			if(err) throw err;
-			console.log(docs);
-			res.end(JSON.stringify(docs));
-		});
-		/*
-		db.collection('users').find({ "$or": [
-		    { "name": { "$regex": "/^"+req.query.key+"$/i", "$options" : "m"} }, 
-		    { "email": { "$regex": "/^"+req.query.key+"$/i", "$options" : "m"}}
-		]}, function(err, data){
-			if(err) throw err;
-			console.log(data);
-			return data;
-		});*/
-	});
-
-};
-
-
-
-
-
-
+/**
+ * Creates test users and hackathons
+ * TO be deleted after deployment
+ * @param  {[type]}   req  [description]
+ * @param  {[type]}   res  [description]
+ * @param  {Function} next [description]
+ * @return {[type]}        [description]
+ */
 exports.testInit = (req,res,next) =>{
 	MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {
 		if (err) throw err;
@@ -204,6 +187,14 @@ exports.testInit = (req,res,next) =>{
 	});
 };
 
+/**
+ * Gets the page containing all upcoming hackathons
+ * TODO: Only post hackathons that are upcoming. Put past hackathons in another db
+ * @param  {[type]}   req  [description]
+ * @param  {[type]}   res  [description]
+ * @param  {Function} next [description]
+ * @return {[type]}        [description]
+ */
 exports.getHackathonList = (req,res, next) => {
 	MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {
 		if (err) throw err;
@@ -223,6 +214,11 @@ exports.getHackathonList = (req,res, next) => {
 /**
  * Retrieves hackathon with same urlId as req.params
  * Processes users attending the hackathon
+ * TODO
+ * 1. async loop 
+ * 2. integrated getMinifiedUsers() function
+ * 3. link to db logo, link to devpost
+ * 4. integrate top hackers
  * @param  {[type]}   req  [description]
  * @param  {[type]}   res  [description]
  * @param  {Function} next [description]
@@ -234,9 +230,19 @@ exports.getHackathonById = (req, res, next) => {
   		db.collection('hackathons').findOne({"urlId": req.params.id}, (err, result) =>{
   			if(err) throw err;
 
-  			if(result == null){
+  			if(result == null){	//If hackathon is not found
   				res.send("404 NOT FOUND");
-  			}else{
+  			}else if((req.user.preferences != null && req.user.preferences != undefined && req.user.preferences != '') ||
+  					((req.user.preferences.interests != null && req.user.preferences.interests != undefined && req.user.preferences.interests != '') &&  
+  					 (req.user.preferences.languages != null && req.user.preferences.languages != undefined && req.user.preferences.languages != '') &&
+  					 (req.user.preferences.fields != null && req.user.preferences.fields != undefined && req.user.preferences.fields != '') &&
+  					 (req.user.preferences.technologies != null && req.user.preferences.technologies != undefined && req.user.preferences.technologies != ''))){
+  				console.log('preferences null');
+  				res.render('hackathon', {
+					title: '', foundHackathon: result, containsHackers: false, data: false
+				});
+ 
+  			}else{	//If hackathon is found and user preferences is not empty.
 				var resultBson = result;
 				//var resultJson = JSON.parse(convert.schema2json(result)); //json format of all hackers attneding the hackathon
 				var resultJson = JSON.parse(convert.schema2json(result));
@@ -300,8 +306,6 @@ exports.getHackathonById = (req, res, next) => {
 							});
 						});
 					}else{
-						console.log('arr is empty');
-						var temp = [];
 						res.render('hackathon', {
 							title: '', foundHackathon: result, containsHackers: false, data: false
 						});
@@ -323,7 +327,14 @@ function getMinifiedUsers(){
 
 }
 
-
+/**
+ * Displays the visualization of matching hackers. 
+ * TODO: Show most relevant hackers (based on # of hackathons) if no matching result. 
+ * @param  {[type]}   req  [description]
+ * @param  {[type]}   res  [description]
+ * @param  {Function} next [description]
+ * @return {[type]}        [description]
+ */
 exports.visual = (req, res, next) =>{
 	console.log('loading visual');
 	MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {

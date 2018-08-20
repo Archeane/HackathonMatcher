@@ -18,6 +18,17 @@ var myBucket = storage.bucket(process.env.GOOGLE_CLOUD_BUCKET_NAME);
 
 
 //---------HOME----------------
+/**
+ * Regeisters an unverified user on database. 
+ * Sends a verification email with randomly generated secret token
+ * TODO: add expiration time to the secret token.
+ *       Add resend email 
+ *       Why does sending email never work???
+ * @param  {[type]}   req  [description]
+ * @param  {[type]}   res  [description]
+ * @param  {Function} next [description]
+ * @return {[type]}        [description]
+ */
 exports.postIndex = (req, res, next) => {
 	req.assert('email', 'Email is not valid').isEmail();
 	req.assert('', 'Password must be at least 4 characters long').len(4);
@@ -29,16 +40,16 @@ exports.postIndex = (req, res, next) => {
 	if (errors) {
 		req.flash('errors', errors);
 		console.log(errors);
-		return res.redirect('/signup');
+		return res.redirect('/');
 	}
 
 	const secretToken = randomstring.generate();
 	var confirmurl = 'http://localhost:8080/verifyemail?token='+secretToken;
 	const user = new User({
-		firstname: req.body.firstname,
-		lastname:req.body.lastname,
-		name: req.body.firstname+req.body.lastname,
-		email: req.body.email,
+		firstname: req.body.firstname.replace(/\s/g, ''),
+		lastname:req.body.lastname.replace(/\s/g, ''),
+		name: req.body.firstname+req.body.lastname.replace(/\s/g, ''),
+		email: req.body.email.replace(/\s/g, ''),
 		password: req.body.password,
 		emailSecretToken: secretToken,
 		emailActive: false,
@@ -84,13 +95,21 @@ exports.postIndex = (req, res, next) => {
 				return next(err);
 			}
 			
-			res.render('account/message',{
+			res.render('message',{
 				title: 'Verify Email', pageTitle: 'Please Verify Your Email', message: 'Please check your inbox for a verification email. Click <a>here</a> to resend one. '
 			});
 		});
 	});
 };
-
+/**
+ * Matches the secret token with secret token in url. 
+ * Sets user to active if tokens match
+ * Assigns a urlID that is UNIQUE to the user <--- fix this!! make sure its 100% unique
+ * automatically logs user in and direct to signup page.
+ * @param  {[type]} req [description]
+ * @param  {[type]} res [description]
+ * @return {[type]}     [description]
+ */
 exports.verifyemail = async (req, res) => {
 	
 	var secretToken = req.query.token;
@@ -120,15 +139,16 @@ exports.verifyemail = async (req, res) => {
 					
 					res.render('account/message', {
 						title:'Verification Success', message:'Verification Success. You will now be taken to a signup page.'
+					}, () =>{
+						req.logIn(user, (err) => {
+							if (err) {
+								return next(err);
+							}
+						
+							res.redirect('/signup');
+						});
 					});
-					setTimeout(1500);
-					req.logIn(user, (err) => {
-						if (err) {
-							return next(err);
-						}
 					
-						res.render('account/signup');
-					});
 				});
 			}else{
 				count++;
@@ -141,6 +161,14 @@ exports.verifyemail = async (req, res) => {
 };
 
 //----------LOGIN--------------
+/**
+ * Checks if user passwords matches the one in database
+ * Checks if user email is verified
+ * @param  {[type]}   req  [description]
+ * @param  {[type]}   res  [description]
+ * @param  {Function} next [description]
+ * @return {[type]}        [description]
+ */
 exports.postLogin = (req, res, next) => {
 	req.assert('email', 'Email is not valid').isEmail();
 	req.assert('password', 'Password cannot be blank').notEmpty();
@@ -183,6 +211,13 @@ exports.logout = (req, res) => {
 };
 
 //---------SIGNUP-----------
+/**
+ * Get the signup page after user regesisters and verifies their email.
+ * Only accessabile to logged in users.
+ * @param  {[type]} req [description]
+ * @param  {[type]} res [description]
+ * @return {[type]}     [description]
+ */
 exports.getSignup = (req, res) => {
 	if(!req.user){
 		res.render('message', {
@@ -256,6 +291,19 @@ var uploadToGCloud = async(file) => {
 	  });
 };
 */
+
+/**
+ * updates fields in user on DB. School, major, gradYear, eduLevel are required. Optional fields
+ * include preferences, social profiles, and profile image.
+ * If profile image is in the form, the image is saved to gcloud and a link to the image is generated.
+ * The generated link is stored in DB.
+ * TODO: fix authentication for gcloud upload
+ * 		fix hackathon convert to array
+ * @param  {[type]}   req  [description]
+ * @param  {[type]}   res  [description]
+ * @param  {Function} next [description]
+ * @return {[type]}        [description]
+ */
 exports.postSignup = async (req, res, next) => {
 	console.log(req.body);
 	User.findOne({
@@ -342,7 +390,7 @@ exports.postSignup = async (req, res, next) => {
 		user.instagram = req.body.instagram || '';
 		user.linkedin = req.body.linkedin || '';
 		user.github = req.body.github || '';
-
+/*
 		const file = req.file;
 		if(file){	//upload pfp to gcloud
 			var localReadStream = fs.createReadStream(file.path);
@@ -372,15 +420,14 @@ exports.postSignup = async (req, res, next) => {
 			    });
 			  });
 		}else{
+*/
 			user.save((err) => {
 				if (err) {
 					return next(err);
 				}
-				res.render('account/dashboard', {
-					title: 'Dashboard'
-				});
+				res.redirect('/');
 			});
-		}
+//		}
 
 
 		
@@ -416,6 +463,8 @@ exports.getProfile = (req, res) => {
 
 /**
  * Post profile changes to database
+ * TODO: modify pfp 
+ * 	
  * @param  {[type]}   req  [description]
  * @param  {[type]}   res  [description]
  * @param  {Function} next [description]
@@ -495,7 +544,7 @@ exports.postProfile = (req, res, next) => {
 		if (err) {
 			return next(err);
 		}
-		//TODO: set fields here
+		
 		user.major = major;
 		user.educationLevel = educationLevel;
 		user.school = school;
@@ -516,9 +565,7 @@ exports.postProfile = (req, res, next) => {
 			if (err) {
 				return next(err);
 			}
-			res.render('account/dashboard', {
-				title: 'Dashboard', dashboardUser: req.user, settingsEnabled: true
-			});
+			res.redirect('/account');
 		});
 	});
 	
@@ -569,41 +616,49 @@ exports.postPreferences = (req,res) => {
 	var pTech = [];
 	var pInt = [];
 	var pField = [];
-	for(i = 0; i < languages.length; i += 2){
-		var arr = [];
-		arr.push(languages[i])
-		arr.push(languages[i+1]);
-		if(languages[i] === languages[i+2]){
-			i += 2;
+	if(languages[0] != '' && languages[0] != null != languages[0] != ''){
+		for(i = 0; i < languages.length; i += 2){
+			var arr = [];
+			arr.push(languages[i])
+			arr.push(languages[i+1]);
+			if(languages[i] === languages[i+2]){
+				i += 2;
+			}
+			pLan.push(arr);
 		}
-		pLan.push(arr);
 	}
-	for(i = 0; i < technologies.length; i += 2){
-		var arr = [];
-		arr.push(technologies[i])
-		arr.push(technologies[i+1]);
-		if(technologies[i] === technologies[i+2]){
-			i += 2;
+	if(technologies[0] != '' && technologies[0] != null != technologies[0] != ''){
+		for(i = 0; i < technologies.length; i += 2){
+			var arr = [];
+			arr.push(technologies[i])
+			arr.push(technologies[i+1]);
+			if(technologies[i] === technologies[i+2]){
+				i += 2;
+			}
+			pTech.push(arr);
 		}
-		pTech.push(arr);
 	}
-	for(i = 0; i < interests.length; i += 2){
-		var arr = [];
-		arr.push(interests[i])
-		arr.push(interests[i+1]);
-		if(interests[i] === interests[i+2]){
-			i += 2;
+	if(interests[0] != '' && interests[0] != null != interests[0] != ''){
+		for(i = 0; i < interests.length; i += 2){
+			var arr = [];
+			arr.push(interests[i])
+			arr.push(interests[i+1]);
+			if(interests[i] === interests[i+2]){
+				i += 2;
+			}
+			pInt.push(arr);
 		}
-		pInt.push(arr);
 	}
-	for(i = 0; i < fields.length; i += 2){
-		var arr = [];
-		arr.push(fields[i])
-		arr.push(fields[i+1]);
-		if(fields[i] === fields[i+2]){
-			i += 2;
+	if(fields[0] != '' && fields[0] != null != fields[0] != ''){
+		for(i = 0; i < fields.length; i += 2){
+			var arr = [];
+			arr.push(fields[i])
+			arr.push(fields[i+1]);
+			if(fields[i] === fields[i+2]){
+				i += 2;
+			}
+			pField.push(arr);
 		}
-		pField.push(arr);
 	}
 	
 	User.updateOne({'urlId': req.user.urlId}, {$set: {
@@ -617,15 +672,31 @@ exports.postPreferences = (req,res) => {
 		'careScores.languages':languageScore
 	}}, function(err, user){
 		if(err) throw err;
-		var urlId = req.params.id;
-		res.redirect('/hackathons/'+urlId+'/visual');
+		if(req.params.id){
+			var urlId = req.params.id;
+			res.redirect('/hackathons/'+urlId+'/visual');
+		}else{
+			res.redirect('/account')
+		}
 	});
 };
 
+/**
+ * Gets the dashboard page of logged in user
+ * @param  {[type]} req [description]
+ * @param  {[type]} res [description]
+ * @return {[type]}     [description]
+ */
 exports.getAccount = (req, res) => {
-	res.render('account/dashboard', {
-		title: 'Account Management', dashboardUser: req.user, settingsEnabled: true
-	});
+	if(req.user){
+		res.render('account/dashboard', {
+			title: 'Account Management', dashboardUser: req.user, settingsEnabled: true
+		});
+	}else{
+		res.render('message', {
+			title: '404', pageTitle: 'No login user detected', message: 'Only logged in user may access preferences settings.'
+		});
+	}
 };
 
 

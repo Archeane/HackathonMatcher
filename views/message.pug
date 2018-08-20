@@ -1,7 +1,7 @@
 extends layout
 
 block append head
-	if #{redirectURL}
+	if redirectURL
 		<meta http-equiv="refresh" content="3;url=http://localhost:8080"+#{redirectURL} />
 	else
 		<meta http-equiv="refresh" content="3;url=http://localhost:8080" />

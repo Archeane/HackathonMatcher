@@ -6,29 +6,31 @@ block append head
 block content
 
 	.container
-			.row.filters
-				.col-md-3
-					#major.dropdown
-						button#dropdownMenuButton.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
-							| Majors
-						.dropdown-menu(aria-labelledby='dropdownMenuButton')
+		.row
+			h3 This visualization shows all users attending this hackathon who matches your preferences. The radius of their avatar corresponds to the "matching score" between you and the other person. Positioning of their avatars are random. Hover over their avatar or click on it to learn more about them! 
+		.row.filters
+			.col-md-3
+				#major.dropdown
+					button#dropdownMenuButton.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+						| Majors
+					.dropdown-menu(aria-labelledby='dropdownMenuButton')
 
-				.col-md-3
-					#graduationYear.dropdown
-						button#dropdownMenuButton.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
-							| Graduation Year
-						.dropdown-menu(aria-labelledby='dropdownMenuButton')
-				.col-md-3
-					#educationLevel.dropdown
-						button#dropdownMenuButton.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
-							| Education Level
-						.dropdown-menu(aria-labelledby='dropdownMenuButton')
-				.col-md-3
-					#hackathons.dropdown
-						button#dropdownMenuButton.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
-							| Number Of Hackathons
-						.dropdown-menu(aria-labelledby='dropdownMenuButton')
-			#vis
+			.col-md-3
+				#graduationYear.dropdown
+					button#dropdownMenuButton.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+						| Graduation Year
+					.dropdown-menu(aria-labelledby='dropdownMenuButton')
+			.col-md-3
+				#educationLevel.dropdown
+					button#dropdownMenuButton.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+						| Education Level
+					.dropdown-menu(aria-labelledby='dropdownMenuButton')
+			.col-md-3
+				#hackathons.dropdown
+					button#dropdownMenuButton.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+						| Number Of Hackathons
+					.dropdown-menu(aria-labelledby='dropdownMenuButton')
+		#vis
 
 	script.
 		var allMatches = !{JSON.stringify(matches)};

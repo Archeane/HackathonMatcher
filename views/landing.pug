@@ -10,8 +10,9 @@ block content
       h4.subtitle Get started - it is free
 
       div.left
-        form(action='/', method='POST')
+        form(action='/', method='POST', id="registerForm")
           input(type='hidden', name='_csrf', value=_csrf)
+          #error(style="background: red; color: #fff; width: 80%; display:none;padding:5px;")
           .form-group
             input.form-control(type="text", name="firstname", id='reg-firstname',placeholder="First Name",required)
           .form-group
@@ -21,9 +22,9 @@ block content
           .form-group
             input.form-control(type="password", name="password", id='reg-password',placeholder="Password",required)
           .form-group
-            input.form-control(type="password", name="confirmpassword", id='reg-conformpassword',placeholder="Confirm Password",required)
+            input.form-control(type="password", name="confirmpassword", id='reg-confirmpassword',placeholder="Confirm Password",required)
           .form-group.offset-sm-3.col-md-7.pl-2
-            button.btn.btn-success(type='submit')
+            button.btn.btn-success(type='submit' id="submitRegister")
               i.fas.fa-user-plus
               | Signup
 
@@ -50,3 +51,30 @@ block content
 
       div.or OR
 
+  script.
+    $('#submitRegister').on('click', (event) => {
+      event.preventDefault();
+      if($('#reg-firstname').val() == '' || $('#reg-lastname').val() == ''){
+        $('#error').text('Please fill out yoru name');
+        $('#error').show();
+      }else{
+        if($('#reg-password').val() === $('#reg-confirmpassword').val()){
+          var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+          if(regex.test($('#reg-email').val())){
+            if($('#reg-password').val().length >= 4){
+              $('#registerForm').submit();
+            }else{
+              $('#error').text('Passwords must be longer than 4 characters');
+              $('#error').show();
+            }
+          }else{
+            $('#error').text('Email is not valid');
+            $('#error').show();
+          }
+        }else{
+          $('#error').text('Passwords do not match');
+          $('#error').show();
+        }
+      }
+      
+    });

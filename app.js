@@ -186,6 +186,8 @@ app.post('/reset/:token', userController.postReset);
  */
 app.get('/hackathons/:id/visual', hackathonController.visual);
 app.get('/hackathons', hackathonController.getHackathonList);
+app.get('/preferences', userController.getPreferences);
+app.post('/preferences', userController.postPreferences);
 app.get('/hackathons/:id/preferences', userController.getPreferences);
 app.post('/hackathons/:id/preferences', userController.postPreferences);
 
@@ -193,10 +195,7 @@ app.post('/hackathons/:id/preferences', userController.postPreferences);
 /*
   Home
  */
-//app.get('/usersearch', userController.searchUser);
 
-
-//app.get('/signup2', userController.getSignup);
 
 app.get('/contact', contactController.getContact);
 app.post('/contact', contactController.postContact);

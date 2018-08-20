@@ -16,6 +16,10 @@ body{
 	font-size: 2em;
 }
 
+.page-content-container{
+	padding-top: 120px;
+}
+
 button{
 	border-width: 0;
 }

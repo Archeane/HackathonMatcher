@@ -240,20 +240,27 @@ def hackathonsimiliarscore(currentHacker, allHackers, carescores):
 #similiarscores = hackathonsimiliarscore(allHackers[0], allHackers, allHackers[0]['careScores'])
 
 #default value for carescores
-if 'careScores' not in currentHacker:
-    temp = json.loads('{"interests" : 10, "technologies" : 10, "languages" : 10,"fields" : 10}')
-    similiarscores = hackathonsimiliarscore(currentHacker, allHackers, temp)
-    print(similiarscores)
+
+if (currentHacker['preferences']['interests'] == '' or currentHacker['preferences']['interests'] == None and
+    currentHacker['preferences']['languages'] == '' or currentHacker['preferences']['languages'] == None and 
+    currentHacker['preferences']['technologies'] == '' or currentHacker['preferences']['technologies'] == None and 
+    currentHacker['preferences']['fields'] == '' or currentHacker['preferences']['fields'] == None):
+    print("No preferences set")
 else:
-    if currentHacker['careScores']['interests'] == None:
-        currentHacker['careScores']['interests'] = 1
-    if currentHacker['careScores']['languages'] == None:
-        currentHacker['careScores']['languages'] = 1
-    if currentHacker['careScores']['technologies'] == None:
-        currentHacker['careScores']['technologies'] = 1
-    if currentHacker['careScores']['fields'] == None:
-        currentHacker['careScores']['fields'] = 1
-    #print(currentHacker['careScores'])
-    similiarscores = hackathonsimiliarscore(currentHacker, allHackers, currentHacker['careScores'])
-    json.dumps(similiarscores)
-    print(similiarscores)
+    if 'careScores' not in currentHacker:
+        temp = json.loads('{"interests" : 10, "technologies" : 10, "languages" : 10,"fields" : 10}')
+        similiarscores = hackathonsimiliarscore(currentHacker, allHackers, temp)
+        print(similiarscores)
+    else:
+        if currentHacker['careScores']['interests'] == None:
+            currentHacker['careScores']['interests'] = 1
+        if currentHacker['careScores']['languages'] == None:
+            currentHacker['careScores']['languages'] = 1
+        if currentHacker['careScores']['technologies'] == None:
+            currentHacker['careScores']['technologies'] = 1
+        if currentHacker['careScores']['fields'] == None:
+            currentHacker['careScores']['fields'] = 1
+        #print(currentHacker['careScores'])
+        similiarscores = hackathonsimiliarscore(currentHacker, allHackers, currentHacker['careScores'])
+        json.dumps(similiarscores)
+        print(similiarscores)

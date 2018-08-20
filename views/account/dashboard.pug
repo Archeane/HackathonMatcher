@@ -29,12 +29,11 @@ block content
 
 		<section class="container">
 			<div class="row">
-				.col-md-6.col-sm-12
+				.col-md-6.col-sm-12#about-app
 					#about
 						h3.accent
 							| About
-						h6
-							| Jenny Xu
+						h6#name
 						.content
 						.settings
 				<div class="col-md-6 col-sm-12">
@@ -47,7 +46,7 @@ block content
 									<i class="fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i>
 									<span>{{lan[2]}}</span>
 								</div>
-								<span style="float:right">{{lan[1]}}%</span>
+								<span style="float:right">{{lan[1]*10}}%</span>
 								<div class="progress">
 									<div class="progress-bar progress-bar-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" v-bind:aria-valuenow="lan[1]" v-bind:style="{width:lan[1]*10+'%'}"></div>
 								</div>
