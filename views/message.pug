@@ -2,9 +2,9 @@ extends layout
 
 block append head
 	if redirectURL
-		<meta http-equiv="refresh" content="3;url=http://localhost:8080"+#{redirectURL} />
+		<meta http-equiv="refresh" content="3;url=https://hackermatcher.herokuapp.com/"+#{redirectURL} />
 	else
-		<meta http-equiv="refresh" content="3;url=http://localhost:8080" />
+		<meta http-equiv="refresh" content="3;url=https://hackermatcher.herokuapp.com" />
 
 block content
 	.container(style="padding-top:100px;")
