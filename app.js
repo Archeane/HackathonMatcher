@@ -1,6 +1,7 @@
 /**
  * Module dependencies.
  */
+
 const express = require('express');
 const compression = require('compression');
 const session = require('express-session');
@@ -20,6 +21,7 @@ const expressStatusMonitor = require('express-status-monitor');
 const sass = require('node-sass-middleware');
 const multer = require('multer');
 const csrf = require('csurf');
+const helmet = require('helmet')
 const upload = multer({ dest: path.join(__dirname, 'uploads')});
 
 
@@ -90,6 +92,8 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
+app.use(helmet());
+app.disable('x-powered-by')
 
 
 //app.use(upload.single('myFile'));

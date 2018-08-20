@@ -51,7 +51,7 @@ exports.getSearch = (req, res, next) => {
 	if(req.query.type){
 		type = req.query.type;
 		if(type === 'users'){
-			MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {
+			MongoClient.connect(process.env.MONGODB_URI, function (err, db) {
 				var results = [];
 				var userPromise = new Promise((resolve, reject) => {
 					db.collection('users').find({ "name": { $regex: keyword, $options:"i m"}}).toArray(function(err, docs){

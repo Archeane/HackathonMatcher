@@ -33,7 +33,7 @@ function asyncFunction(msg,callback) {
  * @return {[type]}        [description]
  */
 exports.testInit = (req,res,next) =>{
-	MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {
+	MongoClient.connect(process.env.MONGODB_URI, function (err, db) {
 		if (err) throw err;
 		this.db = db;
 
@@ -196,7 +196,7 @@ exports.testInit = (req,res,next) =>{
  * @return {[type]}        [description]
  */
 exports.getHackathonList = (req,res, next) => {
-	MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {
+	MongoClient.connect(process.env.MONGODB_URI, function (err, db) {
 		if (err) throw err;
 
   		db.collection('hackathons').find().toArray(function (err, result) {
@@ -225,7 +225,7 @@ exports.getHackathonList = (req,res, next) => {
  * @return {[type]}        [description]
  */
 exports.getHackathonById = (req, res, next) => {
-	MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {
+	MongoClient.connect(process.env.MONGODB_URI, function (err, db) {
 		if (err) throw err;
   		db.collection('hackathons').findOne({"urlId": req.params.id}, (err, result) =>{
   			if(err) throw err;
@@ -337,7 +337,7 @@ function getMinifiedUsers(){
  */
 exports.visual = (req, res, next) =>{
 	console.log('loading visual');
-	MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {
+	MongoClient.connect(process.env.MONGODB_URI, function (err, db) {
 		if (err) throw err;
 
 		var user = JSON.stringify(req.user);

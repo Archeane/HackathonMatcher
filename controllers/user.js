@@ -44,7 +44,7 @@ exports.postIndex = (req, res, next) => {
 	}
 
 	const secretToken = randomstring.generate();
-	var confirmurl = 'http://localhost:8080/verifyemail?token='+secretToken;
+	var confirmurl = process.env.BASE_URL+'/verifyemail?token='+secretToken;
 	const user = new User({
 		firstname: req.body.firstname.replace(/\s/g, ''),
 		lastname:req.body.lastname.replace(/\s/g, ''),
