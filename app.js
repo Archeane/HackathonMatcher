@@ -26,7 +26,7 @@ const upload = multer({ dest: path.join(__dirname, 'uploads')});
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
  */
-dotenv.load({ path: '.env.example' });
+dotenv.load({ path: '.env' });
 
 /**
  * Controllers (route handlers).
@@ -50,7 +50,10 @@ const app = express();
 /**
  * Connect to MongoDB.
  */
-mongoose.connect(process.env.MONGODB_URI);
+mongoose.connect(process.env.MONGODB_URI, function(err, db){
+  if(err) throw err;
+  console.log('connection established');
+});
 mongoose.connection.on('error', (err) => {
   console.error(err);
   console.log('%s MongoDB connection error. Please make sure MongoDB is running.', chalk.red('✗'));
