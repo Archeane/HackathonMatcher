@@ -9,13 +9,13 @@ const randomBytesAsync = promisify(crypto.randomBytes);
 const fs = require('fs');
 const nodemailer = require('nodemailer');
 var GoogleCloudStorage = require('@google-cloud/storage');
-
+/*
 var storage = new GoogleCloudStorage({
   projectId: process.env.GOOGLE_CLOUD_STORAGE_PROJECT_ID,
   keyFilename: process.env.GOOGLE_CLOUD_STORAGE_KEYFILE_NAME
 });
 var myBucket = storage.bucket(process.env.GOOGLE_CLOUD_BUCKET_NAME);
-
+*/
 
 //---------HOME----------------
 /**

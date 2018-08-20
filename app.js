@@ -221,11 +221,7 @@ app.get('/test/init', hackathonController.testInit);
 /**
  * API examples routes.
  */
-var multipart = require('connect-multiparty');
-var multipartMiddleware = multipart();
-//app.post('/api/upload', multipartMiddleware, apiController.postFileUpload);
-
-
+/*
 
 app.get('/api', apiController.getApi);
 app.get('/api/lastfm', apiController.getLastfm);
@@ -257,9 +253,7 @@ app.get('/api/pinterest', passportConfig.isAuthenticated, passportConfig.isAutho
 app.post('/api/pinterest', passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.postPinterest);
 app.get('/api/google-maps', apiController.getGoogleMaps);
 
-/**
- * OAuth authentication routes. (Sign in)
- */
+
 app.get('/auth/instagram', passport.authenticate('instagram'));
 app.get('/auth/instagram/callback', passport.authenticate('instagram', { failureRedirect: '/login' }), (req, res) => {
   res.redirect(req.session.returnTo || '/');
@@ -285,9 +279,7 @@ app.get('/auth/linkedin/callback', passport.authenticate('linkedin', { failureRe
   res.redirect(req.session.returnTo || '/');
 });
 
-/**
- * OAuth authorization routes. (API examples)
- */
+
 app.get('/auth/foursquare', passport.authorize('foursquare'));
 app.get('/auth/foursquare/callback', passport.authorize('foursquare', { failureRedirect: '/api' }), (req, res) => {
   res.redirect('/api/foursquare');

@@ -1,8 +1,8 @@
 const passport = require('passport');
 const request = require('request');
-const { Strategy: InstagramStrategy } = require('passport-instagram');
 const { Strategy: LocalStrategy } = require('passport-local');
 const { Strategy: FacebookStrategy } = require('passport-facebook');
+const { Strategy: InstagramStrategy } = require('passport-instagram');
 const { Strategy: TwitterStrategy } = require('passport-twitter');
 const { Strategy: GitHubStrategy } = require('passport-github');
 const { OAuth2Strategy: GoogleStrategy } = require('passport-google-oauth');
@@ -47,7 +47,7 @@ passport.use(new LocalStrategy({ usernameField: 'email' , passwordField:'passwor
 /**
  * Sign in using Email and Password.
  */
-/*
+
 passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
   User.findOne({ email: email.toLowerCase() }, (err, user) => {
     if (err) { return done(err); }
@@ -69,7 +69,7 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, don
     });
   });
 }));
-*/
+
 /**
  * OAuth Strategy Overview
  *
@@ -84,10 +84,7 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, don
  *       - If there is, return an error message.
  *       - Else create a new account.
  */
-
-/**
- * Sign in with Facebook.
- */
+/*
 passport.use(new FacebookStrategy({
   clientID: process.env.FACEBOOK_ID,
   clientSecret: process.env.FACEBOOK_SECRET,
@@ -145,9 +142,7 @@ passport.use(new FacebookStrategy({
   }
 }));
 
-/**
- * Sign in with GitHub.
- */
+
 passport.use(new GitHubStrategy({
   clientID: process.env.GITHUB_ID,
   clientSecret: process.env.GITHUB_SECRET,
@@ -257,9 +252,7 @@ passport.use(new TwitterStrategy({
   }
 }));
 
-/**
- * Sign in with Google.
- */
+
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_ID,
   clientSecret: process.env.GOOGLE_SECRET,
@@ -315,9 +308,7 @@ passport.use(new GoogleStrategy({
   }
 }));
 
-/**
- * Sign in with LinkedIn.
- */
+
 passport.use(new LinkedInStrategy({
   clientID: process.env.LINKEDIN_ID,
   clientSecret: process.env.LINKEDIN_SECRET,
@@ -377,9 +368,7 @@ passport.use(new LinkedInStrategy({
   }
 }));
 
-/**
- * Sign in with Instagram.
- */
+
 passport.use(new InstagramStrategy({
   clientID: process.env.INSTAGRAM_ID,
   clientSecret: process.env.INSTAGRAM_SECRET,
@@ -430,9 +419,7 @@ passport.use(new InstagramStrategy({
   }
 }));
 
-/**
- * Tumblr API OAuth.
- */
+
 passport.use('tumblr', new OAuthStrategy({
   requestTokenURL: 'https://www.tumblr.com/oauth/request_token',
   accessTokenURL: 'https://www.tumblr.com/oauth/access_token',
@@ -452,9 +439,7 @@ passport.use('tumblr', new OAuthStrategy({
   });
 }));
 
-/**
- * Foursquare API OAuth.
- */
+
 passport.use('foursquare', new OAuth2Strategy({
   authorizationURL: 'https://foursquare.com/oauth2/authorize',
   tokenURL: 'https://foursquare.com/oauth2/access_token',
@@ -473,9 +458,7 @@ passport.use('foursquare', new OAuth2Strategy({
   });
 }));
 
-/**
- * Steam API OpenID.
- */
+
 passport.use(new OpenIDStrategy({
   apiKey: process.env.STEAM_KEY,
   providerURL: 'http://steamcommunity.com/openid',
@@ -537,9 +520,7 @@ passport.use(new OpenIDStrategy({
   }
 }));
 
-/**
- * Pinterest API OAuth.
- */
+
 passport.use('pinterest', new OAuth2Strategy({
   authorizationURL: 'https://api.pinterest.com/oauth/',
   tokenURL: 'https://api.pinterest.com/v1/oauth/token',
@@ -558,9 +539,7 @@ passport.use('pinterest', new OAuth2Strategy({
   });
 }));
 
-/**
- * Login Required middleware.
- */
+*/
 exports.isAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next();

@@ -1,3 +1,4 @@
+/*
 const { promisify } = require('util');
 const request = require('request');
 const cheerio = require('cheerio');
@@ -25,57 +26,12 @@ const { Venues, Users } = require('node-foursquare')({
   }
 });
 
-
-
-exports.testUpload = (req,res, next) =>{
-  console.log("???");
-  /*
-  var file = req.files.file;
-  console.log(file);
-  fs.readFile(file.path, function(err,data){
-    if(err) throw err;
-    var s3bucket = new AWS.S3({params:{Bucket: 'hackermatchertest'}});
-    s3bucket.createBucket(function () {
-        var params = {
-            Key: file.originalFilename, //file.name doesn't exist as a property
-            Body: data
-        };
-        s3bucket.upload(params, function (err, data) {
-            // Whether there is an error or not, delete the temp file
-            fs.unlink(file.path, function (err) {
-                if (err) {
-                    console.error(err);
-                }
-                console.log('Temp File Delete');
-            });
-
-            console.log("PRINT FILE:", file);
-            if (err) {
-                console.log('ERROR MSG: ', err);
-                res.status(500).send(err);
-            } else {
-                console.log('Successfully uploaded data');
-                res.status(200).end();
-            }
-        });
-    });
-  });*/
-};
-
-/**
- * GET /api
- * List of API examples.
- */
 exports.getApi = (req, res) => {
   res.render('api/index', {
     title: 'API Examples'
   });
 };
 
-/**
- * GET /api/foursquare
- * Foursquare API example.
- */
 exports.getFoursquare = async (req, res, next) => {
   const token = req.user.tokens.find(token => token.kind === 'foursquare');
   try {
@@ -96,10 +52,7 @@ exports.getFoursquare = async (req, res, next) => {
   }
 };
 
-/**
- * GET /api/tumblr
- * Tumblr API example.
- */
+
 exports.getTumblr = (req, res, next) => {
   const token = req.user.tokens.find(token => token.kind === 'tumblr');
   const client = tumblr.createClient({
@@ -118,10 +71,7 @@ exports.getTumblr = (req, res, next) => {
   });
 };
 
-/**
- * GET /api/facebook
- * Facebook API example.
- */
+
 exports.getFacebook = (req, res, next) => {
   const token = req.user.tokens.find(token => token.kind === 'facebook');
   graph.setAccessToken(token.accessToken);
@@ -134,10 +84,7 @@ exports.getFacebook = (req, res, next) => {
   });
 };
 
-/**
- * GET /api/scraping
- * Web scraping example using Cheerio library.
- */
+
 exports.getScraping = (req, res, next) => {
   request.get('https://news.ycombinator.com/', (err, request, body) => {
     if (err) { return next(err); }
@@ -153,10 +100,7 @@ exports.getScraping = (req, res, next) => {
   });
 };
 
-/**
- * GET /api/github
- * GitHub API Example.
- */
+
 exports.getGithub = async (req, res, next) => {
   const github = new GitHub();
   try {
@@ -170,20 +114,14 @@ exports.getGithub = async (req, res, next) => {
   }
 };
 
-/**
- * GET /api/aviary
- * Aviary image processing example.
- */
+
 exports.getAviary = (req, res) => {
   res.render('api/aviary', {
     title: 'Aviary API'
   });
 };
 
-/**
- * GET /api/nyt
- * New York Times API example.
- */
+
 exports.getNewYorkTimes = (req, res, next) => {
   const query = {
     'list-name': 'young-adult',
@@ -202,10 +140,7 @@ exports.getNewYorkTimes = (req, res, next) => {
   });
 };
 
-/**
- * GET /api/lastfm
- * Last.fm API example.
- */
+
 exports.getLastfm = async (req, res, next) => {
   const lastfm = new LastFmNode({
     api_key: process.env.LASTFM_KEY,
@@ -268,10 +203,7 @@ exports.getLastfm = async (req, res, next) => {
   }
 };
 
-/**
- * GET /api/twitter
- * Twitter API example.
- */
+
 exports.getTwitter = async (req, res, next) => {
   const token = req.user.tokens.find(token => token.kind === 'twitter');
   const T = new Twit({
@@ -295,10 +227,7 @@ exports.getTwitter = async (req, res, next) => {
   }
 };
 
-/**
- * POST /api/twitter
- * Post a tweet.
- */
+
 exports.postTwitter = (req, res, next) => {
   req.assert('tweet', 'Tweet cannot be empty').notEmpty();
 
@@ -323,10 +252,7 @@ exports.postTwitter = (req, res, next) => {
   });
 };
 
-/**
- * GET /api/steam
- * Steam API example.
- */
+
 exports.getSteam = async (req, res, next) => {
   const steamId = req.user.steam;
   const params = { l: 'english', steamid: steamId, key: process.env.STEAM_KEY };
@@ -386,10 +312,7 @@ exports.getSteam = async (req, res, next) => {
   }
 };
 
-/**
- * GET /api/stripe
- * Stripe API example.
- */
+
 exports.getStripe = (req, res) => {
   res.render('api/stripe', {
     title: 'Stripe API',
@@ -397,10 +320,7 @@ exports.getStripe = (req, res) => {
   });
 };
 
-/**
- * POST /api/stripe
- * Make a payment.
- */
+
 exports.postStripe = (req, res) => {
   const { stripeToken, stripeEmail } = req.body;
   stripe.charges.create({
@@ -418,20 +338,14 @@ exports.postStripe = (req, res) => {
   });
 };
 
-/**
- * GET /api/twilio
- * Twilio API example.
- */
+
 exports.getTwilio = (req, res) => {
   res.render('api/twilio', {
     title: 'Twilio API'
   });
 };
 
-/**
- * POST /api/twilio
- * Send a text message using Twilio.
- */
+
 exports.postTwilio = (req, res, next) => {
   req.assert('number', 'Phone number is required.').notEmpty();
   req.assert('message', 'Message cannot be blank.').notEmpty();
@@ -454,20 +368,12 @@ exports.postTwilio = (req, res, next) => {
   }).catch(next);
 };
 
-/**
- * GET /api/clockwork
- * Clockwork SMS API example.
- */
 exports.getClockwork = (req, res) => {
   res.render('api/clockwork', {
     title: 'Clockwork SMS API'
   });
 };
 
-/**
- * POST /api/clockwork
- * Send a text message using Clockwork SMS
- */
 exports.postClockwork = (req, res, next) => {
   const message = {
     To: req.body.telephone,
@@ -481,10 +387,7 @@ exports.postClockwork = (req, res, next) => {
   });
 };
 
-/**
- * GET /api/linkedin
- * LinkedIn API example.
- */
+
 exports.getLinkedin = (req, res, next) => {
   const token = req.user.tokens.find(token => token.kind === 'linkedin');
   const linkedin = Linkedin.init(token.accessToken);
@@ -497,10 +400,7 @@ exports.getLinkedin = (req, res, next) => {
   });
 };
 
-/**
- * GET /api/instagram
- * Instagram API example.
- */
+
 exports.getInstagram = async (req, res, next) => {
   const token = req.user.tokens.find(token => token.kind === 'instagram');
   ig.use({ client_id: process.env.INSTAGRAM_ID, client_secret: process.env.INSTAGRAM_SECRET });
@@ -523,10 +423,7 @@ exports.getInstagram = async (req, res, next) => {
   }
 };
 
-/**
- * GET /api/paypal
- * PayPal SDK example.
- */
+
 exports.getPayPal = (req, res, next) => {
   paypal.configure({
     mode: 'sandbox',
@@ -566,10 +463,7 @@ exports.getPayPal = (req, res, next) => {
   });
 };
 
-/**
- * GET /api/paypal/success
- * PayPal SDK example.
- */
+
 exports.getPayPalSuccess = (req, res) => {
   const { paymentId } = req.session;
   const paymentDetails = { payer_id: req.query.PayerID };
@@ -581,10 +475,7 @@ exports.getPayPalSuccess = (req, res) => {
   });
 };
 
-/**
- * GET /api/paypal/cancel
- * PayPal SDK example.
- */
+
 exports.getPayPalCancel = (req, res) => {
   req.session.paymentId = null;
   res.render('api/paypal', {
@@ -593,10 +484,7 @@ exports.getPayPalCancel = (req, res) => {
   });
 };
 
-/**
- * GET /api/lob
- * Lob API example.
- */
+
 exports.getLob = (req, res, next) => {
   lob.routes.list({ zip_codes: ['10007'] }, (err, routes) => {
     if (err) { return next(err); }
@@ -618,15 +506,12 @@ const s3 = new AWS.S3({
     accessKeyId: 'AKIAJTVQG35QJUSGGKKA',
     secretAccessKey: 'BqiY2FT+O6ttOEDr6r7gYu8L1KfJ1QbMy+pDmWTA'
 });
-/**
- * GET /api/upload
- * File Upload API example.
- */
+
 
 exports.getFileUpload = (req, res) => {
  res.render('api/upload', {
       title: 'File Upload'});
- /*
+ 
  var getParams = {
     Bucket: BUCKET_NAME, // your bucket name,
     Key: 'contacts' // path to the object you're looking for
@@ -645,7 +530,7 @@ exports.getFileUpload = (req, res) => {
     var data = Buffer.from(String.fromCharCode.apply(null, new Uint16Array(objectData)), "base64")
     console.log(data);
     res.send(data);
-  });*/
+  });
 };
 
 
@@ -670,10 +555,7 @@ exports.postFileUpload = (req, res) => {
   
 };
 
-/**
- * GET /api/pinterest
- * Pinterest API example.
- */
+
 exports.getPinterest = (req, res, next) => {
   const token = req.user.tokens.find(token => token.kind === 'pinterest');
   request.get({ url: 'https://api.pinterest.com/v1/me/boards/', qs: { access_token: token.accessToken }, json: true }, (err, request, body) => {
@@ -685,10 +567,7 @@ exports.getPinterest = (req, res, next) => {
   });
 };
 
-/**
- * POST /api/pinterest
- * Create a pin.
- */
+
 exports.postPinterest = (req, res, next) => {
   req.assert('board', 'Board is required.').notEmpty();
   req.assert('note', 'Note cannot be blank.').notEmpty();
@@ -726,3 +605,4 @@ exports.getGoogleMaps = (req, res) => {
     google_map_api_key: process.env.GOOGLE_MAP_API_KEY
   });
 };
+*/
