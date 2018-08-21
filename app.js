@@ -55,6 +55,9 @@ const app = express();
 mongoose.connect(process.env.MONGODB_URI, function(err, db){
   if(err) throw err;
   console.log('connection established');
+  db.collection('users').insertOne({
+    'name':'testuser',
+  });
 });
 mongoose.connection.on('error', (err) => {
   console.error(err);
