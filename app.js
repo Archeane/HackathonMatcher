@@ -53,11 +53,14 @@ const app = express();
  * Connect to MongoDB.
  */
 mongoose.connect(process.env.MONGODB_URI, function(err, db){
-  if(err) throw err;
+  if(err) console.log(err);
   console.log('connection established');
-  db.collection('users').insertOne({
-    'name':'testuser',
-  });
+  db.collection('users').findOne({'name':'testuser1'}, function(err,doc){
+    if(err) console.log(err);
+    console.log('inserted');
+    console.log(doc);
+
+  })
 });
 mongoose.connection.on('error', (err) => {
   console.error(err);
