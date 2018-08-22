@@ -25,8 +25,8 @@ function asyncFunction(msg,callback) {
 }
 
 /**
- * Creates test users and hackathons
- * TO be deleted after deployment
+ * Creates test users 
+ *  * TO be deleted after deployment
  * @param  {[type]}   req  [description]
  * @param  {[type]}   res  [description]
  * @param  {Function} next [description]
@@ -49,9 +49,9 @@ exports.testInit = (req,res,next) =>{
 		const tech = require('../wtf/assets/technologies.json');
 		const lan = require('../wtf/assets/languages.json');
 		const fields = require('../wtf/assets/fields.json');
-/*		
+		
 		var usersArr = [];
-		for(j = 0; j < 500; j++){
+		for(j = 0; j < 100; j++){
 			var firstname = random_name({first:true});
 			var lastname = random_name({last:true});
 			var id = firstname+'.'+lastname;
@@ -133,9 +133,13 @@ exports.testInit = (req,res,next) =>{
 			db.collection('users').insertMany(usersArr, {ordered:false});
 		}catch(e){
 			console.log('Error!', e);
-		}
-*/		
+		}		
 
+	});
+};
+
+exports.addTestHackathons = (req, res, next) => {
+	MongoClient.connect(process.env.MONGODB_URI, function (err, db) {
 		const Hackathon = require('../models/Hackathon');
 		for(i = 0; i < 9; i++){
 			var uni = unis[Math.floor(100+Math.random()*50)].institution
@@ -183,9 +187,8 @@ exports.testInit = (req,res,next) =>{
 				collection.update({'name': doc.name}, {$set:{'hackers': emails}});
 			});
 		});
-
 	});
-};
+}
 
 /**
  * Gets the page containing all upcoming hackathons

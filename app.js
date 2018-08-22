@@ -222,6 +222,7 @@ app.get('/hackathons/:id', hackathonController.getHackathonById);
 
 //---------test----------------
 app.get('/test/init', hackathonController.testInit);
+app.get('/test/hackathons', hackathonController.addTestHackathons);
 
 /**
  * API examples routes.

@@ -23,7 +23,6 @@ var myBucket = storage.bucket(process.env.GOOGLE_CLOUD_BUCKET_NAME);
  * Sends a verification email with randomly generated secret token
  * TODO: add expiration time to the secret token.
  *       Add resend email 
- *       Why does sending email never work???
  * @param  {[type]}   req  [description]
  * @param  {[type]}   res  [description]
  * @param  {Function} next [description]
@@ -146,6 +145,7 @@ exports.verifyemail = async (req, res) => {
 							}
 						
 							res.redirect('/signup');
+							return;
 						});
 					});
 					
@@ -155,6 +155,7 @@ exports.verifyemail = async (req, res) => {
 				userId = user.firstname+'.' + user.lastname + '.' + count;
 			}
 		});
+	
 		
 		
 	});
@@ -297,8 +298,6 @@ var uploadToGCloud = async(file) => {
  * include preferences, social profiles, and profile image.
  * If profile image is in the form, the image is saved to gcloud and a link to the image is generated.
  * The generated link is stored in DB.
- * TODO: 
- * 		fix hackathon convert to array
  * @param  {[type]}   req  [description]
  * @param  {[type]}   res  [description]
  * @param  {Function} next [description]
@@ -464,8 +463,6 @@ exports.getProfile = (req, res) => {
 
 /**
  * Post profile changes to database
- * TODO: modify pfp 
- * 	
  * @param  {[type]}   req  [description]
  * @param  {[type]}   res  [description]
  * @param  {Function} next [description]
