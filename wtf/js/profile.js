@@ -1,12 +1,5 @@
 //TODO
-//ABOUT settings: 1. change uni input length  2. social media inputs are gone? 
-//LAN settings: 3. input for languages  
-//TECH, INT, FIELD settings: 4. Prevent fields that are already in user to be in modal  4.5 Number input with max & min
-//NOTE: 5. Add hobbies? Edit for Note. 
-//PFP: 6. change pfp
-//***TEST**
-//social media icons showing. delete link to phone
-//Hackathons are not being parsed correctly!!
+//ABOUT settings:  add an explanation for filling in social media settings 
 //**FIX DUPLICATE ADDING
 //Backgound: change background? LOW PRIORITY
 //	
@@ -14,7 +7,22 @@ $(window).on('load', function () {
 	$('.preloader').delay(500).fadeOut("slow"); // set duration in brackets
 });
 
+$('#error').hide()
+
 $(function () {
+	$('[data-toggle="tooltip"]').tooltip()
+
+	$('.max10Input').on('change', function(){
+		if($(this).val() > 10){
+			$(this).val(10);
+		}
+	});
+	$('.max100Input').on('change', function(){
+		if($(this).val() > 100){
+			$(this).val(100);
+		}
+	});
+
 	
 	jQuery(document).ready(function () {
 		$('body').backstretch([
@@ -52,12 +60,12 @@ $(function () {
 	$('#name').text(name);
 	var Userabout = [name, User.major, User.school, User.educationLevel, User.graduationYear, User.facebook, User.phone, User.instagram, User.github, User.linkedin, User.website];
 	var UserLan = User.preferences.languages;
+	console.log(UserLan[0][0] == '');
 	var UserFamiliar = User.preferences.technologies;
 	var UserInterest = User.preferences.interests;
 	var UserFields = User.preferences.fields;
 	var UserHobbies = User.preferences.hobbies;
 	var UserHackatons = User.hackathons;
-
 	fillFieldsVue(UserFields);
 	fillTechVue(UserFamiliar);
 	fillInterestsVue(UserInterest);
@@ -65,120 +73,213 @@ $(function () {
 	fillLanVue(UserLan);
 	fillAbout(Userabout);
 	fillAboutSettings(Userabout);
+	fillNote(User.about);
+
+	$(document).on('change', '.btn-file :file', function () {
+		var input = $(this),
+			label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+		input.trigger('fileselect', [label]);
+	});
+	$('.btn-file :file').on('fileselect', function (event, label) {
+		var input = $(this).parents('.input-group').find(':text'),
+			log = label;
+		if (input.length) {
+			input.val(log);
+		} else {
+			if (log) alert(log);
+		}
+	});
+
+	function readURL(input) {
+
+	  if (input.files && input.files[0]) {
+	    var reader = new FileReader();
+
+	    reader.onload = function(e) {
+	      $('#pfp').attr('src', e.target.result);
+	    }
+
+	    reader.readAsDataURL(input.files[0]);
+	  }
+	}
+
+	$("#imgInp").change(function() {
+	  readURL(this);
+	});
 
 });
 
-function fillFieldsVue(data){
-	new Promise((resolve,reject) => {
-		$.getJSON("/assets/fields.json", function (data) {
-			resolve(data);
-		})
-	}).then((fieldsConstants) => {
-		new Vue({
-			el: '#app-5',
-			data: {
-				fields: data,
-				constants: fieldsConstants,
-				input: data
-			},
-			computed: {
-				totalFields() {
-					return this.fields.reduce((sum) => {
-						return sum + 1;
-					}, 0);
-				}
-			},
-			methods: {
-				deleteObject: function(index) {
-					this.$delete(this.fields, index);
-				},
-				appendObject: function(child, id, index) {
-					if(this.fields.length <= 5){
-						var arr = [child, id];
-						this.fields.push(arr);
-						this.constants.splice(index,1);
-						this.input.push(arr);
-					}
+async function fillFieldsVue(data){
+	var getData = await $.getJSON("/assets/fields.json");
+	var nonduplicated = [];
+	
+	//TODO: CHANGE THIS COUNTER IF FIRST ELEMENT IN DATA IS NOT EMPTY!!!
+	var counter = 1;
+	if(data.length > 1){
+		await getData.forEach((d) => {
+			if(d.name != data[counter][0]){
+				nonduplicated.push(d);
+			}else{
+				if(!(counter == data.length-1)){
+					counter++;
 				}
 			}
 		});
+	}else{
+		nonduplicated = getData;
+	}
+	
+	new Vue({
+		el: '#app-5',
+		data: {
+			fields: data,
+			constants: nonduplicated,
+			input: data
+		},
+		computed: {
+			totalFields() {
+				return this.fields.reduce((sum) => {
+					return sum + 1;
+				}, 0);
+			}
+		},
+		methods: {
+			deleteObject: function(index,field) {
+				var temp = {
+					"name": field[0]
+				}
+				var json=JSON.stringify(temp);
+				this.$delete(this.fields, index);
+				this.constants.push(JSON.parse(json));
+			},
+			appendObject: function(child, id, index) {
+				if(this.fields.length <= 5){
+					var arr = [child, id];
+					this.fields.push(arr);
+					this.constants.splice(index,1);
+					this.input.push(arr);
+				}
+			}
+		}
 	});
+	
 }
 
-function fillTechVue(data){
-	new Promise((resolve,reject) => {
-		$.getJSON("/assets/technologies.json", function (data) {
-			resolve(data);
-		})
-	}).then((fieldsConstants) => {
-		new Vue({
-			el: '#app-3',
-			data: {
-				fields: data,
-				constants: fieldsConstants,
-				input: data
-			},
-			computed: {
-				totalFields() {
-					return this.fields.reduce((sum) => {
-						return sum + 1;
-					}, 0);
-				}
-			},
-			methods: {
-				deleteObject: function(index) {
-					this.$delete(this.fields, index);
-				},
-				appendObject: function(child, id, index) {
-					if(this.fields.length <= 5){
-						var arr = [child, id];
-						this.fields.push(arr);
-						this.constants.splice(index,1);
-						this.input.push(arr);
-					}
+async function fillTechVue(data){
+	var getData = await $.getJSON("/assets/technologies.json");
+	var nonduplicated = [];
+	
+	//TODO: CHANGE THIS COUNTER IF FIRST ELEMENT IN DATA IS NOT EMPTY!!!
+	var counter = 1;
+	if(data.length > 1){
+		await getData.forEach((d) => {
+			if(d.name != data[counter][0]){
+				nonduplicated.push(d);
+			}else{
+				if(!(counter == data.length-1)){
+					counter++;
 				}
 			}
 		});
+	}else{
+		nonduplicated = getData;
+	}
+	var techVue = new Vue({
+		el: '#app-3',
+		data: {
+			fields: data,
+			constants: nonduplicated,
+			input: data
+		},
+		computed: {
+			totalFields() {
+				return this.fields.reduce((sum) => {
+					return sum + 1;
+				}, 0);
+			}
+		},
+		methods: {
+			deleteObject: function(index, field) {
+				var temp = {
+					"name": field[0]
+				}
+				var json=JSON.stringify(temp);
+				this.$delete(this.fields, index);
+				this.constants.push(JSON.parse(json));
+			},
+			appendObject: function(child, id, index) {
+				if(this.fields.length <= 5){
+					var arr = [child, id];
+					for(i = 0; i < this.fields.length; i++){
+						if(this.fields[i][0] == arr[0]){ //duplicate instance
+
+						}
+					}
+					this.fields.push(arr);
+					this.constants.splice(index,1);
+					this.input.push(arr);
+					//deleteModalContains();
+				}
+			}
+		}
 	});
 }
 
-function fillInterestsVue(data){
-	new Promise((resolve,reject) => {
-		$.getJSON("/assets/interests.json", function (data) {
-			resolve(data);
-		})
-	}).then((fieldsConstants) => {
-		new Vue({
-			el: '#app-interest',
-			data: {
-				fields: data,
-				constants: fieldsConstants,
-				input: data
-			},
-			computed: {
-				totalFields() {
-					return this.fields.reduce((sum) => {
-						return sum + 1;
-					}, 0);
-				}
-			},
-			methods: {
-				deleteObject: function(index) {
-					this.$delete(this.fields, index);
-				},
-				appendObject: function(child, id, index) {
-					if(this.fields.length <= 5){
-						var arr = [child, id];
-						this.fields.push(arr);
-						this.constants.splice(index,1);
-						this.input.push(arr);
-					}
+async function fillInterestsVue(data){
+	var getData = await $.getJSON("/assets/interests.json");
+	var nonduplicated = [];
+	
+	//TODO: CHANGE THIS COUNTER IF FIRST ELEMENT IN DATA IS NOT EMPTY!!!
+	var counter = 1;
+	if(data.length > 1){
+		await getData.forEach((d) => {
+			if(d.name != data[counter][0]){
+				nonduplicated.push(d);
+			}else{
+				if(!(counter == data.length-1)){
+					counter++;
 				}
 			}
 		});
+	}else{
+		nonduplicated = getData;
+	}
+	new Vue({
+		el: '#app-interest',
+		data: {
+			fields: data,
+			constants: nonduplicated,
+			input: data
+		},
+		computed: {
+			totalFields() {
+				return this.fields.reduce((sum) => {
+					return sum + 1;
+				}, 0);
+			}
+		},
+		methods: {
+			deleteObject: function(index, field) {
+				var temp = {
+					"name": field[0]
+				}
+				var json=JSON.stringify(temp);
+				this.$delete(this.fields, index);
+				this.constants.push(JSON.parse(json));
+			},
+			appendObject: function(child, id, index) {
+				if(this.fields.length <= 5){
+					var arr = [child, id];
+					this.fields.push(arr);
+					this.constants.splice(index,1);
+					this.input.push(arr);
+				}
+			}
+		}
 	});
 }
 
+//TODO: take out hackathons already in user
 function fillHackathonsVue(data){
 	var p1 = new Promise((res, rej) => {
 		$.getJSON("/assets/hackathons2014.json", function (data) {
@@ -263,7 +364,15 @@ function fillAbout(data) {
 		if(data[i] != '' && data[i] != undefined && data[i] != null){
 			var li = '';
 			li = '<li>';
-			li += '<a href="'+socialIcons[i-5][1]+data[i]+'" class="fab fa-'+socialIcons[i-5][0]+'" />';
+			if(socialIcons[i-5][0] == 'phone' || socialIcons[i-5][0] == 'user'){
+				if(socialIcons[i-5][0] == 'phone'){
+					li += '<a style="text-decoration:none;" data-toggle="tooltip" title="'+socialIcons[i-5][1]+data[i]+'" class="fas fa-'+socialIcons[i-5][0]+'" />';
+				}else{
+					li += '<a href="'+socialIcons[i-5][1]+data[i]+'" class="fas fa-'+socialIcons[i-5][0]+'" />';
+				}
+			}else{
+				li += '<a href="'+socialIcons[i-5][1]+data[i]+'" class="fab fa-'+socialIcons[i-5][0]+'" />';
+			}
 			li += '</li>';
 			content += li;
 		}
@@ -279,7 +388,7 @@ function fillAboutSettings(data) {
 	console.log(data);
 	var aboutContainer = document.querySelector("#about > .settings");
 	var content = '';
-	content += '<div><select name="major">';
+	content += '<div><select name="major" id="major">';
 	content += '<option selected="selected" value="'+data[1]+'">'+data[1]+'</option>';
 	$.getJSON("/assets/majors.json", function (majors) {
 		for (i = 0; i < majors.length; i++) {
@@ -288,7 +397,7 @@ function fillAboutSettings(data) {
 	}).then(() => {
 		content += '</select>';
 
-		content += '<select name="eduLevel" class="pull-right text-right" style="width:140px;">';
+		content += '<select id="eduLevel" name="eduLevel" class="pull-right text-right" style="width:140px;">';
 		content += '<option selected="selected" value="'+data[3]+'">'+data[3]+'</option>';
 		content += '<option value="highschool">High School</option>';
 		content += '<option value="undergraduate">Undergraduate</option>';
@@ -296,7 +405,7 @@ function fillAboutSettings(data) {
 		content += '<option value="phd">PhD</option>';
 		content += '</select>';
 
-		content += '<div style="padding-top:3px;"><select name="school">';
+		content += '<div style="padding-top:3px;"><select name="school" id="select-school">';
 		content += '<option selected="selected" value="'+data[2]+'">'+data[2]+'</option>';
 		$.getJSON("/assets/us_institutions.json", function (unis) {
 			for(i = 0; i < unis.length;i++){
@@ -305,7 +414,7 @@ function fillAboutSettings(data) {
 		}).then(() => {
 			content += '</select>';
 
-			content += '<select class="pull-right text-right" name="gradYear">';
+			content += '<select id="gradYear" class="pull-right text-right" name="gradYear">';
 			content += '<option value="'+data[4]+'">'+data[4]+'</option><option value="2018">2018</option><option value="2019">2019</option><option value="2020">2020</option><option value="2021">2021</option><option value="2022">2022</option><option value="2023">2023</option></select>';
 			
 			content += '<div>';
@@ -313,7 +422,14 @@ function fillAboutSettings(data) {
 				if(data[i] != '' && data[i] != undefined && data[i] != null){
 					var li = '';
 					li = '<li>';
-					li += '<a href="'+socialIcons[i-5][1]+data[i]+'" class="fab fa-'+socialIcons[i-5][0]+'" />';
+					li += '<label>'+socialIcons[i-5][0]+': </label><input name="'+socialIcons[i-5][0]+'" type="text" value="'+data[i]+'" />';
+					//li += '<a href="'+socialIcons[i-5][1]+data[i]+'" class="fab fa-'+socialIcons[i-5][0]+'" />';
+					li += '</li>';
+					content += li;
+				}else{
+					var li = '';
+					li = '<li>';
+					li += '<label>'+socialIcons[i-5][0]+': </label><input name="'+socialIcons[i-5][0]+'" type="text" />';
 					li += '</li>';
 					content += li;
 				}
@@ -326,40 +442,57 @@ function fillAboutSettings(data) {
 	});
 }
 
-function fillLanVue(data){
-	new Promise((resolve,reject) => {
-		$.getJSON("/assets/languages.json", function (data) {
-			resolve(data);
-		})
-	}).then((fieldsConstants) => {
-		new Vue({
-			el: '#skills',
-			data: {
-				languages: data,
-				constants: fieldsConstants,
-				input: data
-			},
-			computed: {
-				totalLans() {
-					return this.languages.reduce((sum) => {
-						return sum + 1;
-					}, 0);
-				}
-			},
-			methods: {
-				deleteObject: function(index) {
-					this.$delete(this.languages, index);
-				},
-				appendObject: function(child, id, index) {
-					if(this.languages.length <= 5){
-						var arr = [child, id];
-						this.languages.push(arr);
-						this.constants.splice(index,1);
-						this.languages.push(arr);
-					}
+async function fillLanVue(data){
+	var getData = await $.getJSON("/assets/languages.json");
+	var nonduplicated = [];
+	
+	//TODO: CHANGE THIS COUNTER IF FIRST ELEMENT IN DATA IS NOT EMPTY!!!
+	var counter = 1;
+	if(data.length > 1){
+		await getData.forEach((d) => {
+			if(d.name != data[counter][0]){
+				nonduplicated.push(d);
+			}else{
+				if(!(counter == data.length-1)){
+					counter++;
 				}
 			}
 		});
+	}else{
+		nonduplicated = getData;
+	}
+	new Vue({
+		el: '#skills',
+		data: {
+			languages: data,
+			constants: nonduplicated,
+			input: data
+		},
+		computed: {
+			totalLans() {
+				return this.languages.reduce((sum) => {
+					return sum + 1;
+				}, 0);
+			}
+		},
+		methods: {
+			deleteObject: function(index,field) {
+				var temp = {
+					"name": field[0]
+				}
+				var json=JSON.stringify(temp);
+				this.$delete(this.fields, index);
+				this.constants.push(JSON.parse(json));
+			},
+			appendObject: function(child, id, index) {
+				if(this.languages.length <= 5){
+					var arr = [child, id];
+					this.languages.push(arr);
+					this.constants.splice(index,1);
+					this.languages.push(arr);
+				}
+			}
+		}
 	});
 }
 
@@ -871,6 +1004,7 @@ function addTechFamiliar(technology,like, endorse){
 
 function fillNote(data){
 	var container = document.querySelector("#note > .content");
+	/*
 	var content = '<h4 class="accent"> Hobbies</h4>';
 	for(i = 0; i < data.length; i++){
 		if(data[i] != 0){
@@ -878,11 +1012,11 @@ function fillNote(data){
 		}
 	}
 	container.innerHTML += content;
-
+*/
+	container.innerHTML += '<p>'+data+'</p>';
 	var settingsContainer = document.querySelector("#note > .settings");
-	var settings = '<textarea id="noteText" cols="65" maxLength="5" style="height:10em;border-radius:0px; color:black"></textarea>';
+	var settings = '<textarea name="noteText" cols="65" maxLength="1000" style="height:10em;border-radius:0px; color:black">'+data+'</textarea>';
 	settings += '<span>limit: 1000 characters</span>';
-	settings += '<button style="border-radius: 0px; border-width: 1px; text-align:center" onclick="print()"> submit</button>';
 	settingsContainer.innerHTML += settings;
 }
 function print(){

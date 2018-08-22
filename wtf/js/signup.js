@@ -1,8 +1,6 @@
-//TODO:
-//1. Make sure there's no duplicates in hackathons
-//2. Add hobbies field to dashboard?
+//TODO: 
 //3. Change the json file for univeristy: alphabatical ranking + less colleges
-//4. Have actual hackathons for hackathons.json && change the years input width
+//4. Have actual hackathons for hackathons.json
 var current_fs, next_fs, previous_fs; //fieldsets
 var left, opacity, scale; //fieldset properties which we will animate
 var animating; //flag to prevent quick multi-click glitches
@@ -15,7 +13,19 @@ $('#msform').on('keyup keypress', function (e) {
 	}
 });
 
+function arraysEqual(a, b) {
+  if (a === b) return true;
+  if (a == null || b == null) return false;
+  if (a.length != b.length) return false;
 
+  // If you don't care about the order of the elements inside
+  // the array, you should sort both arrays here.
+
+  for (var i = 0; i < a.length; ++i) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
+}
 
 $(document).ready(function () {
 	$('#reg-error').hide();
@@ -27,11 +37,7 @@ $(document).ready(function () {
         });
         $('form.registerForm').submit();
     });
-    $('button.upload').click( function() {
-    	console.log('??');
-    	console.log($('#hello').val())
-    });
-
+    
 	//--------populate select2 options------------------
 	var $interests = $('#reg-interest').select2();
 	var $intrequest = $.ajax({
@@ -138,33 +144,23 @@ $(document).ready(function () {
 
 	//-------------populate options---------------
 
-	//TODO: change route to localhost when integrating && Very slow autocomplete
-	var unisDatalist = [];
 	$.getJSON("/assets/us_institutions.json", function (data) {
-		/*
-		$.each(result, function() {
-		    $('#reg-school').append($("<option />").val(data['institution']).text(data['institution']));
-		});
-		*/
 		for (i = 0; i < data.length; i++) {
 			$('#reg-school').append($("<option />").val(data[i]["institution"]).text(data[i]['institution']));
 		}
-		/*
-		$("#reg-school").autocomplete({
-			minLength: 2,
-			source: unisDatalist
-		});
-		*/
 	});
 	var majors = [];
 	$.getJSON("/assets/majors.json", function (data) {
+		for (i = 0; i < data.length; i++) {
+			$('#reg-major').append($("<option />").val(data[i]["major"]).text(data[i]['major']));
+		}/*Auto complete
 		for (i = 0; i < data.length; i++) {
 			majors.push(data[i]["major"]);
 		}
 		$("#reg-major").autocomplete({
 			minLength: 2,
 			source: majors
-		});
+		});*/
 	});
 
 	//------------hackathon select-------------------
@@ -183,7 +179,7 @@ $(document).ready(function () {
 	 		for (i = 1; i <= Math.min($('#reg-hackathons').val(), 5); i++) {
 	 			var content = '';
 	 			content += '<div class="row">';
-	 			content += '<select placeholder="Year" class="hackYear" name="hackYear" id="hack' + i + '">';
+	 			content += '<select placeholder="Year" class="hackYear" name="hackYear" id="hack' + i + '" style="width:30% !important;">';
 				content += '<option value="0">Year</option>'
 	 			content += '<option value="2014">2014</option>';
 	 			content += '<option value="2015">2015</option>';
@@ -223,25 +219,18 @@ $(document).ready(function () {
 		}
 	 });
 
-
-	 console.log('finished populating!');
 });
 
-var user = {};
+var userHackathons;
 $(".next").click(function () {
 	
-	/*if (!($('#reg-school').val() && $('#reg-major').val()) || $('#reg-graduationYear').val() == "null" || $('#reg-educationLevel').val() == "null") {
+	if (!($('#reg-school').val() && $('#reg-major').val()) || $('#reg-graduationYear').val() == "null" || $('#reg-educationLevel').val() == "null") {
 		$('#reg-error').text('Please fill in all required fields');
 		$('#reg-error').show();
-	} else {*/
+	} else {
 		$('#reg-error').hide();
 
-		//append data to user variable
-		/*user['school'] = $('#reg-school').val();
-		user['major'] = $('#reg-major').val();
-		user['graduationYear'] = $('#reg-graduationYear').val();
-		user['educationLevel'] = $('#reg-educationLevel').val();*/
-		user['numOfHackathons'] = $('#reg-hackathons').val();
+		var duplicates = false;
 		if($('#reg-hackathons').val() > 0){
 			var hackathonArray = [];
 			$('#selectHackathons').children().each(function(index){
@@ -250,19 +239,38 @@ $(".next").click(function () {
 					$(this).children().each(function(index){
 						if(index == 1){	//at selectHack: select specific hackathon
 							arr.push($(this).children().val());
-							hackathonArray.push(arr);
+							//check if array contains duplicates
+							
+							for(i = 0; i < hackathonArray.length; i++){
+								if(arraysEqual(hackathonArray[i], arr)){
+									duplicates = true;
+								}
+							}
+							if(!duplicates){
+								hackathonArray.push(arr);
+							}
 						}else{
 							arr.push($(this).val());
 						}
 					});
 				}
 			});
-			user['hackathonsArray'] = [];
-			user['hackathonsArray'].push(hackathonArray);
+			userHackathons = hackathonArray;
 		}
-		document.getElementById("user").value = user;
-		console.log(user);
-
+		if(duplicates){
+			$('#reg-error').text('Duplicate hackathons detected. Please reselect your hackathons');
+			$('#reg-error').show();
+			return;
+		}
+		if(userHackathons != undefined){
+			if(userHackathons[0][0] == "0" || userHackathons[0][1] == undefined){
+				$('#reg-error').text('No hackathons detected. Please select your hackathons');
+				$('#reg-error').show();
+				return;
+			}
+		}
+		document.getElementById("user").value = JSON.stringify(userHackathons);
+		
 		//change form animation
 		if (animating) return false;
 		animating = true;
@@ -304,7 +312,7 @@ $(".next").click(function () {
 			//this comes from the custom easing plugin
 			easing: 'easeInOutBack'
 		});
-	//}
+	}
 });
 
 $(".previous").click(function () {

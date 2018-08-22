@@ -17,8 +17,7 @@ block content
 			<div class="bg-danger" id="reg-error"></div>
 			<input type="hidden" name='email' value='#{email}' />
 			<select id='reg-school' name='school' placeholder="School"><option>School</option></select><span class="required"></span>
-			<datalist id='unis-datalist'></datalist>
-			<input type="text" id="reg-major" name="major" placeholder="Major"><span class="required"></span>
+			<select id='reg-major' name='major' placeholder="Major"><option>Major</option></select><span class="required"></span>
 			<div>
 				<select name="educationLevel" id="reg-educationLevel" placeholder="Your Current Education Level">
 					<option value="null">Education level</option>
@@ -40,7 +39,7 @@ block content
 				</select><span class="required"></span>
 			</div>
 			<label for="reg-hackathons">How Many Hackathons Have You Been To?</label>
-			<select id="reg-hackathons" name="hackathons">
+			<select id="reg-hackathons" name="hackathons" v-model="numOfHacks" >
 				<option value="0">None</option>
 				<option value="1">1</option>
 				<option value="2">2</option>

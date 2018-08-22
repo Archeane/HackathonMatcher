@@ -297,7 +297,7 @@ var uploadToGCloud = async(file) => {
  * include preferences, social profiles, and profile image.
  * If profile image is in the form, the image is saved to gcloud and a link to the image is generated.
  * The generated link is stored in DB.
- * TODO: fix authentication for gcloud upload
+ * TODO: 
  * 		fix hackathon convert to array
  * @param  {[type]}   req  [description]
  * @param  {[type]}   res  [description]
@@ -306,6 +306,7 @@ var uploadToGCloud = async(file) => {
  */
 exports.postSignup = async (req, res, next) => {
 	console.log(req.body);
+	console.log(JSON.parse(req.body.user)[0]);
 	User.findOne({
 		email: req.user.email
 	}, (err, user) => {
@@ -320,17 +321,19 @@ exports.postSignup = async (req, res, next) => {
 		user.numOfHackathons = req.body.numOfHackathons || 0;
 		
 		if(req.body.hackathon){
-		var hackathonArr = [];
+			user.hackathons = JSON.parse(req.body.user);
+	/*var hackathonArr = [];
 		for(h = 0; h < req.body.hackathon.length; h++){
 			var arr = [];
 			arr.push(req.body.hackYear[h]);
 			arr.push(req.body.hackathon[h]);
 			hackathonArr.push(arr);
 		}
-			user.hackathons = hackathonArr;
+			user.hackathons = hackathonArr;*/
 		}else{
 			user.hackathons = [];
 		}
+
 
 		if(req.body.interests){
 			var interests = [];
@@ -406,16 +409,14 @@ exports.postSignup = async (req, res, next) => {
 			})).on('error', function(err) {console.log(err);})
 			.on('finish', function() {
 			    myBucket.file(gcsname).makePublic().then(() =>{
-					console.log('upload to gcloud success!');
+					console.log('upload to gcloud success!', getPublicUrl(gcsname));
 					user.profileimg = getPublicUrl(gcsname);
 
 					user.save((err) => {
 						if (err) {
 							return next(err);
 						}
-						res.render('account/dashboard', {
-							title: 'Dashboard'
-						});
+						res.redirect('/account');
 					});
 			    });
 			  });
@@ -471,10 +472,11 @@ exports.getProfile = (req, res) => {
  * @return {[type]}        [description]
  */
 exports.postProfile = (req, res, next) => {
+	console.log(req.body);
 	var major = req.body.major;
 	var educationLevel = req.body.eduLevel;
 	var school = req.body.school;
-	var graduationYear = req.body.graduationYear;
+	var graduationYear = req.body.gradYear;
 	var fb = req.body.Facebook;
 	var phone = req.body.Phone;
 	var insta = req.body.Instagram;
@@ -550,9 +552,12 @@ exports.postProfile = (req, res, next) => {
 		user.school = school;
 		user.graduationYear = graduationYear;
 		user.facebook = fb;
+		user.github = git;
+		user.linkedin = linkedin;
 		user.phone = phone;
 		user.instagram = insta;
 		user.website = website;
+		user.about = req.body.noteText || '';
 		
 		user.preferences.fields = pField;
 		user.preferences.languages = pLan;
@@ -560,13 +565,43 @@ exports.postProfile = (req, res, next) => {
 		user.preferences.interests = pInt;
 		user.hackathons = pHack;
 
+		const file = req.file;
+		console.log(file);
+		if(file){	//upload pfp to gcloud
+			var localReadStream = fs.createReadStream(file.path);
+			const gcsname = Date.now() + file.originalname;
+			var image = myBucket.file(gcsname);
+			localReadStream.pipe(image.createWriteStream({
+			    metadata: {
+			      contentType: 'image/jpeg',
+			      metadata: {
+			        custom: 'metadata'
+			      }
+			    }
+			})).on('error', function(err) {console.log(err);})
+			.on('finish', function() {
+			    myBucket.file(gcsname).makePublic().then(() =>{
+					console.log('upload to gcloud success!', getPublicUrl(gcsname));
+					user.profileimg = getPublicUrl(gcsname);
 
-		user.save((err) => {
-			if (err) {
-				return next(err);
-			}
-			res.redirect('/account');
-		});
+					user.save((err) => {
+						if (err) {
+							return next(err);
+						}
+						res.redirect('/account');
+					});
+			    });
+			  });
+		}else{
+
+			user.save((err) => {
+				if (err) {
+					return next(err);
+				}
+				res.redirect('/');
+			});
+		}
+
 	});
 	
 };

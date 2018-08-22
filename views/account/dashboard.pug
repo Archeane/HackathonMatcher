@@ -9,22 +9,25 @@ block content
 		.sk-spinner.sk-spinner-wordpress
 			span.sk-inner-circle
 
-	form(method="POST" action="/account")
-		input(type='hidden', name='_csrf', value=_csrf)
+	form(method="POST" action="/account?_csrf="+_csrf, class="registerForm", enctype='multipart/form-data')
+		
 		header
 			.container
 				.row
 					.col-md-12.col-sm-12
 						img#pfp.img-responsive.img-circle.tm-border(src='', alt='profile picture', height=300, width=300)
+						.settings
+							input(type="file", name="myFile", id="imgInp")
 						hr
 						#settingsicon.row
 							.col-md-5
 							.col-md-1
 								i.fa.fa-users.fa-lg
-							.col-md-auto
+							.col-md-6
 								.settings
-									input(type="submit" value="Save Changes" class="settings" style="width:140px;")
+									input(type="submit" value="Save Changes" class="settings" id="submitChanges" style="width:150px;")
 						h3#email
+						#error
 
 
 		<section class="container">
@@ -41,6 +44,7 @@ block content
 						<h3 class="accent">Top Languages</h3>
 						<div class="content">
 							<div class="lan" v-for="(lan,index) in languages">
+								<div v-if="lan[0] != '' ">
 								<strong>{{lan[0]}}</strong>
 								<div v-if="lan.length > 2">
 									<i class="fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i>
@@ -50,20 +54,25 @@ block content
 								<div class="progress">
 									<div class="progress-bar progress-bar-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" v-bind:aria-valuenow="lan[1]" v-bind:style="{width:lan[1]*10+'%'}"></div>
 								</div>
+								</div>
 							</div>
 						</div>
 						<div class="settings">
 							<input v-bind:value="input" type="hidden" name="lanContent" ref="fieldsContent"  />
-							<div class="lan" v-for="(lan,index) in languages">
+							<div class="lan" style="padding-top:10px;" v-for="(lan,index) in languages">
+								<div v-if="lan[0] != '' ">
 								<strong>{{lan[0]}}</strong>
 								<div v-if="lan.length > 2">
 									<i class="fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i>
 									<span>{{lan[2]}}</span>
 								</div>
-								<i v-on:click="deleteObject(index)" class="fa fa-times" style="float:right;"></i>
-								<span style="float:right; padding-right:5px;">{{lan[1]}}%</span>
+
+								<i v-on:click="deleteObject(index, lan)" class="fa fa-times" style="float:right;"></i>
+								<span style="float:right; padding-right:5px;">%</span>
+								<input v-bind:value="lan[1]" type="number" class="max100Input" min="1" max="10" />
 								<div class="progress">
 									<div class="progress-bar progress-bar-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" v-bind:aria-valuenow="lan[1]" v-bind:style="{width:lan[1]+'%'}"></div>
+								</div>
 								</div>
 							</div>
 							<div style="padding-top:20px;">
@@ -76,7 +85,7 @@ block content
 								<div class="modal-content" style="color:dimgrey;">
 									<div class="modal-header" style="padding-bottom: 0px;">
 										<div class="col-md-11">
-											<h5 class="modal-title">Fields</h5>
+											<h5 class="modal-title">Languages</h5>
 										</div>
 										<button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
 									</div>
@@ -107,17 +116,21 @@ block content
 								<h4 class='bold'>Most Familiar</h4>
 								<div class="content">
 									<div class="tech" v-for="(field,index) in fields">
-										<span style="float:right">{{field[1]}}/10</span>
-										<li>{{field[0]}}</li>
+										<div v-if="field[0] != '' ">
+											<span style="float:right">{{field[1]}}/10</span>
+											<li>{{field[0]}}</li>
+										</div>
 									</div>
 								</div>
 								<div class="settings">
 									<input v-bind:value="input" type="hidden" name="techContent" ref="fieldsContent"  />
-									<div class="tech row" v-for="(field,index) in fields">
+									<div class="tech" v-for="(field,index) in fields">
+									<div class="row" v-if="field[0] != '' ">
 										<div class="col-md-10">
-											<i v-on:click="deleteObject(index)" class="fa fa-times" style="padding-right:5px"></i>{{field[0]}}
+											<i v-on:click="deleteObject(index, field)" class="fa fa-times" style="padding-right:5px"></i>{{field[0]}}
 										</div>
-										<input v-bind:value="field[1]" class="max10Input" type="number" style="height: 20px !important;width:40px; float:right" min="1" max="10" />
+										<input v-bind:value="field[1]" class="max10Input" type="number" min="1" max="10" />
+									</div>
 									</div>
 									<button v-on:click.prevent v-if="totalFields < 5" data-toggle="modal" data-target="#modalTech" style="border-radius: 0px; border-width: 1px; text-align:center">
 										<i class="fa fa-plus"></i> add</button>
@@ -127,7 +140,7 @@ block content
 										<div class="modal-content" style="color:dimgrey;">
 											<div class="modal-header" style="padding-bottom: 0px;">
 												<div class="col-md-11">
-													<h5 class="modal-title">Fields</h5>
+													<h5 class="modal-title">Technologies</h5>
 												</div>
 												<button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
 											</div>
@@ -147,17 +160,21 @@ block content
 								<h4 class='bold'>Most Interested</h4>
 								<div class="content">
 									<div class="interest" v-for="(field,index) in fields">
+									<div v-if="field[0] != '' ">
 										<span style="float:right">{{field[1]}}/10</span>
 										<li>{{field[0]}}</li>
+									</div>
 									</div>
 								</div>
 								<div class="settings">
 									<input v-bind:value="input" type="hidden" name="interestsContent" ref="fieldsContent"  />
-									<div class="interest row" v-for="(field,index) in fields">
+									<div class="interest" v-for="(field,index) in fields">
+									<div class="row" v-if="field[0] != '' ">
 										<div class="col-md-10">
-											<i v-on:click="deleteObject(index)" class="fa fa-times" style="padding-right:5px"></i>{{field[0]}}
+											<i v-on:click="deleteObject(index, field)" class="fa fa-times" style="padding-right:5px"></i>{{field[0]}}
 										</div>
-										<input v-bind:value="field[1]" type="number" style="height: 20px !important;width:40px; float:right" min="1" max="10" />
+										<input v-bind:value="field[1]" type="number" class="max10Input" min="1" max="10" />
+									</div>
 									</div>
 									<button v-on:click.prevent v-if="totalFields < 5" data-toggle="modal" data-target="#modalInterest" style="border-radius: 0px; border-width: 1px; text-align:center">
 										<i class="fa fa-plus"></i> add</button>
@@ -190,16 +207,20 @@ block content
 					<h2 class="accent">Fields</h2>
 					<div class="content">
 						<div class="field" v-for="(field,index) in fields">
+						<div v-if="field[0] != '' ">
 							<span style="float:right">{{field[1]}}/10</span>
 							<li>{{field[0]}}</li>
+						</div>
 						</div>
 					</div>
 					<div class="settings">
 						<ul>
 							<input v-bind:value="input" type="hidden" name="fieldsContent" ref="fieldsContent"  />
-							<li class="field" style="list-style-type: none;" v-for="(field,index) in fields">
-								<i v-on:click="deleteObject(index)" class="fa fa-times" style="padding-right:5px"></i>{{field[0]}}
-								<input v-bind:value="field[1]" type="number" style="height: 20px !important;width:40px; float:right" min="1" max="10" />
+							<li class="field"  style="list-style-type: none;" v-for="(field,index) in fields">
+							<div v-if="field[0] != '' ">
+								<i v-on:click="deleteObject(index, field)" class="fa fa-times" style="padding-right:5px"></i>{{field[0]}}
+								<input v-bind:value="field[1]" type="number" class="max10Input" min="1" max="10" />
+							</div>
 							</li>
 						</ul>
 						<button v-on:click.prevent v-if="totalFields < 5" data-toggle="modal" data-target="#modalField" style="border-radius: 0px; border-width: 1px; text-align:center">
@@ -236,18 +257,22 @@ block content
 					<div class="contact" id="app-hackathons">
 						<h2>Hackathons</h2>
 						<div class="content">
-							<div class="hackathon" v-for="(hackathon,index) in hackathons">
+							<div class="hackathon" 	v-for="(hackathon,index) in hackathons">
+							<div v-if="hackathon[0] != '' ">
 								<i v-if="hackathon.length > 2" class="fa fa-trophy" style="float:right;"></i>
 								<li style="float:left;">{{hackathon[0]}}  {{hackathon[1]}}</li>
+							</div>
 							</div>
 						</div>
 						<div class="settings">
 							<ul>
 								<input v-bind:value="input" type="hidden" name="hackathonsContent" ref="fieldsContent"  />
 								<li class="field" style="list-style-type: none;" v-for="(hackathon,index) in hackathons">
-									<i v-on:click="deleteObject(index)" class="fa fa-times" style="padding-right:5px" style="float:left"></i>
+									<div v-if="hackathon[0] != '' ">
+									<i v-on:click="deleteObject(index, hackathon)" class="fa fa-times" style="padding-right:5px" style="float:left"></i>
 									<span>{{hackathon[0]}}  {{hackathon[1]}}</span>
 									<i v-if="hackathon.length > 2" class="fa fa-trophy" style="float:right;"></i>
+									</div>
 								</li>
 							</ul>
 							<button v-on:click.prevent v-if="totalFields < 5" data-toggle="modal" data-target="#modalHackathons" style="border-radius: 0px; border-width: 1px; text-align:center">
@@ -289,7 +314,9 @@ block content
 						<h2>A Little More About Me...</h2>
 						<div class="experience-content" id="note">
 							<div class="content"></div>
-							<div class="settings"></div>
+							<div class="settings">
+								
+							</div>
 						</div>
 					</div>
 				</div>

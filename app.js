@@ -134,6 +134,7 @@ const fs = require('fs');
  */
 app.get('/signup', userController.getSignup);
 app.post('/signup', upload.single('myFile'), userController.postSignup);
+app.post('/account', upload.single('myFile'), userController.postProfile);
 
 //TODO: put upload routes before csrf
 app.use((req, res, next) => {
@@ -183,7 +184,7 @@ app.get('/account', userController.getAccount);
   Dashboard
  */
 //TODO: authenticatation for logged in user post requestes
-app.post('/account', passportConfig.isAuthenticated, userController.postProfile);
+
 //app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);
 //app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/reset/:token', userController.getReset);

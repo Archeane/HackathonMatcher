@@ -34,7 +34,8 @@ const userSchema = new mongoose.Schema({
 	educationLevel: String,
 	location: String,
 	website: String,
-	profileimg: String,		
+	profileimg: String,	
+	about: String,	
 
 	numOfHackathons: Number,
 	hackathons: Array,
