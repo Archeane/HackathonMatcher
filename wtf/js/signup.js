@@ -1,6 +1,8 @@
 //TODO:
 //1. Make sure there's no duplicates in hackathons
 //2. Add hobbies field to dashboard?
+//3. Change the json file for univeristy: alphabatical ranking + less colleges
+//4. Have actual hackathons for hackathons.json && change the years input width
 var current_fs, next_fs, previous_fs; //fieldsets
 var left, opacity, scale; //fieldset properties which we will animate
 var animating; //flag to prevent quick multi-click glitches
@@ -228,10 +230,10 @@ $(document).ready(function () {
 var user = {};
 $(".next").click(function () {
 	
-	if (!($('#reg-school').val() && $('#reg-major').val()) || $('#reg-graduationYear').val() == "null" || $('#reg-educationLevel').val() == "null") {
+	/*if (!($('#reg-school').val() && $('#reg-major').val()) || $('#reg-graduationYear').val() == "null" || $('#reg-educationLevel').val() == "null") {
 		$('#reg-error').text('Please fill in all required fields');
 		$('#reg-error').show();
-	} else {
+	} else {*/
 		$('#reg-error').hide();
 
 		//append data to user variable
@@ -302,7 +304,7 @@ $(".next").click(function () {
 			//this comes from the custom easing plugin
 			easing: 'easeInOutBack'
 		});
-	}
+	//}
 });
 
 $(".previous").click(function () {

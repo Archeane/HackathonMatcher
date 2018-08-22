@@ -9,13 +9,13 @@ const randomBytesAsync = promisify(crypto.randomBytes);
 const fs = require('fs');
 const nodemailer = require('nodemailer');
 var GoogleCloudStorage = require('@google-cloud/storage');
-/*
+
 var storage = new GoogleCloudStorage({
   projectId: process.env.GOOGLE_CLOUD_STORAGE_PROJECT_ID,
   keyFilename: process.env.GOOGLE_CLOUD_STORAGE_KEYFILE_NAME
 });
 var myBucket = storage.bucket(process.env.GOOGLE_CLOUD_BUCKET_NAME);
-*/
+
 
 //---------HOME----------------
 /**
@@ -390,7 +390,7 @@ exports.postSignup = async (req, res, next) => {
 		user.instagram = req.body.instagram || '';
 		user.linkedin = req.body.linkedin || '';
 		user.github = req.body.github || '';
-/*
+
 		const file = req.file;
 		if(file){	//upload pfp to gcloud
 			var localReadStream = fs.createReadStream(file.path);
@@ -420,14 +420,14 @@ exports.postSignup = async (req, res, next) => {
 			    });
 			  });
 		}else{
-*/
+
 			user.save((err) => {
 				if (err) {
 					return next(err);
 				}
 				res.redirect('/');
 			});
-//		}
+		}
 
 
 		

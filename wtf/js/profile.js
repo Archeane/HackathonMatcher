@@ -4,6 +4,9 @@
 //TECH, INT, FIELD settings: 4. Prevent fields that are already in user to be in modal  4.5 Number input with max & min
 //NOTE: 5. Add hobbies? Edit for Note. 
 //PFP: 6. change pfp
+//***TEST**
+//social media icons showing. delete link to phone
+//Hackathons are not being parsed correctly!!
 //**FIX DUPLICATE ADDING
 //Backgound: change background? LOW PRIORITY
 //	

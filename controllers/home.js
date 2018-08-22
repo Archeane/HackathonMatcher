@@ -5,6 +5,8 @@
 /**
  * GET /
  * Home page.
+ * TODO: fix footer position 
+ * WHy does the webpage shake??
  */
 exports.index = (req, res) => {
 	//console.log(req.user);
