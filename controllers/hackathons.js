@@ -51,7 +51,7 @@ exports.testInit = (req,res,next) =>{
 		const fields = require('../wtf/assets/fields.json');
 		
 		var usersArr = [];
-		for(j = 0; j < 100; j++){
+		for(j = 0; j < 50; j++){
 			var firstname = random_name({first:true});
 			var lastname = random_name({last:true});
 			var id = firstname+'.'+lastname;
@@ -140,8 +140,22 @@ exports.testInit = (req,res,next) =>{
 
 exports.addTestHackathons = (req, res, next) => {
 	MongoClient.connect(process.env.MONGODB_URI, function (err, db) {
+		this.db = db;
+
+		const User = require('../models/User');
+		const random_name = require('node-random-name');
+		const randomstring = require('randomstring');
+		const Chance = require('chance');
+		var chance = new Chance();
+
+		const unis = require('../wtf/assets/us_institutions.json');
+		const majors = require('../wtf/assets/majors.json');
+		const interests = require('../wtf/assets/interests.json');
+		const tech = require('../wtf/assets/technologies.json');
+		const lan = require('../wtf/assets/languages.json');
+		const fields = require('../wtf/assets/fields.json');
 		const Hackathon = require('../models/Hackathon');
-		for(i = 0; i < 9; i++){
+		for(i = 0; i < 2; i++){
 			var uni = unis[Math.floor(100+Math.random()*50)].institution
 			var name = 'hack'+uni;
 			var email = chance.email();
@@ -177,7 +191,7 @@ exports.addTestHackathons = (req, res, next) => {
 
 		var collection = db.collection('hackathons');
 		collection.find().forEach(function(doc) {
-			var rand = Math.floor(10+Math.random()*20);
+			var rand = Math.floor(Math.random()*10);
 			db.collection('users').aggregate([ { $sample: { size: rand } } ], function(err, data){
 				if(err) throw err;
 				var emails = [];
