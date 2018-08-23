@@ -12,7 +12,7 @@ var GoogleCloudStorage = require('@google-cloud/storage');
 
 var storage = new GoogleCloudStorage({
   projectId: process.env.GOOGLE_CLOUD_STORAGE_PROJECT_ID,
-  keyFilename: process.env.GOOGLE_CLOUD_STORAGE_KEYFILE_NAME
+  keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS
 });
 var myBucket = storage.bucket(process.env.GOOGLE_CLOUD_BUCKET_NAME);
 

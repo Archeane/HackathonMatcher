@@ -51,7 +51,7 @@ exports.testInit = (req,res,next) =>{
 		const fields = require('../wtf/assets/fields.json');
 		
 		var usersArr = [];
-		for(j = 0; j < 50; j++){
+		for(j = 0; j < 150; j++){
 			var firstname = random_name({first:true});
 			var lastname = random_name({last:true});
 			var id = firstname+'.'+lastname;
@@ -71,6 +71,7 @@ exports.testInit = (req,res,next) =>{
 				emailSecretToken: 'secretToken',
 				emailActive: true,
 				profileimg: profileurl,
+				about: chance.sentence()
 			});
 			
 			user.school = unis[Math.floor(30+Math.random()*50)].institution;
@@ -155,7 +156,7 @@ exports.addTestHackathons = (req, res, next) => {
 		const lan = require('../wtf/assets/languages.json');
 		const fields = require('../wtf/assets/fields.json');
 		const Hackathon = require('../models/Hackathon');
-		for(i = 0; i < 2; i++){
+		for(i = 0; i < 3; i++){
 			var uni = unis[Math.floor(100+Math.random()*50)].institution
 			var name = 'hack'+uni;
 			var email = chance.email();
@@ -191,7 +192,7 @@ exports.addTestHackathons = (req, res, next) => {
 
 		var collection = db.collection('hackathons');
 		collection.find().forEach(function(doc) {
-			var rand = Math.floor(Math.random()*10);
+			var rand = Math.floor(40+Math.random()*30);
 			db.collection('users').aggregate([ { $sample: { size: rand } } ], function(err, data){
 				if(err) throw err;
 				var emails = [];
