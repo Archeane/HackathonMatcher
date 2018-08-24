@@ -304,8 +304,6 @@ var uploadToGCloud = async(file) => {
  * @return {[type]}        [description]
  */
 exports.postSignup = async (req, res, next) => {
-	console.log(req.body);
-	console.log(JSON.parse(req.body.user)[0]);
 	User.findOne({
 		email: req.user.email
 	}, (err, user) => {

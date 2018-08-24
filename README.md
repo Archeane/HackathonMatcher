@@ -2,6 +2,10 @@
 
 Under development
 
+Demo at: http://hackermatcher.herokuapp.com
+
+Not all features are available
+
 ### Version
 1.0.0
 
