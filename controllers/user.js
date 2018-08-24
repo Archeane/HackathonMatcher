@@ -321,9 +321,9 @@ exports.postSignup = async (req, res, next) => {
 		if(req.body.hackathon){
 			//TODO: handle error for this
 			var parsedHacks;
-			try{
+			//try{
 				parsedHacks = JSON.parse(req.body.user);
-			}
+			//}
 			user.hackathons = parsedHacks;
 	/*var hackathonArr = [];
 		for(h = 0; h < req.body.hackathon.length; h++){
