@@ -5,23 +5,10 @@ var convert = require('mongoose_schema-json');
 var MongoClient = require('mongodb').MongoClient;
 const async = require('async');
 
-var loggedinUser;
-var hackathonData;
-var processedData = null;
-
-var x = 0;
-var asyncLoop = function(arr) {
-    asyncFunction(arr[x],function(){
-        x++;
-        if(x < arr.length) {
-            loopArray(arr);   
-        }
-    }); 
-}
-
-function asyncFunction(msg,callback) {
-   	//code for async function
-    callback();
+async function asyncForEach(array, callback) {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array)
+  }
 }
 
 /**
@@ -109,7 +96,7 @@ exports.testInit = (req,res,next) =>{
 				if(arr.includes(k)){
 					continue;
 				}else{
-					arr.push([k, Math.floor(Math.random()*10)]);
+					arr.push([k, Math.floor(Math.random()*100)]);
 				}
 			}
 			user.preferences.languages = arr;
@@ -247,11 +234,10 @@ exports.getHackathonById = (req, res, next) => {
 		if (err) throw err;
   		db.collection('hackathons').findOne({"urlId": req.params.id}, (err, result) =>{
   			if(err) throw err;
-
   			if(result == null){	//If hackathon is not found
   				res.send("404 NOT FOUND");
-  			}else if((req.user.preferences != null && req.user.preferences != undefined && req.user.preferences != '') ||
-  					((req.user.preferences.interests != null && req.user.preferences.interests != undefined && req.user.preferences.interests != '') &&  
+  			}else if(!(req.user.preferences != null && req.user.preferences != undefined && req.user.preferences != '') ||
+  					!((req.user.preferences.interests != null && req.user.preferences.interests != undefined && req.user.preferences.interests != '') &&  
   					 (req.user.preferences.languages != null && req.user.preferences.languages != undefined && req.user.preferences.languages != '') &&
   					 (req.user.preferences.fields != null && req.user.preferences.fields != undefined && req.user.preferences.fields != '') &&
   					 (req.user.preferences.technologies != null && req.user.preferences.technologies != undefined && req.user.preferences.technologies != ''))){
@@ -301,29 +287,23 @@ exports.getHackathonById = (req, res, next) => {
 							}
 						);
 						//console.log(arr);
-						var topten = arr.slice(0,10);
+						var topten = arr.slice(1,11);
 						console.log(topten);
 						var toptenHackers = [];
 						var counter = 0;
-						new Promise((resolve, reject) => {
-							topten.forEach(function(item){
-								//console.log(item);
-								db.collection('users').findOne({'urlId':item[0]}, function(err,user){
-									if(err) throw err;
-									toptenHackers.push(user);
-									counter++;
-									if(counter == topten.length-1){
-										resolve(toptenHackers);
-									}
-								});	
-							});
+						new Promise(async (resolve, reject) => {
+							for(let item of topten){
+								let result = await db.collection('users').findOne({'urlId':item[0]});
+								toptenHackers.push(result);
+							}
+							resolve(toptenHackers);
 						}).then((tempdata) =>{
-							//console.log(tempdata);
 							res.render('hackathon', {
 								title: '', foundHackathon: result, containsHackers: true, data: tempdata
 							});
 						});
-					}else{
+					}else{//no matchings users are found
+						console.log('no matchings users are found')
 						res.render('hackathon', {
 							title: '', foundHackathon: result, containsHackers: false, data: false
 						});
@@ -369,8 +349,29 @@ exports.visual = (req, res, next) =>{
 		if(matchedHackathon === hackathonUrlId && parsedUser.matches[1] != null && parsedUser.matches[1] != undefined){
 			var matches = parsedUser.matches[1];	//Gets all the users of hackatonUrlId
 			var minUsers = [];
-			new Promise((resolve, reject) => {
-				matches.forEach(function(hacker){
+			new Promise(async(resolve, reject) => {
+				for(let hacker of matches){
+					let data = await db.collection('users').findOne({'urlId':hacker[0]});
+					var user = JSON.stringify({
+						"_id":data._id,
+						"urlId": data.urlId,
+						"email":data.email,
+						"hackathons":data.hackathons,
+						"name": data.firstname+" "+data.lastname,
+						"profileurl": data.profileimg,
+						"school":data.school,
+						"major":data.major,
+						"graduationYear":data.graduationYear,
+						"educationLevel":data.educationLevel,
+						"score": hacker[1]
+					});
+					console.log(user);
+					minUsers.push(user);
+				}
+				console.log(matches.length);
+				console.log(minUsers.length);
+				resolve(minUsers);/*
+				await matches.forEach(function(hacker){
 					db.collection('users').findOne({"urlId":hacker[0]}, function(err, data){
 						var user = JSON.stringify({
 							"_id":data._id,
@@ -387,10 +388,11 @@ exports.visual = (req, res, next) =>{
 						});
 						minUsers.push(user);
 						if(minUsers.length == matches.length){
-							resolve(minUsers);
+							
 						}
-					});
-				});
+					});//end of db.findOne
+				});//end fo foreach
+				resolve(minUsers);*/
 			}).then(function(result){
 				res.render('visualization', {
 					title:'Visualization', matches: result, css:"visualization.css", js:"visualization.js"
@@ -408,30 +410,33 @@ exports.visual = (req, res, next) =>{
 					var resultJson = JSON.parse(convert.schema2json(result));
 					var allHackathonHackers = resultJson['hackers'];
 					
+
 					var process = spawn('python', ["./algorithmn/process.py", allHackathonHackers, JSON.stringify(req.user)]);
 					
 					process.stdout.on('data', function(data){
+						console.log('data:');
+						console.log(data);
 						processedData = data.toString();
 						console.log(processedData);
 					});
 					
 					process.stdout.on('end', function(){
-						var arr = eval("["+processedData+"]")[0];
-						if(arr != null && arr.length > 0 && arr != undefined && arr != '' && arr != []){
-							var hackathonMatches = [hackathonUrlId];
-							hackathonMatches.push(arr);
-							//TODO: instead of pushing, update existing hackathon matches if already exist in user matches
-							db.collection("users").update({"urlId":req.user.urlId},
-								{
-									$set: {
-										"matches":hackathonMatches
-									}
-								},
-							() => {
-								new Promise((resolve, reject) => {
-									var minUsers = [];
-									arr.forEach(function(hacker){
-										db.collection('users').findOne({"urlId":hacker[0]}, function(err, data){
+						if(processedData != undefined && processedData != null && processedData.length != 0){
+							var arr = eval("["+processedData+"]")[0];
+							if(arr != null && arr.length > 0 && arr != undefined && arr != '' && arr != []){
+								var hackathonMatches = [hackathonUrlId];
+								hackathonMatches.push(arr);
+								//TODO: instead of pushing, update existing hackathon matches if already exist in user matches
+								db.collection("users").update({"urlId":req.user.urlId},
+									{
+										$set: {
+											"matches":hackathonMatches
+										}
+									},
+								() => {
+									new Promise(async (resolve, reject) => {
+										for(let hacker of matches){
+											let data = await db.collection('users').findOne({'urlId':hacker[0]});
 											var user = JSON.stringify({
 												"_id":data._id,
 												"urlId": data.urlId,
@@ -445,22 +450,51 @@ exports.visual = (req, res, next) =>{
 												"educationLevel":data.educationLevel,
 												"score": hacker[1]
 											});
+											console.log(user);
 											minUsers.push(user);
-											//TODO: not a good way to get out of async functions. Do promoise
-											if(minUsers.length == matches.length){
-												resolve(minUsers);
-											}
+										}
+										console.log(matches.length);
+										console.log(minUsers.length);
+										resolve(minUsers);/*
+										var minUsers = [];
+										await arr.forEach(function(hacker){
+											db.collection('users').findOne({"urlId":hacker[0]}, function(err, data){
+												var user = JSON.stringify({
+													"_id":data._id,
+													"urlId": data.urlId,
+													"email":data.email,
+													"hackathons":data.hackathons,
+													"name": data.firstname+" "+data.lastname,
+													"profileurl": data.profileimg,
+													"school":data.school,
+													"major":data.major,
+													"graduationYear":data.graduationYear,
+													"educationLevel":data.educationLevel,
+													"score": hacker[1]
+												});
+												minUsers.push(user);
+												//TODO: not a good way to get out of async functions. Do promoise
+												
+											});
+										});//end of foreach
+										resolve(minUsers);*/
+									}).then(function(result){
+										res.render('visualization', {
+											title:'Visualization', matches: result, css:"visualization.css", js:"visualization.js"
 										});
+									}, function(err){
+										throw err;
 									});
-								}).then(function(result){
-									res.render('visualization', {
-										title:'Visualization', matches: result, css:"visualization.css", js:"visualization.js"
-									});
-								}, function(err){
-									throw err;
 								});
-							});
-						}else{
+							}else{
+								res.render('message',{
+									title:'unmatched preferences', 
+									pageTitle:'No users with similiar preferences found', 
+									message:'Please add a preference.',
+									redirectURL: '/hackathons'
+								});
+							}
+						}else{	//process data contains nothing
 							res.render('message',{
 								title:'unmatched preferences', 
 								pageTitle:'No users with similiar preferences found', 
@@ -468,7 +502,7 @@ exports.visual = (req, res, next) =>{
 								redirectURL: '/hackathons'
 							});
 						}
-					});
+					}); //end of process data end
 				}
 			});
 		}

@@ -8,7 +8,7 @@ $(window).on('load', function () {
 });
 
 $('#error').hide()
-
+var fieldsApp, techApp, lanApp, intApp, hackApp; 
 $(function () {
 	$('[data-toggle="tooltip"]').tooltip()
 
@@ -60,7 +60,6 @@ $(function () {
 	$('#name').text(name);
 	var Userabout = [name, User.major, User.school, User.educationLevel, User.graduationYear, User.facebook, User.phone, User.instagram, User.github, User.linkedin, User.website];
 	var UserLan = User.preferences.languages;
-	console.log(UserLan[0][0] == '');
 	var UserFamiliar = User.preferences.technologies;
 	var UserInterest = User.preferences.interests;
 	var UserFields = User.preferences.fields;
@@ -75,6 +74,8 @@ $(function () {
 	fillAboutSettings(Userabout);
 	fillNote(User.about);
 
+
+	//display chosen picture in frame
 	$(document).on('change', '.btn-file :file', function () {
 		var input = $(this),
 			label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
@@ -107,6 +108,17 @@ $(function () {
 	  readURL(this);
 	});
 
+	//Submit form
+	$('#submitChanges').on('click', (event) => {
+		$('#intContent').val(intApp.fields);
+		$('#lanContent').val(lanApp.languages);
+		$('#techContent').val(techApp.fields);
+		$('#fieldsContent').val(fieldsApp.fields);
+		$('#hackContent').val(hackApp.hackathons);
+		$('#profileForm').submit();
+	});
+
+
 });
 
 async function fillFieldsVue(data){
@@ -129,12 +141,11 @@ async function fillFieldsVue(data){
 		nonduplicated = getData;
 	}
 	
-	new Vue({
+	fieldsApp = new Vue({
 		el: '#app-5',
 		data: {
 			fields: data,
-			constants: nonduplicated,
-			input: data
+			constants: nonduplicated
 		},
 		computed: {
 			totalFields() {
@@ -157,7 +168,6 @@ async function fillFieldsVue(data){
 					var arr = [child, id];
 					this.fields.push(arr);
 					this.constants.splice(index,1);
-					this.input.push(arr);
 				}
 			}
 		}
@@ -184,12 +194,11 @@ async function fillTechVue(data){
 	}else{
 		nonduplicated = getData;
 	}
-	var techVue = new Vue({
+	techVue = new Vue({
 		el: '#app-3',
 		data: {
 			fields: data,
-			constants: nonduplicated,
-			input: data
+			constants: nonduplicated
 		},
 		computed: {
 			totalFields() {
@@ -217,8 +226,6 @@ async function fillTechVue(data){
 					}
 					this.fields.push(arr);
 					this.constants.splice(index,1);
-					this.input.push(arr);
-					//deleteModalContains();
 				}
 			}
 		}
@@ -244,12 +251,11 @@ async function fillInterestsVue(data){
 	}else{
 		nonduplicated = getData;
 	}
-	new Vue({
+	intApp = new Vue({
 		el: '#app-interest',
 		data: {
 			fields: data,
-			constants: nonduplicated,
-			input: data
+			constants: nonduplicated
 		},
 		computed: {
 			totalFields() {
@@ -272,7 +278,6 @@ async function fillInterestsVue(data){
 					var arr = [child, id];
 					this.fields.push(arr);
 					this.constants.splice(index,1);
-					this.input.push(arr);
 				}
 			}
 		}
@@ -310,12 +315,11 @@ function fillHackathonsVue(data){
 
 	Promise.all([p1,p2,p3,p4,p5]).then((values) =>{
 		
-		new Vue({
+		hackApp = new Vue({
 			el: '#app-hackathons',
 			data: {
 				hackathons: data,
-				constants: [],
-				input: data
+				constants: []
 			},
 			computed: {
 				totalFields() {
@@ -336,7 +340,7 @@ function fillHackathonsVue(data){
 						var arr = [yearsMap[this.$refs.hackathonYear.value], child];
 						this.hackathons.push(arr);
 						this.constants.splice(index,1);
-						this.input.push(arr);
+						
 					}
 				}
 			}
@@ -461,12 +465,11 @@ async function fillLanVue(data){
 	}else{
 		nonduplicated = getData;
 	}
-	new Vue({
+	lanApp = new Vue({
 		el: '#skills',
 		data: {
 			languages: data,
-			constants: nonduplicated,
-			input: data
+			constants: nonduplicated
 		},
 		computed: {
 			totalLans() {
@@ -481,7 +484,7 @@ async function fillLanVue(data){
 					"name": field[0]
 				}
 				var json=JSON.stringify(temp);
-				this.$delete(this.fields, index);
+				this.$delete(this.languages, index);
 				this.constants.push(JSON.parse(json));
 			},
 			appendObject: function(child, id, index) {
@@ -489,7 +492,6 @@ async function fillLanVue(data){
 					var arr = [child, id];
 					this.languages.push(arr);
 					this.constants.splice(index,1);
-					this.languages.push(arr);
 				}
 			}
 		}

@@ -80,26 +80,33 @@ script.
           filter: function (movies) {
               //Handle user & hackathon type search
               var counter = 0;
-              return $.map(movies, function (movie) { 
-                if(movie.firstname === undefined || movie.firstname === ''){
-                  counter++;
-                  if(counter >= 5){
-                    return{
-                      value: '<a href="/search?keyword='+$('.typeahead').typeahead('val')+'&searchtype=result" > See all Results </a>'
-                    }
-                  }
+              
+              return $.map(movies, function (movie) {
+                if(movie.hasOwnProperty('errorMsg')){
                   return{
-                    value: '<a style="text-decoration: none;" href="/hackathons/'+movie.urlId+'"><img src="'+movie.imageurl+'" /><span style="font-size:10px;">    '+movie.name+'</span></a>'
+                    value: '<span>An error has occured in the server. Please try later<span>'
                   }
                 }else{
-                  counter++;
-                  if(counter >= 5){
-                    return{
-                      value: '<a href="/search?keyword='+$('.typeahead').typeahead('val')+'&searchtype=result" > See all Results </a>'
+                  if(movie.firstname === undefined || movie.firstname === ''){
+                    counter++;
+                    if(counter >= 5){
+                      return{
+                        value: '<a href="/search?keyword='+$('.typeahead').typeahead('val')+'&searchtype=result" > See all Results </a>'
+                      }
                     }
-                  }
-                  return{
-                    value: '<a style="text-decoration: none;" href="/users/'+movie.urlId+'"><img src="'+movie.profileimg+'" /><span>    '+movie.firstname+' '+movie.lastname+'</span></a>'
+                    return{
+                      value: '<a style="text-decoration: none;" href="/hackathons/'+movie.urlId+'"><img src="'+movie.imageurl+'" /><span style="font-size:10px;">    '+movie.name+'</span></a>'
+                    }
+                  }else{
+                    counter++;
+                    if(counter >= 5){
+                      return{
+                        value: '<a href="/search?keyword='+$('.typeahead').typeahead('val')+'&searchtype=result" > See all Results </a>'
+                      }
+                    }
+                    return{
+                      value: '<a style="text-decoration: none;" href="/users/'+movie.urlId+'"><img src="'+movie.profileimg+'" /><span>    '+movie.firstname+' '+movie.lastname+'</span></a>'
+                    }
                   }
                 }
               });
@@ -117,11 +124,11 @@ script.
       minLength: 1,
       order: "asc",
       dynamic: true,
-      delay: 1000,
+      delay: 500,
       backdrop: {
           "background-color": "#fff"
       },
-      empty: "no result for {{query}}",
+      empty: "no result",
     
     debug: true
   });

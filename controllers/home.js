@@ -61,10 +61,14 @@ exports.getSearch = (req, res, next) => {
 						results = docs;
 						resolve(results);
 					});
+				}).catch(function(err){
+					console.log("\x1b[31m", err);
+					var error = { "errorMsg": err };
+					res.write(JSON.stringify(error));
+					res.end();
 				});
 				userPromise.then((results) => {
 					if(searchType === "home"){
-						console.log("\x1b[32m", 'sending to res');
 						res.write(JSON.stringify(results));
 						res.end();
 					}else if(searchType === "result"){
@@ -79,7 +83,7 @@ exports.getSearch = (req, res, next) => {
 				//TODO: handle promise rejections
 			});
 		}else if(type === 'hackathons'){
-			MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {
+			MongoClient.connect(process.env.MONGODB_URI, function (err, db) {
 				var results = [];
 				var userPromise = new Promise((resolve, reject) => {
 					db.collection('hackathons').find({ "name": { $regex: keyword, $options:"i m"}}).toArray(function(err, docs){
@@ -87,6 +91,11 @@ exports.getSearch = (req, res, next) => {
 						results = docs;
 						resolve(results);
 					});
+				}).catch(function(err){
+					console.log("\x1b[31m", err);
+					var error = { "errorMsg": err };
+					res.write(JSON.stringify(error));
+					res.end();
 				});
 				userPromise.then((results) => {
 					if(searchType === "home"){
@@ -106,7 +115,7 @@ exports.getSearch = (req, res, next) => {
 			throw new URIError("invalid parameter type");
 		}
 	}else{
-		MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {
+		MongoClient.connect(process.env.MONGODB_URI, function (err, db) {
 			var results; 
 			var userPromise = new Promise((resolve, reject) => {
 				db.collection('users').find({ $or: [
@@ -129,6 +138,11 @@ exports.getSearch = (req, res, next) => {
 					}
 					resolve();
 				});
+			}).catch(function(err){
+				console.log("\x1b[31m", err);
+				var error = { "errorMsg": err };
+				res.write(JSON.stringify(error));
+				res.end();
 			});
 			var hackathonPromise = new Promise((resolve, reject) => {
 				db.collection('hackathons').find({ "name": { $regex: keyword, $options:"i m"}}).toArray(function(err, docs){
@@ -149,6 +163,11 @@ exports.getSearch = (req, res, next) => {
 					}
 					
 				});
+			}).catch(function(err){
+				console.log("\x1b[31m", err);
+				var error = { "errorMsg": err };
+				res.write(JSON.stringify(error));
+				res.end();
 			});
 
 			Promise.all([userPromise, hackathonPromise]).then((err) =>{
@@ -174,11 +193,10 @@ exports.getSearch = (req, res, next) => {
 	NOTE: TEST ROUTE
  */
 exports.getTopSearch = (req, res) => {
-	console.log('in getsearch');
 	var MongoClient = require('mongodb').MongoClient;
 	console.log(req.query);
 	var keyword = req.query.keyword;
-	MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {
+	MongoClient.connect(process.env.MONGODB_URI, function (err, db) {
 		if(err) throw err;
 		db.collection('users').find({ "name": { $regex: keyword, $options:"i m"}}).toArray(function(err, docs){
 			if(err) throw err;

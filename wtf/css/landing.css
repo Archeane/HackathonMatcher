@@ -1,19 +1,18 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,300,500);
-*:focus {
-  outline: none;
-}
+
 
 body {
-  margin: 0;
-  padding: 0px;
+  /*margin: 0;
+  padding: 0px;*/
   background: #DDD;
   font-size: 16px;
   color: #222;
   font-family: 'Roboto', sans-serif;
   font-weight: 300;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.1) 100%), url('/images/home_bg.jpg');
+  background:  url('/images/home_bg.jpg');
   background-size:cover;
 }
+
 
 
 /*error*/
@@ -33,8 +32,9 @@ body {
 /*register box*/
 #register-box {
   position: relative;
+  text-align: center;
   margin: 5% auto;
-  width: 700px;
+  width: 450px;
   height: 550px;
   background: #FFF;
   border-radius: 2px;
@@ -44,15 +44,27 @@ body {
   padding:20px;
 }
 
-#register-box h2, h4{
+#register-box h3, h5{
   text-align:center;
   font: "sans-serif";
   color:rgb(100,100,100);
 }
 
+.center{
+   position: absolute;
+    left: 70px;
+    top:130px;
+    box-sizing: border-box;
+    padding: 30px;
+    width: 300px;
+    height: 450px;
+    justify-content: center;
+}
+
+
 .left {
   position: absolute;
-  top: 30;
+  top: 10;
   left: 0;
   box-sizing: border-box;
   padding: 40px;
@@ -228,6 +240,7 @@ body {
 }
 
 /* Customize container */
+/*
 @media (min-width: 1700px) {
   .container {
     max-width: 1700px;
@@ -236,7 +249,7 @@ body {
 .container-narrow > hr {
   margin: 30px 0;
 }
-
+*/
 /* Main marketing message and sign up button */
 .jumbotron {
   text-align: center;

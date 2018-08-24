@@ -32,15 +32,20 @@ block content
 					h2 Attending Hackers
 					.row
 						.col-md-5
-
-						if !{containsHackers}
-							button.btn-primary
-								a(href="http://localhost:8080" id="visLink") View All
-							button.btn-primary
-								a(href="http://localhost:8080" id="prefLink") Set Preferences
-						else
-							span(style="padding:20px;")
-								| There are no hackers who matches you based on your preferneces input. You can reset your preferences settings <a href="http://localhost:8080" id="prefLink"> here</a>
+						#visButton
+							<div v-if="hasHackers == true">
+								button.btn-primary(style="margin-right:20px;")
+									a(href="http://hackermatcher.herokuapp.com" id="visLink") View All 
+								button.btn-primary
+									a(href="http://hackermatcher.herokuapp.com" id="prefLink") Set Preferences
+							</div>
+							<div v-else>
+								span(style="padding:20px;")
+									| There are no hackers who matches you based on your preferneces input. You can reset your preferences settings <a href="http://hackermatcher.herokuapp.com" id="prefLink"> here</a>
+							</div>
+							
+							
+							
 							 
 					.attending-hackers
 					
@@ -50,6 +55,7 @@ block content
 	script.
 		var hackathon = !{JSON.stringify(foundHackathon)};
 		var containsHackers = !{containsHackers}
+		console.log(containsHackers);
 		if(containsHackers){
 			var matches = !{JSON.stringify(data)}
 		}

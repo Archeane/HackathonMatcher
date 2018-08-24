@@ -1,5 +1,5 @@
 //TODO: handle 0 preferences choosen
-
+var fieldsApp, techApp, lanApp, intApp; 
 jQuery(document).ready(function(){
 	
 	$(document).on('click', '.add', function () {
@@ -28,6 +28,10 @@ jQuery(document).ready(function(){
 		var fieldsScore = $('input[name=similiarfields]:checked').val(); 
 		if(interestScore != undefined && interestScore != null && languagesScore != undefined && languagesScore != null && 
 		techScore != undefined && techScore != null && fieldsScore != undefined && fieldsScore != null){
+			$('#intContent').val(intApp.fields);
+			$('#lanContent').val(lanApp.languages);
+			$('#techContent').val(techApp.fields);
+			$('#fieldsContent').val(fieldsApp.fields);
 			$('#preferencesForm').submit();
 		}else{
 			$('#error').text('Please fill out all scores fields');
@@ -135,12 +139,11 @@ function fillLanVue(data){
 			resolve(data);
 		})
 	}).then((fieldsConstants) => {
-		new Vue({
+		lanApp = new Vue({
 			el: '#languages-app',
 			data: {
 				languages: data,
-				constants: fieldsConstants,
-				input: data
+				constants: fieldsConstants
 			},
 			computed: {
 				totalLans() {
@@ -157,7 +160,6 @@ function fillLanVue(data){
 					var arr = [child, id];
 					this.languages.push(arr);
 					this.constants.splice(index,1);
-					this.languages.push(arr);
 				}
 			}
 		});
@@ -171,12 +173,12 @@ function fillTechVue(data){
 			resolve(data);
 		})
 	}).then((fieldsConstants) => {
-		new Vue({
+		techApp = new Vue({
 			el: '#tech-app',
 			data: {
 				fields: data,
-				constants: fieldsConstants,
-				input: data
+				constants: fieldsConstants
+				
 			},
 			computed: {
 				totalFields() {
@@ -193,8 +195,6 @@ function fillTechVue(data){
 					var arr = [child, id];
 					this.fields.push(arr);
 					this.constants.splice(index,1);
-					this.input.push(arr);
-					
 				}
 			}
 		});
@@ -208,12 +208,11 @@ function fillFieldsVue(data){
 			resolve(data);
 		})
 	}).then((fieldsConstants) => {
-		new Vue({
+		fieldsApp = new Vue({
 			el: '#app-fields',
 			data: {
 				fields: data,
-				constants: fieldsConstants,
-				input: data
+				constants: fieldsConstants
 			},
 			computed: {
 				totalFields() {
@@ -231,8 +230,6 @@ function fillFieldsVue(data){
 					var arr = [child, id];
 					this.fields.push(arr);
 					this.constants.splice(index,1);
-					this.input.push(arr);
-					
 				}
 			}
 		});
@@ -246,12 +243,11 @@ function fillInterestsVue(data){
 			resolve(data);
 		})
 	}).then((fieldsConstants) => {
-		new Vue({
+		intApp = new Vue({
 			el: '#app-interest',
 			data: {
 				fields: data,
-				constants: fieldsConstants,
-				input: data
+				constants: fieldsConstants
 			},
 			computed: {
 				totalFields() {
@@ -268,8 +264,6 @@ function fillInterestsVue(data){
 					var arr = [child, id];
 					this.fields.push(arr);
 					this.constants.splice(index,1);
-					this.input.push(arr);
-					
 				}
 			}
 		});

@@ -275,7 +275,7 @@ function bubbleChart() {
 	  .on('mouseover', showDetail)
 	  .on('mouseout', hideDetail)
 	  .on('click', function(d){
-	  	window.location = "http://localhost:8080/users/" + d.urlId;
+	  	window.location = "http://hackermatcher.herokuapp.com/users/" + d.urlId;
 	  })
 	  .style('fill', function(d){
 	  	return 'url(#'+d.urlId+')';

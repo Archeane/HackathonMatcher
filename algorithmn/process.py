@@ -90,7 +90,9 @@ def calculateLanguageScore(hacker, carescore):
     for language in languagesArr:
         score = []
         score.append(language[0])
-        score.append(round(float(language[1]) * multipler * caremultipler, 2))
+        languageDividend = language[1] // 10
+        #TODO: languages score is divided by 10 because language scale is 100 
+        score.append(round(float(languageDividend) * multipler * caremultipler, 2))
         newLanguagesArr.append(score)
 
     return newLanguagesArr
@@ -226,8 +228,8 @@ def hackathonsimiliarscore(currentHacker, allHackers, carescores):
         if hacker != None:
             resetuser(hacker, carescores['interests'], carescores['languages'], carescores['technologies'], carescores['fields'])
             score = calculateSimiliarScore(currentHacker, hacker, carescores['interests'], carescores['languages'], carescores['technologies'], carescores['fields'])
-            if score != 0:
-                hackathonsimiliarscores.append([hacker['urlId'], score])
+#            if score != 0:
+            hackathonsimiliarscores.append([hacker['urlId'], score])
         
 
     #print(hackathonsimiliarscores)

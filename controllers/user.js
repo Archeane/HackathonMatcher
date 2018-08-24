@@ -78,8 +78,8 @@ exports.postIndex = (req, res, next) => {
 		var mailOptions = {
 		  from: 'jennyxu8448@gmail.com',
 		  to: req.body.email,
-		  subject: 'Sending Email using Node.js',
-		  text: '<p>Thanks for registering with Hackermatcher!</p><p>Please click this link to confirm your email:<a>'+confirmurl+'</a></p>'
+		  subject: 'Hackermatcher verification',
+		  text: 'Thanks for registering with Hackermatcher! Please click this link to confirm your email:'+confirmurl
 		};
 
 		smtpTransport.sendMail(mailOptions, function(error, response){
@@ -153,6 +153,25 @@ exports.verifyemail = async (req, res) => {
 			}else{
 				count++;
 				userId = user.firstname+'.' + user.lastname + '.' + count;
+				user.save((err) => {
+					if (err) {
+						return next(err);
+					}
+					
+					res.render('account/message', {
+						title:'Verification Success', message:'Verification Success. You will now be taken to a signup page.'
+					}, () =>{
+						req.logIn(user, (err) => {
+							if (err) {
+								return next(err);
+							}
+						
+							res.redirect('/signup');
+							return;
+						});
+					});
+					
+				});
 			}
 		});
 	
@@ -341,7 +360,10 @@ exports.postSignup = async (req, res, next) => {
 		if(req.body.interests){
 			var interests = [];
 			if(typeof req.body.interests == "string"){//there's only one item in input and is received as string
-				interests.push(req.body.interests);
+				var arr = [];
+				arr.push(req.body.interests);
+				arr.push(10);
+				interests.push(arr);
 			}else{
 				for(k = 0; k < req.body.interests.length; k++){
 					var ints = [];
@@ -357,12 +379,15 @@ exports.postSignup = async (req, res, next) => {
 		if(req.body.languages){
 			var languages = [];
 			if(typeof req.body.languages == "string"){//there's only one item in input and is received as string
-				languages.push(req.body.languages);
+				var arr = [];
+				arr.push(req.body.languages);
+				arr.push(100);
+				languages.push(arr);
 			}else{
 				for(k = 0; k < req.body.languages.length; k++){
 					var ints = [];
 					ints.push(req.body.languages[k]);
-					ints.push(10);
+					ints.push(100);
 					languages.push(ints);
 				}
 			}
@@ -373,7 +398,10 @@ exports.postSignup = async (req, res, next) => {
 		if(req.body.technologies){
 			var technologies = [];
 			if(typeof req.body.technologies == "string"){//there's only one item in input and is received as string
-				technologies.push(req.body.technologies);
+				var arr = [];
+				arr.push(req.body.technologies);
+				arr.push(10);
+				technologies.push(arr);
 			}else{
 				for(k = 0; k < req.body.technologies.length; k++){
 					var ints = [];
@@ -389,7 +417,10 @@ exports.postSignup = async (req, res, next) => {
 		if(req.body.fields){
 			var fields = [];
 			if(typeof req.body.fields == "string"){//there's only one item in input and is received as string
-				fields.push(req.body.fields);
+				var arr = [];
+				arr.push(req.body.fields);
+				arr.push(10);
+				fields.push(arr);
 			}else{
 				for(k = 0; k < req.body.fields.length; k++){
 
@@ -520,7 +551,9 @@ exports.postProfile = (req, res, next) => {
 		if(languages[i] === languages[i+2]){
 			i += 2;
 		}
-		pLan.push(arr);
+		if(languages[i] != '' ){
+			pLan.push(arr);
+		}
 	}
 	for(i = 0; i < technologies.length; i += 2){
 		var arr = [];
@@ -529,7 +562,9 @@ exports.postProfile = (req, res, next) => {
 		if(technologies[i] === technologies[i+2]){
 			i += 2;
 		}
-		pTech.push(arr);
+		if(technologies[i] != ''){
+			pTech.push(arr);
+		}
 	}
 	for(i = 0; i < interests.length; i += 2){
 		var arr = [];
@@ -538,7 +573,9 @@ exports.postProfile = (req, res, next) => {
 		if(interests[i] === interests[i+2]){
 			i += 2;
 		}
-		pInt.push(arr);
+		if(interests[i]){
+			pInt.push(arr);
+		}
 	}
 	for(i = 0; i < fields.length; i += 2){
 		var arr = [];
@@ -547,7 +584,9 @@ exports.postProfile = (req, res, next) => {
 		if(fields[i] === fields[i+2]){
 			i += 2;
 		}
-		pField.push(arr);
+		if(fields[i] != ''){
+			pField.push(arr);
+		}
 	}
 	for(i = 0; i < hackathons.length; i += 2){
 		var arr = [];
@@ -556,7 +595,9 @@ exports.postProfile = (req, res, next) => {
 		if(hackathons[i] === hackathons[i+2]){
 			i += 2;
 		}
-		pHack.push(arr);
+		if(hackathons[i] != ''){
+			pHack.push(arr);
+		}
 	}
 
 
@@ -653,12 +694,12 @@ exports.getPreferences = (req, res) => {
  * @return {[type]}     [description]
  */
 exports.postPreferences = (req,res) => {
+	console.log("\x1b[1m", req.body);
 	var interestScore = req.body.interestScore;
 	var languageScore =req.body.languageScore;
 	var techScore = req.body.techScore;
 	var fieldScore = req.body.fieldsScore;
 
-	console.log("\x1b[1m", req.body);
 	var fields = req.body.fieldsContent.split(',');
 	var languages = req.body.lanContent.split(',');
 	var technologies = req.body.techContent.split(',');

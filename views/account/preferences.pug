@@ -17,13 +17,13 @@ block content
 						.row
 							.col-md-12
 								h5.accent Interests
-								h6 How interested are you in these fields?
+								h6 How interested are you in these interests?
 						
-						<input v-bind:value="input" type="hidden" name="interestsContent" ref="fieldsContent"  />
+						<input type="hidden" name="interestsContent" id="intContent"  />
 						<div class="interest" v-for="(field,index) in fields" style="padding-top:20px;">
 							<i v-on:click="deleteObject(index)" class="fa fa-times" style="padding-right:5px"></i>{{field[0]}}
 							<i class="add fa fa-plus" style="float:right"></i>
-							<input v-bind:value="field[1]" disabled type="number" value="0" class="field" />
+							<input v-bind:value="field[1]" disabled type="number" value="0" class="field" style="float:right" />
 							<i class="sub fa fa-minus" style="float:right;"></i>
 						</div>
 						<button v-on:click.prevent data-toggle="modal" data-target="#modalInterest" style="border-radius: 0px; border-width: 1px; text-align:center; margin-left:10px;">
@@ -54,10 +54,10 @@ block content
 							.col-md-12
 								h5.accent Languages
 								h6 How familiar are you with the language?
-						<input v-bind:value="input" type="hidden" name="lanContent" ref="fieldsContent"  />
+						<input type="hidden" name="lanContent" id="lanContent"  />
 						<div class="lan" v-for="(lan,index) in languages" style="padding-top:20px;">
 							<i v-on:click="deleteObject(index)" class="fa fa-times" style="padding-right:5px"></i>{{lan[0]}}
-						<input v-bind:value="lan[1]" type="number" min="1" max="10" />
+						<input v-bind:value="lan[1]" style="float:right" type="number" min="1" max="10" />
 						</div>
 						<button v-on:click.prevent data-toggle="modal" data-target="#modalLan" style="border-radius: 0px; border-width: 1px; text-align:center;">
 						<i class="fa fa-plus"></i> add</button>
@@ -67,7 +67,7 @@ block content
 								<div class="modal-content" style="color:dimgrey;">
 									<div class="modal-header" style="padding-bottom: 0px;">
 										<div class="col-md-11">
-											<h5 class="modal-title">Fields</h5>
+											<h5 class="modal-title">Languages</h5>
 										</div>
 										<button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
 									</div>
@@ -89,10 +89,10 @@ block content
 							.col-md-12
 								h5.accent Technologies
 								h6 How familiar are you with the technology?
-						<input v-bind:value="input" type="hidden" name="techContent" ref="fieldsContent"  />
+						<input type="hidden" name="techContent" id="techContent"  />
 						<div class="tech" v-for="(field,index) in fields" style="padding-top:20px;">
 							<i v-on:click="deleteObject(index)" class="fa fa-times" style="padding-right:5px"></i>{{field[0]}}
-							<input v-bind:value="field[1]" type="number"  min="1" max="10" />
+							<input v-bind:value="field[1]" type="number" style="float:right" min="1" max="10" />
 						</div>
 						<button v-on:click.prevent data-toggle="modal" data-target="#modalTech" style="border-radius: 0px; border-width: 1px; text-align:center">
 							<i class="fa fa-plus"></i> add</button>
@@ -101,7 +101,7 @@ block content
 								<div class="modal-content" style="color:dimgrey;">
 									<div class="modal-header" style="padding-bottom: 0px;">
 										<div class="col-md-11">
-											<h5 class="modal-title">Fields</h5>
+											<h5 class="modal-title">Technologies</h5>
 										</div>
 										<button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
 									</div>
@@ -124,16 +124,16 @@ block content
 								h5.accent Fields
 								h6 How interested are you in these fields?
 						
-						<input v-bind:value="input" type="hidden" name="fieldsContent" ref="fieldsContent"  />
+						<input type="hidden" name="fieldsContent" id="fieldsContent"  />
 						<div class="field" v-for="(field,index) in fields" style="padding-top:20px;">
 							<i v-on:click="deleteObject(index)" class="fa fa-times" style="padding-right:5px"></i>{{field[0]}}
-							<input v-bind:value="field[1]" type="number"  min="1" max="10" />
+							<input v-bind:value="field[1]" type="number" style="float:right" min="1" max="10" />
 						</div>
 						
 						<button v-on:click.prevent data-toggle="modal" data-target="#modalField" style="border-radius: 0px; border-width: 1px;text-align:center">
 						<i class="fa fa-plus"></i> add</button>
 						<div class="modal fade" id="modalField" tabindex="-1" role="dialog" style="display:none;" aria-hidden="true">
-						<div class="modal-dialog" role="document">
+						<div class="modal-dialog" role="document" style="color:black">
 							<div class="modal-content">
 								<div class="modal-header" style="padding-bottom: 0px;">
 									<div class="col-md-11">
@@ -141,7 +141,7 @@ block content
 									</div>
 									<button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
 								</div>
-								<div class="modal-body">
+								<div class="modal-body" >
 									<div class="row" v-for="(constant, index) in constants">
 										<div class="col-md-8">
 											<span style="padding-left: 30px;">{{constant.name}}</span>

@@ -224,10 +224,10 @@ $(document).ready(function () {
 var userHackathons;
 $(".next").click(function () {
 	
-	if (!($('#reg-school').val() && $('#reg-major').val()) || $('#reg-graduationYear').val() == "null" || $('#reg-educationLevel').val() == "null") {
+	//if (!($('#reg-school').val() && $('#reg-major').val()) || $('#reg-graduationYear').val() == "null" || $('#reg-educationLevel').val() == "null") {
 		$('#reg-error').text('Please fill in all required fields');
 		$('#reg-error').show();
-	} else {
+	//} else {
 		$('#reg-error').hide();
 
 		var duplicates = false;
@@ -312,7 +312,7 @@ $(".next").click(function () {
 			//this comes from the custom easing plugin
 			easing: 'easeInOutBack'
 		});
-	}
+	//}
 });
 
 $(".previous").click(function () {

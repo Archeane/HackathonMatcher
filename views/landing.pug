@@ -6,10 +6,10 @@ block append head
 block content
   .container
     div#register-box
-      h2.title Be great at what you do 
-      h4.subtitle Get started - it is free
+      h3.title Be great at what you do 
+      h5.subtitle Get started - it is free
 
-      div.left
+      div.center
         form(action='/', method='POST', id="registerForm")
           input(type='hidden', name='_csrf', value=_csrf)
           #error(style="background: red; color: #fff; width: 80%; display:none;padding:5px;")
@@ -27,7 +27,7 @@ block content
             button.btn.btn-success(type='submit' id="submitRegister")
               i.fas.fa-user-plus
               | Signup
-
+  //
       div.right
         span.loginwith Sign in with...
         .form-group

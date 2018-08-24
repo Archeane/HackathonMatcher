@@ -1,12 +1,22 @@
 window.onload = function(){
-	var visulURl = window.location.toString() + '/visual';
-	var preferenceURL = window.location.toString() + '/preferences';
-	console.log(preferenceURL);
+	new Vue({
+		el: '#visButton',
+		data: {
+			hasHackers: containsHackers
+		}
+	});
+
+
 	if(containsHackers){
-    	document.getElementById("visLink").href = visulURl;
+		var visulURl = window.location.toString() + '/visual';
+		var preferenceURL = window.location.toString() + '/preferences';
+	    document.getElementById("visLink").href = visulURl;
+	    document.getElementById("prefLink").href = preferenceURL;
+	}else{
+		var preferenceURL = window.location.toString() + '/preferences';
+	    document.getElementById("prefLink").href = preferenceURL;
 	}
-    console.log(document.getElementById("prefLink"));
-    document.getElementById("prefLink").href = preferenceURL;
+
 }
 $(document).ready(function(){
 
