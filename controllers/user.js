@@ -304,6 +304,7 @@ var uploadToGCloud = async(file) => {
  * @return {[type]}        [description]
  */
 exports.postSignup = async (req, res, next) => {
+	console.log(req.body);
 	User.findOne({
 		email: req.user.email
 	}, (err, user) => {
@@ -322,8 +323,6 @@ exports.postSignup = async (req, res, next) => {
 			var parsedHacks;
 			try{
 				parsedHacks = JSON.parse(req.body.user);
-			}catch(Error e){
-				console.log(e);
 			}
 			user.hackathons = parsedHacks;
 	/*var hackathonArr = [];
@@ -341,8 +340,8 @@ exports.postSignup = async (req, res, next) => {
 
 		if(req.body.interests){
 			var interests = [];
-			if(typeof req.body.languages == "string"){//there's only one item in input and is received as string
-				languages.push(req.body.languages);
+			if(typeof req.body.interests == "string"){//there's only one item in input and is received as string
+				interests.push(req.body.interests);
 			}else{
 				for(k = 0; k < req.body.interests.length; k++){
 					var ints = [];
