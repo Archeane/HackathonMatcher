@@ -318,7 +318,14 @@ exports.postSignup = async (req, res, next) => {
 		user.numOfHackathons = req.body.numOfHackathons || 0;
 		
 		if(req.body.hackathon){
-			user.hackathons = JSON.parse(req.body.user);
+			//TODO: handle error for this
+			var parsedHacks;
+			try{
+				parsedHacks = JSON.parse(req.body.user);
+			}catch(Error e){
+				console.log(e);
+			}
+			user.hackathons = parsedHacks;
 	/*var hackathonArr = [];
 		for(h = 0; h < req.body.hackathon.length; h++){
 			var arr = [];
@@ -334,11 +341,15 @@ exports.postSignup = async (req, res, next) => {
 
 		if(req.body.interests){
 			var interests = [];
-			for(k = 0; k < req.body.interests.length; k++){
-				var ints = [];
-				ints.push(req.body.interests[k]);
-				ints.push(10);
-				interests.push(ints);
+			if(typeof req.body.languages == "string"){//there's only one item in input and is received as string
+				languages.push(req.body.languages);
+			}else{
+				for(k = 0; k < req.body.interests.length; k++){
+					var ints = [];
+					ints.push(req.body.interests[k]);
+					ints.push(10);
+					interests.push(ints);
+				}
 			}
 			user.preferences.interests = interests;
 		}else{
@@ -346,11 +357,15 @@ exports.postSignup = async (req, res, next) => {
 		}
 		if(req.body.languages){
 			var languages = [];
-			for(k = 0; k < req.body.languages.length; k++){
-				var ints = [];
-				ints.push(req.body.languages[k]);
-				ints.push(10);
-				languages.push(ints);
+			if(typeof req.body.languages == "string"){//there's only one item in input and is received as string
+				languages.push(req.body.languages);
+			}else{
+				for(k = 0; k < req.body.languages.length; k++){
+					var ints = [];
+					ints.push(req.body.languages[k]);
+					ints.push(10);
+					languages.push(ints);
+				}
 			}
 			user.preferences.languages = languages;
 		}else{
@@ -358,11 +373,15 @@ exports.postSignup = async (req, res, next) => {
 		}
 		if(req.body.technologies){
 			var technologies = [];
-			for(k = 0; k < req.body.technologies.length; k++){
-				var ints = [];
-				ints.push(req.body.technologies[k]);
-				ints.push(10);
-				technologies.push(ints);
+			if(typeof req.body.technologies == "string"){//there's only one item in input and is received as string
+				technologies.push(req.body.technologies);
+			}else{
+				for(k = 0; k < req.body.technologies.length; k++){
+					var ints = [];
+					ints.push(req.body.technologies[k]);
+					ints.push(10);
+					technologies.push(ints);
+				}
 			}
 			user.preferences.technologies = technologies;
 		}else{
@@ -370,11 +389,16 @@ exports.postSignup = async (req, res, next) => {
 		}
 		if(req.body.fields){
 			var fields = [];
-			for(k = 0; k < req.body.fields.length; k++){
-				var ints = [];
-				ints.push(req.body.fields[k]);
-				ints.push(10);
-				fields.push(ints);
+			if(typeof req.body.fields == "string"){//there's only one item in input and is received as string
+				fields.push(req.body.fields);
+			}else{
+				for(k = 0; k < req.body.fields.length; k++){
+
+					var ints = [];
+					ints.push(req.body.fields[k]);
+					ints.push(10);
+					fields.push(ints);
+				}
 			}
 			user.preferences.fields = fields;
 		}else{
