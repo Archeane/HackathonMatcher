@@ -220,7 +220,6 @@ exports.getHackathonList = (req,res, next) => {
  * Retrieves hackathon with same urlId as req.params
  * Processes users attending the hackathon
  * TODO
- * 1. async loop 
  * 2. integrated getMinifiedUsers() function
  * 3. link to db logo, link to devpost
  * 4. integrate top hackers
@@ -473,7 +472,7 @@ exports.visual = (req, res, next) =>{
 													"score": hacker[1]
 												});
 												minUsers.push(user);
-												//TODO: not a good way to get out of async functions. Do promoise
+												
 												
 											});
 										});//end of foreach

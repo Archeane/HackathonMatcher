@@ -23,6 +23,7 @@ var myBucket = storage.bucket(process.env.GOOGLE_CLOUD_BUCKET_NAME);
  * Sends a verification email with randomly generated secret token
  * TODO: add expiration time to the secret token.
  *       Add resend email 
+ *       handle flash errors
  * @param  {[type]}   req  [description]
  * @param  {[type]}   res  [description]
  * @param  {Function} next [description]
@@ -52,6 +53,7 @@ exports.postIndex = (req, res, next) => {
 		password: req.body.password,
 		emailSecretToken: secretToken,
 		emailActive: false,
+		urlId:''
 	});
 
 	User.findOne({
@@ -100,6 +102,28 @@ exports.postIndex = (req, res, next) => {
 		});
 	});
 };
+
+
+async function assignUniqueUrlId(firstname, lastname){
+	console.log('in assignUniqueUrlId');
+	var userId = firstname+'.'+lastname;
+	var count = "1";
+	let result = true;
+	while(result){
+		result = await User.findOne({'urlId': userId}, (err, data)=>{
+			if(err) throw err;
+			if(data){
+				userId = firstname+'.'+lastname+"."+count;
+				count++;
+				return true;
+			}else{
+				return false;
+			}
+		});
+	}
+	console.log('final userID:', userId);
+	return userId;
+}
 /**
  * Matches the secret token with secret token in url. 
  * Sets user to active if tokens match
@@ -113,19 +137,63 @@ exports.verifyemail = async (req, res) => {
 	
 	var secretToken = req.query.token;
 
-	User.findOne({'emailSecretToken' : secretToken}, function(err, user){
-		if(err) throw err;
-		if(!user){
-			throw new Error("User not found");
+	let currentUser = await User.findOne({'emailSecretToken' : secretToken}, function(err, user){
+		if(err){
+			console.log("\x1b[31m", "ERROR!", err);
+			res.render('message', {
+				title:'Server Error', message:'An error has occured in the server. Please try again later.'
+			});//end of render
+			return false;
 		}
-		user.emailActive = true;
-		user.emailSecretToken = '';
-		
+		if(!user){
+			res.render('message', {
+				title:'Error', message:'Token is not found. Your email is either already active, or you may have copied the wrong URL?'
+			});//end of render
+			console.log("\x1b[31m", "ERROR!","User not found");
+			return false;
+		}else{
+			user.emailActive = true;
+			user.emailSecretToken = '';
+			user.save((err) => {
+				if (err) {
+					return next(err);
+				}
+			});
+		}
+	});
+	if(currentUser != false){
+		let uniqueId = await assignUniqueUrlId(currentUser.firstname, currentUser.lastname);
+		console.log('unique', uniqueId);
+		User.updateOne({'email':currentUser.email}, {$set:{'urlId': uniqueId}}, function(err){
+			if(err){
+				console.log("\x1b[31m", "ERROR!", err);
+				res.render('message', {
+					title:'Server Error', message:'An error has occured in the server. Please try again later.'
+				});//end of render
+			}else{
+				res.render('message', {
+					title:'Verification Success', message:'Verification Success. You will now be taken to a signup page.'
+				}, () =>{
+					req.logIn(currentUser, (err) => {
+						if (err) {
+							return next(err);
+						}
+					
+						res.redirect('/signup');
+						return;
+					});
+				});//end of render
+			}//end of else
+		});//end of update
+	}//end of if
+
+
+/*	
 		var userId = user.firstname+'.'+user.lastname;
 		var duplicateID = true;
 		var count = 0;
 		//TODO: async loop for assigning id to user
-		User.findOne({'id': userId}, function(err, person){
+		await User.findOne({'id': userId}, function(err, person){
 			if(err) throw err;
 			if(!person){
 				duplicateID = false;
@@ -174,11 +242,11 @@ exports.verifyemail = async (req, res) => {
 				});
 			}
 		});
-	
+*/	
 		
-		
-	});
-};
+}; //end of route
+
+
 
 //----------LOGIN--------------
 /**

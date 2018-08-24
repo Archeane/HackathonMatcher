@@ -1,7 +1,27 @@
 //TODO: handle 0 preferences choosen
 var fieldsApp, techApp, lanApp, intApp; 
 jQuery(document).ready(function(){
-	
+	if(User.hasOwnProperty('careScores')){
+		console.log('has carescores');
+		if(User.careScores.interests != null){
+			console.log(User.careScores.interests);
+			var score = Math.round(User.careScores.interests/2)-1;
+			$(":input[name=similiarinterersts][value="+score+"]").attr('checked', 'checked');;
+		}
+		if(User.careScores.languages != null){
+			var score = Math.round(User.careScores.languages/2)-1;
+			$(":input[name=similiarlanguages][value="+score+"]").attr('checked', 'checked');;
+		}
+		if(User.careScores.technologies != null){
+			var score = Math.round(User.careScores.technologies/2)-1
+			$(":input[name=similiartechnologies][value="+score+"]").attr('checked', 'checked');
+		}
+		if(User.careScores.fields != null){
+			var score = Math.round(User.careScores.fields/2)-1
+			$(":input[name=similiarfields][value="+score+"]").attr('checked', 'checked');
+		}
+	}
+
 	$(document).on('click', '.add', function () {
 	 if($(this).next().val() < 10){
 		 $(this).next().val(+$(this).next().val() + 1);
