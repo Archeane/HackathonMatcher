@@ -763,10 +763,10 @@ exports.getPreferences = (req, res) => {
  */
 exports.postPreferences = (req,res) => {
 	console.log("\x1b[1m", req.body);
-	var interestScore = req.body.interestScore;
-	var languageScore =req.body.languageScore;
-	var techScore = req.body.techScore;
-	var fieldScore = req.body.fieldsScore;
+	var interestScore = req.body.similiarinterersts;
+	var languageScore =req.body.similiarlanguages;
+	var techScore = req.body.similiartechnologies;
+	var fieldScore = req.body.similiarfields;
 
 	var fields = req.body.fieldsContent.split(',');
 	var languages = req.body.lanContent.split(',');

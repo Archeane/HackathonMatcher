@@ -265,10 +265,10 @@ exports.getHackathonById = (req, res, next) => {
 				*/
 				//console.log(user['preferences']);
 				var process = spawn('python', ["./algorithmn/process.py", allHackathonHackers, JSON.stringify(req.user)]);
-			
+				var processedData;
 				process.stdout.on('data', function(data){
 					processedData = data.toString();
-					//console.log(processedData);
+					console.log(processedData);
 				});
 
 				process.stdout.on('end', function(){
@@ -411,7 +411,7 @@ exports.visual = (req, res, next) =>{
 					
 
 					var process = spawn('python', ["./algorithmn/process.py", allHackathonHackers, JSON.stringify(req.user)]);
-					
+					var processedData;
 					process.stdout.on('data', function(data){
 						console.log('data:');
 						console.log(data);

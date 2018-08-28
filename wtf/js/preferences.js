@@ -5,19 +5,19 @@ jQuery(document).ready(function(){
 		console.log('has carescores');
 		if(User.careScores.interests != null){
 			console.log(User.careScores.interests);
-			var score = Math.round(User.careScores.interests/2)-1;
+			var score = Math.round(User.careScores.interests/2);
 			$(":input[name=similiarinterersts][value="+score+"]").attr('checked', 'checked');;
 		}
 		if(User.careScores.languages != null){
-			var score = Math.round(User.careScores.languages/2)-1;
+			var score = Math.round(User.careScores.languages/2);
 			$(":input[name=similiarlanguages][value="+score+"]").attr('checked', 'checked');;
 		}
 		if(User.careScores.technologies != null){
-			var score = Math.round(User.careScores.technologies/2)-1
+			var score = Math.round(User.careScores.technologies/2);
 			$(":input[name=similiartechnologies][value="+score+"]").attr('checked', 'checked');
 		}
 		if(User.careScores.fields != null){
-			var score = Math.round(User.careScores.fields/2)-1
+			var score = Math.round(User.careScores.fields/2);
 			$(":input[name=similiarfields][value="+score+"]").attr('checked', 'checked');
 		}
 	}
