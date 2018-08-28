@@ -11,20 +11,17 @@ db = client['test']
 
 currentHackathon = sys.argv[1]
 currentHacker = json.loads(sys.argv[2])
-#print('printing from python!!', currentHacker)
+#print('printing from python!!')
+#print(currentHacker)
 #print(currentHackathon)
 allHackers = []
 '''
 currentHacker = db['users'].find_one({'urlId': 'jenny.xu'})
-hackathon = db['hackathons'].find_one({'urlId': 'hackmohave.community.college'})
+hackathon = db['hackathons'].find_one({'urlId': 'hackarkansas.state.university-beebe'})
 for email in hackathon['hackers']:
     temp = db['users'].find_one({'email':email})
     allHackers.append(temp)
 
-#print(currentHackathon)
-for email in currentHackathon['hackers']:
-    temp = db['users'].find_one({'email':email})
-    allHackers.append(temp)
 '''
 
 startIndex = 0
@@ -90,7 +87,7 @@ def calculateLanguageScore(hacker, carescore):
     for language in languagesArr:
         score = []
         score.append(language[0])
-        languageDividend = language[1] // 10
+        languageDividend = int(language[1]) / 10
         #TODO: languages score is divided by 10 because language scale is 100 
         score.append(round(float(languageDividend) * multipler * caremultipler, 2))
         newLanguagesArr.append(score)
@@ -228,8 +225,8 @@ def hackathonsimiliarscore(currentHacker, allHackers, carescores):
         if hacker != None:
             resetuser(hacker, carescores['interests'], carescores['languages'], carescores['technologies'], carescores['fields'])
             score = calculateSimiliarScore(currentHacker, hacker, carescores['interests'], carescores['languages'], carescores['technologies'], carescores['fields'])
-#            if score != 0:
-            hackathonsimiliarscores.append([hacker['urlId'], score])
+            if score != 0:
+                hackathonsimiliarscores.append([hacker['urlId'], score])
         
 
     #print(hackathonsimiliarscores)

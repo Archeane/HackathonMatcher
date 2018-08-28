@@ -346,6 +346,7 @@ exports.visual = (req, res, next) =>{
 		//TODO: change this if urlID format is changed
 		//if user already containes matched hackers for params hackathon
 		if(matchedHackathon === hackathonUrlId && parsedUser.matches[1] != null && parsedUser.matches[1] != undefined){
+			console.log('this should not be printed');
 			var matches = parsedUser.matches[1];	//Gets all the users of hackatonUrlId
 			var minUsers = [];
 			new Promise(async(resolve, reject) => {
@@ -400,6 +401,7 @@ exports.visual = (req, res, next) =>{
 				throw err;
 			});
 		}else{	//do processing first
+			console.log('this should be printed');
 			db.collection('hackathons').findOne({"urlId": req.params.id}, (err, result) =>{
 	  			if(err) throw err;
 

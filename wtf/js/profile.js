@@ -50,9 +50,9 @@ $(function () {
 		});
 	}
 
+	console.log(User);
 	var email = document.querySelector("#email");
 	email.innerHTML += User.email;
-	console.log(User);
 
 	$('#pfp').attr('src', User.profileimg);
 
