@@ -235,11 +235,7 @@ exports.getHackathonById = (req, res, next) => {
   			if(err) throw err;
   			if(result == null){	//If hackathon is not found
   				res.send("404 NOT FOUND");
-  			}else if(!(req.user.preferences != null && req.user.preferences != undefined && req.user.preferences != '') ||
-  					!((req.user.preferences.interests != null && req.user.preferences.interests != undefined && req.user.preferences.interests != '') &&  
-  					 (req.user.preferences.languages != null && req.user.preferences.languages != undefined && req.user.preferences.languages != '') &&
-  					 (req.user.preferences.fields != null && req.user.preferences.fields != undefined && req.user.preferences.fields != '') &&
-  					 (req.user.preferences.technologies != null && req.user.preferences.technologies != undefined && req.user.preferences.technologies != ''))){
+  			}else if(!(req.user.preferences != null && req.user.preferences != undefined && req.user.preferences != '') ){
   				console.log('preferences null');
   				res.render('hackathon', {
 					title: '', foundHackathon: result, containsHackers: false, data: false
@@ -273,6 +269,8 @@ exports.getHackathonById = (req, res, next) => {
 
 				process.stdout.on('end', function(){
 					var arr = eval("["+processedData+"]")[0];
+					console.log('arr:');
+					console.log(arr);
 					if(arr != null && arr.length > 0 && arr != undefined && arr != '' && arr != []){
 
 						var hackathonMatches = [result['urlId']];
@@ -285,7 +283,7 @@ exports.getHackathonById = (req, res, next) => {
 								}
 							}
 						);
-						//console.log(arr);
+						console.log(arr);
 						var topten = arr.slice(1,11);
 						console.log(topten);
 						var toptenHackers = [];
@@ -411,12 +409,16 @@ exports.visual = (req, res, next) =>{
 					var resultJson = JSON.parse(convert.schema2json(result));
 					var allHackathonHackers = resultJson['hackers'];
 					
-
+					if(allHackathonHackers == null || allHackathonHackers.length == 0){
+						res.render('message', {
+							title: 'Hacakthon Error', pageTitle:'Hackathon Error', message:'An error has occured processing the hackers attending this hackathon.'
+						});
+						return;
+					}
 					var process = spawn('python', ["./algorithmn/process.py", allHackathonHackers, JSON.stringify(req.user)]);
 					var processedData;
 					process.stdout.on('data', function(data){
 						console.log('data:');
-						console.log(data);
 						processedData = data.toString();
 						console.log(processedData);
 					});
@@ -504,6 +506,8 @@ exports.visual = (req, res, next) =>{
 							});
 						}
 					}); //end of process data end
+
+
 				}
 			});
 		}
